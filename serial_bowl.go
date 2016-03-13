@@ -15,6 +15,7 @@ const Len = 1000
 
 // Data for the tests
 var MemData []jsn.MemInfo
+var BasicMemData []jsn.BasicMemInfo
 var AccountData []jsn.RedditAccount
 
 type Result struct {
@@ -69,6 +70,7 @@ func column(w int, s string) string {
 func init() {
 	rand.Seed(time.Now().UnixNano())
 	GenMemData(Len)
+	GenBasicMemData(Len)
 	GenAccountData(Len)
 }
 
@@ -160,6 +162,22 @@ func GenMemData(n int) {
 	}
 }
 
+func GenBasicMemData(n int) {
+	BasicMemData = make([]jsn.BasicMemInfo, n)
+	for i := 0; i < n; i++ {
+		BasicMemData[i] = jsn.BasicMemInfo{
+			MemTotal:     rand.Intn(maxInt),
+			MemFree:      rand.Intn(maxInt),
+			MemAvailable: rand.Intn(maxInt),
+			Buffers:      rand.Intn(maxInt),
+			Cached:       rand.Intn(maxInt),
+			SwapCached:   rand.Intn(maxInt),
+			SwapTotal:    rand.Intn(maxInt),
+			SwapFree:     rand.Intn(maxInt),
+		}
+	}
+}
+
 func main() {
 	var r Result
 	// Reddit Account
@@ -181,6 +199,26 @@ func main() {
 	r.SetFromBenchmarkResult(br)
 	fmt.Printf("RedditAccountJSONUnmarshal:\t%s\n", r.String())
 
+	// BasicMemInfo
+	// Flatbuffers Serialize
+	fmt.Println("")
+	br = testing.Benchmark(BenchBasicMemInfoFBSerialize)
+	r.SetFromBenchmarkResult(br)
+	fmt.Printf("BasicMemInfoSerializeFB:\t%s\n", r.String())
+	// JSON Marshal
+	br = testing.Benchmark(BenchBasicMemInfoJSONMarshal)
+	r.SetFromBenchmarkResult(br)
+	fmt.Printf("BasicMemInfoJSONMarshal:\t%s\n", r.String())
+	fmt.Println("")
+	// Flatbuffers Deserialize
+	br = testing.Benchmark(BenchBasicMemInfoFBDeserialize)
+	r.SetFromBenchmarkResult(br)
+	fmt.Printf("BasicMemInfoDeserializeFB:\t%s\n", r.String())
+	// JSON Unmarshal
+	br = testing.Benchmark(BenchBasicMemInfoJSONUnmarshal)
+	r.SetFromBenchmarkResult(br)
+	fmt.Printf("BasicMemInfoJSONUnmarshal:\t%s\n", r.String())
+
 	// MemInfo
 	// Flatbuffers Serialize
 	fmt.Println("")
@@ -197,8 +235,7 @@ func main() {
 	r.SetFromBenchmarkResult(br)
 	fmt.Printf("MemInfoDeserializeFB:\t\t%s\n", r.String())
 	// JSON Unmarshal
-	br = testing.Benchmark(BenchRedditAccountJSONUnmarshal)
+	br = testing.Benchmark(BenchMemInfoJSONUnmarshal)
 	r.SetFromBenchmarkResult(br)
 	fmt.Printf("MemInfoJSONUnmarshal:\t\t%s\n", r.String())
-
 }

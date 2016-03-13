@@ -42,3 +42,14 @@ type MemInfo struct {
 	DirectMap4k       int
 	DirectMap2M       int
 }
+
+type BasicMemInfo struct {
+	MemTotal     int
+	MemFree      int
+	MemAvailable int
+	Buffers      int
+	Cached       int
+	SwapCached   int
+	SwapTotal    int
+	SwapFree     int
+}

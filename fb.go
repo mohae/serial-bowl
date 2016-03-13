@@ -8,10 +8,12 @@ import (
 
 var fbRedditAccount [][]byte
 var fbMemInfo [][]byte
+var fbBasicMemInfo [][]byte
 
 func init() {
 	fbRedditAccount = make([][]byte, Len)
 	fbMemInfo = make([][]byte, Len)
+	fbBasicMemInfo = make([][]byte, Len)
 }
 
 func BenchRedditAccountFBSerialize(b *testing.B) {
@@ -23,7 +25,6 @@ func BenchRedditAccountFBSerialize(b *testing.B) {
 }
 
 func BenchRedditAccountFBDeserialize(b *testing.B) {
-	b.N /= Len
 	var tmp *fb.RedditAccount
 	for i := 0; i < b.N; i++ {
 		for j := 0; j < Len; j++ {
@@ -33,8 +34,25 @@ func BenchRedditAccountFBDeserialize(b *testing.B) {
 	_ = tmp
 }
 
+func BenchBasicMemInfoFBSerialize(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		for j := 0; j < Len; j++ {
+			fbBasicMemInfo[j] = fb.SerializeBasicMemInfo(BasicMemData[j])
+		}
+	}
+}
+
+func BenchMemInfoFBDeserialize(b *testing.B) {
+	var tmp *fb.MemInfo
+	for i := 0; i < b.N; i++ {
+		for j := 0; j < Len; j++ {
+			tmp = fb.GetRootAsMemInfo(fbMemInfo[j], 0)
+		}
+	}
+	_ = tmp
+}
+
 func BenchMemInfoFBSerialize(b *testing.B) {
-	b.N /= Len
 	for i := 0; i < b.N; i++ {
 		for j := 0; j < Len; j++ {
 			fbMemInfo[j] = fb.SerializeMemInfo(MemData[j])
@@ -42,12 +60,11 @@ func BenchMemInfoFBSerialize(b *testing.B) {
 	}
 }
 
-func BenchMemInfoFBDeserialize(b *testing.B) {
-	b.N /= Len
-	var tmp *fb.MemInfo
+func BenchBasicMemInfoFBDeserialize(b *testing.B) {
+	var tmp *fb.BasicMemInfo
 	for i := 0; i < b.N; i++ {
 		for j := 0; j < Len; j++ {
-			tmp = fb.GetRootAsMemInfo(fbMemInfo[j], 0)
+			tmp = fb.GetRootAsBasicMemInfo(fbBasicMemInfo[j], 0)
 		}
 	}
 	_ = tmp

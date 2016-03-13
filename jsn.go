@@ -9,10 +9,12 @@ import (
 
 var jsonRedditAccount [][]byte
 var jsonMemInfo [][]byte
+var jsonBasicMemInfo [][]byte
 
 func init() {
 	jsonRedditAccount = make([][]byte, Len)
 	jsonMemInfo = make([][]byte, Len)
+	jsonBasicMemInfo = make([][]byte, Len)
 }
 
 func BenchRedditAccountJSONMarshal(b *testing.B) {
@@ -24,7 +26,6 @@ func BenchRedditAccountJSONMarshal(b *testing.B) {
 }
 
 func BenchRedditAccountJSONUnmarshal(b *testing.B) {
-	b.N /= Len
 	var tmp jsn.RedditAccount
 	for i := 0; i < b.N; i++ {
 		for j := 0; j < Len; j++ {
@@ -35,7 +36,6 @@ func BenchRedditAccountJSONUnmarshal(b *testing.B) {
 }
 
 func BenchMemInfoJSONMarshal(b *testing.B) {
-	b.N /= Len
 	for i := 0; i < b.N; i++ {
 		for j := 0; j < Len; j++ {
 			jsonMemInfo[j], _ = json.Marshal(MemData[j])
@@ -44,11 +44,28 @@ func BenchMemInfoJSONMarshal(b *testing.B) {
 }
 
 func BenchMemInfoJSONUnmarshal(b *testing.B) {
-	b.N /= Len
 	var tmp jsn.MemInfo
 	for i := 0; i < b.N; i++ {
 		for j := 0; j < Len; j++ {
 			json.Unmarshal(jsonMemInfo[j], &tmp)
+		}
+	}
+	_ = tmp
+}
+
+func BenchBasicMemInfoJSONMarshal(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		for j := 0; j < Len; j++ {
+			jsonBasicMemInfo[j], _ = json.Marshal(BasicMemData[j])
+		}
+	}
+}
+
+func BenchBasicMemInfoJSONUnmarshal(b *testing.B) {
+	var tmp jsn.BasicMemInfo
+	for i := 0; i < b.N; i++ {
+		for j := 0; j < Len; j++ {
+			json.Unmarshal(jsonBasicMemInfo[j], &tmp)
 		}
 	}
 	_ = tmp

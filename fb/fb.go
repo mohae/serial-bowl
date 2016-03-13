@@ -92,3 +92,18 @@ func SerializeMemInfo(js jsn.MemInfo) []byte {
 	bldr.Finish(MemInfoEnd(bldr))
 	return bldr.Bytes[bldr.Head():]
 }
+
+func SerializeBasicMemInfo(js jsn.BasicMemInfo) []byte {
+	bldr.Reset()
+	BasicMemInfoStart(bldr)
+	BasicMemInfoAddMemTotal(bldr, int64(js.MemTotal))
+	BasicMemInfoAddMemFree(bldr, int64(js.MemFree))
+	BasicMemInfoAddMemAvailable(bldr, int64(js.MemAvailable))
+	BasicMemInfoAddBuffers(bldr, int64(js.Buffers))
+	BasicMemInfoAddCached(bldr, int64(js.Cached))
+	BasicMemInfoAddSwapCached(bldr, int64(js.SwapCached))
+	BasicMemInfoAddSwapTotal(bldr, int64(js.SwapTotal))
+	BasicMemInfoAddSwapFree(bldr, int64(js.SwapFree))
+	bldr.Finish(MemInfoEnd(bldr))
+	return bldr.Bytes[bldr.Head():]
+}
