@@ -1,0 +1,12 @@
+// Message.fbs
+namespace fb;
+
+table Message {
+    ID:[ubyte];
+    DstID:uint;
+    Type:byte;
+    Kind:short;
+    Data:[ubyte];
+}
+
+root_type Message;

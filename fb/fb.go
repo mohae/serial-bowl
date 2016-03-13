@@ -107,3 +107,16 @@ func SerializeBasicMemInfo(js jsn.BasicMemInfo) []byte {
 	bldr.Finish(MemInfoEnd(bldr))
 	return bldr.Bytes[bldr.Head():]
 }
+
+func SerializeMessage(js jsn.Message) []byte {
+	bldr.Reset()
+	id := bldr.CreateByteVector(js.ID)
+	data := bldr.CreateByteVector(js.Data)
+	MessageStart(bldr)
+	MessageAddID(bldr, id)
+	MessageAddType(bldr, js.Type)
+	MessageAddKind(bldr, js.Kind)
+	MessageAddData(bldr, data)
+	bldr.Finish(MessageEnd(bldr))
+	return bldr.Bytes[bldr.Head():]
+}

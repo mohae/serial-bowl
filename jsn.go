@@ -10,11 +10,13 @@ import (
 var jsonRedditAccount [][]byte
 var jsonMemInfo [][]byte
 var jsonBasicMemInfo [][]byte
+var jsonMessage [][]byte
 
 func init() {
 	jsonRedditAccount = make([][]byte, Len)
 	jsonMemInfo = make([][]byte, Len)
 	jsonBasicMemInfo = make([][]byte, Len)
+	jsonMessage = make([][]byte, Len)
 }
 
 func BenchRedditAccountJSONMarshal(b *testing.B) {
@@ -66,6 +68,24 @@ func BenchBasicMemInfoJSONUnmarshal(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		for j := 0; j < Len; j++ {
 			json.Unmarshal(jsonBasicMemInfo[j], &tmp)
+		}
+	}
+	_ = tmp
+}
+
+func BenchMessageJSONMarshal(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		for j := 0; j < Len; j++ {
+			jsonMessage[j], _ = json.Marshal(MessageData[j])
+		}
+	}
+}
+
+func BenchMessageJSONUnmarshal(b *testing.B) {
+	var tmp jsn.Message
+	for i := 0; i < b.N; i++ {
+		for j := 0; j < Len; j++ {
+			json.Unmarshal(jsonMessage[j], &tmp)
 		}
 	}
 	_ = tmp

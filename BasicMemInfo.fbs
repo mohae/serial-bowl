@@ -1,0 +1,15 @@
+// BasicMeminfo.fbs
+namespace fb;
+
+table BasicMemInfo {
+    MemTotal:long;
+    MemFree:long;
+    MemAvailable:long;
+    Buffers:long;
+    Cached:long;
+    SwapCached:long;
+    SwapTotal:long;
+    SwapFree:long;
+}
+
+root_type BasicMemInfo;
