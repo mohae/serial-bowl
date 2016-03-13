@@ -1,0 +1,47 @@
+// Meminfo.fbs
+namespace fb;
+
+table MemInfo {
+    MemTotal:long;
+    MemFree:long;
+    MemAvailable:long;
+    Buffers:long;
+    Cached:long;
+    SwapCached:long;
+    Active:long;
+    Inactive:long;
+    ActiveAnon:long;
+    InactiveAnon:long;
+    ActiveFile:long;
+    InactiveFile:long;
+    Unevictable:long;
+    Mlocked:long;
+    SwapTotal:long;
+    SwapFree:long;
+    Dirty:long;
+    Writeback:long;
+    AnonPages:long;
+    Mapped:long;
+    Shmem:long;
+    Slab:long;
+    SReclaimable:long;
+    SUnreclaim:long;
+    KernelStack:long;
+    NFSUnstable:long;
+    Bounce:long;
+    WritebackTmp:long;
+    CommitLimit:long;
+    VmallocTotal:long;
+    VmallocUsed:long;
+    VmallocChunk:long;
+    HardwareCorrupted:long;
+    AnonHugePages:long;
+    HugePagesTotal:long;
+    HugePagesFree:long;
+    HugePagesRsvd:long;
+    Hugepagesize:long;
+    DirectMap4k:long;
+    DirectMap2M:long;
+}
+
+root_type MemInfo;

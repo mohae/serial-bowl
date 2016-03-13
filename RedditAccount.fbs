@@ -1,0 +1,28 @@
+// RedditAccount.fbs
+namespace fb;
+
+// is actually thing
+table RedditAccount {
+    ID:string;
+    Name:string;
+    Kind:string;
+    Data:AccountData;
+}
+
+table AccountData {
+    CommentKarma:long;
+    HasMail:bool;
+    HasModMail:bool;
+    HasVerifiedEmail:bool;
+    ID:string;
+    InboxCount:long;
+    IsFriend:bool;
+    IsGold:bool;
+    IsMod:bool;
+    LinkKarma:long;
+    ModHash:string;
+    Name:string;
+    Over18:bool;
+}
+
+root_type RedditAccount;
