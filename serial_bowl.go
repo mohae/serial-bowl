@@ -54,7 +54,16 @@ func (r Result) AllocsOpString() string {
 }
 
 func (r Result) String() string {
-	return fmt.Sprintf("%s\t%s\t%s\t%s\t%s", r.OpsString(), r.NsOpString(), r.MBSecString(), r.BytesOpString(), r.AllocsOpString())
+	return fmt.Sprintf("%s%s%s%s", column(15, r.OpsString()), column(15, r.NsOpString()), column(18, r.BytesOpString()), column(16, r.AllocsOpString()))
+}
+
+func column(w int, s string) string {
+	pad := w - len(s)
+	padding := make([]byte, pad)
+	for i := 0; i < pad; i++ {
+		padding[i] = 0x20
+	}
+	return fmt.Sprintf("%s%s", string(padding), s)
 }
 
 func init() {
@@ -162,6 +171,7 @@ func main() {
 	br = testing.Benchmark(BenchRedditAccountJSONMarshal)
 	r.SetFromBenchmarkResult(br)
 	fmt.Printf("RedditAccountJSONMarshal:\t%s\n", r.String())
+	fmt.Println("")
 	// Flatbuffers Deserialize
 	br = testing.Benchmark(BenchRedditAccountFBDeserialize)
 	r.SetFromBenchmarkResult(br)
@@ -173,6 +183,7 @@ func main() {
 
 	// MemInfo
 	// Flatbuffers Serialize
+	fmt.Println("")
 	br = testing.Benchmark(BenchMemInfoFBSerialize)
 	r.SetFromBenchmarkResult(br)
 	fmt.Printf("MemInfoSerializeFB:\t\t%s\n", r.String())
@@ -180,6 +191,7 @@ func main() {
 	br = testing.Benchmark(BenchMemInfoJSONMarshal)
 	r.SetFromBenchmarkResult(br)
 	fmt.Printf("MemInfoJSONMarshal:\t\t%s\n", r.String())
+	fmt.Println("")
 	// Flatbuffers Deserialize
 	br = testing.Benchmark(BenchMemInfoFBDeserialize)
 	r.SetFromBenchmarkResult(br)
