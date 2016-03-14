@@ -55,7 +55,7 @@ func main() {
 	fmt.Printf("PB v3 Unmarshal: MemInfo:\t%s\n", r.String())
 
 	// Message Data
-	dataLen := []int{256, 1024, 4096}
+	dataLen := []int{16, 256, 1024, 4096}
 	for _, v := range dataLen {
 		fmt.Println("")
 		shared.GenMessageData(v, shared.Len)
