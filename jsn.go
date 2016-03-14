@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/mohae/serial-bowl/jsn"
+	"github.com/mohae/serial-bowl/shared"
 )
 
 var jsonRedditAccount [][]byte
@@ -13,16 +14,16 @@ var jsonBasicMemInfo [][]byte
 var jsonMessage [][]byte
 
 func init() {
-	jsonRedditAccount = make([][]byte, Len)
-	jsonMemInfo = make([][]byte, Len)
-	jsonBasicMemInfo = make([][]byte, Len)
-	jsonMessage = make([][]byte, Len)
+	jsonRedditAccount = make([][]byte, shared.Len)
+	jsonMemInfo = make([][]byte, shared.Len)
+	jsonBasicMemInfo = make([][]byte, shared.Len)
+	jsonMessage = make([][]byte, shared.Len)
 }
 
 func BenchRedditAccountJSONMarshal(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		for j := 0; j < Len; j++ {
-			jsonRedditAccount[j], _ = json.Marshal(AccountData[j])
+		for j := 0; j < shared.Len; j++ {
+			jsonRedditAccount[j], _ = json.Marshal(shared.RedditAccountData[j])
 		}
 	}
 }
@@ -30,7 +31,7 @@ func BenchRedditAccountJSONMarshal(b *testing.B) {
 func BenchRedditAccountJSONUnmarshal(b *testing.B) {
 	var tmp jsn.RedditAccount
 	for i := 0; i < b.N; i++ {
-		for j := 0; j < Len; j++ {
+		for j := 0; j < shared.Len; j++ {
 			json.Unmarshal(jsonRedditAccount[j], &tmp)
 		}
 	}
@@ -39,8 +40,8 @@ func BenchRedditAccountJSONUnmarshal(b *testing.B) {
 
 func BenchMemInfoJSONMarshal(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		for j := 0; j < Len; j++ {
-			jsonMemInfo[j], _ = json.Marshal(MemData[j])
+		for j := 0; j < shared.Len; j++ {
+			jsonMemInfo[j], _ = json.Marshal(shared.MemInfoData[j])
 		}
 	}
 }
@@ -48,7 +49,7 @@ func BenchMemInfoJSONMarshal(b *testing.B) {
 func BenchMemInfoJSONUnmarshal(b *testing.B) {
 	var tmp jsn.MemInfo
 	for i := 0; i < b.N; i++ {
-		for j := 0; j < Len; j++ {
+		for j := 0; j < shared.Len; j++ {
 			json.Unmarshal(jsonMemInfo[j], &tmp)
 		}
 	}
@@ -57,8 +58,8 @@ func BenchMemInfoJSONUnmarshal(b *testing.B) {
 
 func BenchBasicMemInfoJSONMarshal(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		for j := 0; j < Len; j++ {
-			jsonBasicMemInfo[j], _ = json.Marshal(BasicMemData[j])
+		for j := 0; j < shared.Len; j++ {
+			jsonBasicMemInfo[j], _ = json.Marshal(shared.BasicMemInfoData[j])
 		}
 	}
 }
@@ -66,7 +67,7 @@ func BenchBasicMemInfoJSONMarshal(b *testing.B) {
 func BenchBasicMemInfoJSONUnmarshal(b *testing.B) {
 	var tmp jsn.BasicMemInfo
 	for i := 0; i < b.N; i++ {
-		for j := 0; j < Len; j++ {
+		for j := 0; j < shared.Len; j++ {
 			json.Unmarshal(jsonBasicMemInfo[j], &tmp)
 		}
 	}
@@ -75,8 +76,8 @@ func BenchBasicMemInfoJSONUnmarshal(b *testing.B) {
 
 func BenchMessageJSONMarshal(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		for j := 0; j < Len; j++ {
-			jsonMessage[j], _ = json.Marshal(MessageData[j])
+		for j := 0; j < shared.Len; j++ {
+			jsonMessage[j], _ = json.Marshal(shared.MessageData[j])
 		}
 	}
 }
@@ -84,7 +85,7 @@ func BenchMessageJSONMarshal(b *testing.B) {
 func BenchMessageJSONUnmarshal(b *testing.B) {
 	var tmp jsn.Message
 	for i := 0; i < b.N; i++ {
-		for j := 0; j < Len; j++ {
+		for j := 0; j < shared.Len; j++ {
 			json.Unmarshal(jsonMessage[j], &tmp)
 		}
 	}
