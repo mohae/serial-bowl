@@ -278,6 +278,10 @@ func main() {
 		br = testing.Benchmark(BenchMessageJSONMarshal)
 		r.SetFromBenchmarkResult(br)
 		fmt.Printf("MessageJSONMarshal:\t\t%s\n", r.String())
+		// Protbuf Marshal
+		br = testing.Benchmark(BenchMessagePBMarshal)
+		r.SetFromBenchmarkResult(br)
+		fmt.Printf("MessagePBMarshal:\t\t%s\n", r.String())
 		// Flatbuffers Deserialize
 		br = testing.Benchmark(BenchMessageFBDeserialize)
 		r.SetFromBenchmarkResult(br)
@@ -286,6 +290,10 @@ func main() {
 		br = testing.Benchmark(BenchMessageJSONUnmarshal)
 		r.SetFromBenchmarkResult(br)
 		fmt.Printf("MessageJSONUnmarshal:\t\t%s\n", r.String())
+		// Protobuf Unmarshal
+		br = testing.Benchmark(BenchMessagePBUnmarshal)
+		r.SetFromBenchmarkResult(br)
+		fmt.Printf("MessagePBUnmarshal:\t\t%s\n", r.String())
 
 	}
 }
