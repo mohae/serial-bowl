@@ -1,4 +1,4 @@
-package jsn
+package shared
 
 type RedditAccount struct {
 	ID   string      `json:"id"`

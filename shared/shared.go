@@ -7,8 +7,6 @@ import (
 	"math/rand"
 	"testing"
 	"time"
-
-	"github.com/mohae/serial-bowl/jsn"
 )
 
 const alphanum = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
@@ -18,12 +16,11 @@ const maxInt64 = 1<<63 - 1
 var Len = 1000
 
 // Data for the benchmarks.  All benchmarks operate off of the same set of
-// randomly generated data.  The package jsn structs are used because they
-// are just Go structs.
-var BasicMemInfoData []jsn.BasicMemInfo
-var MemInfoData []jsn.MemInfo
-var MessageData []jsn.Message
-var RedditAccountData []jsn.RedditAccount
+// randomly generated data.
+var BasicMemInfoData []BasicMemInfo
+var MemInfoData []MemInfo
+var MessageData []Message
+var RedditAccountData []RedditAccount
 
 type Result struct {
 	Ops      int64
@@ -80,9 +77,9 @@ func GenData() {
 // GenBasicMemInfoData generates the random data for the BasicMemInfo struct.
 // The resulting slice of structs will have l elements.
 func GenBasicMemInfoData(l int) {
-	BasicMemInfoData = make([]jsn.BasicMemInfo, l)
+	BasicMemInfoData = make([]BasicMemInfo, l)
 	for i := 0; i < l; i++ {
-		BasicMemInfoData[i] = jsn.BasicMemInfo{
+		BasicMemInfoData[i] = BasicMemInfo{
 			MemTotal:     rand.Intn(maxInt64),
 			MemFree:      rand.Intn(maxInt64),
 			MemAvailable: rand.Intn(maxInt64),
@@ -98,9 +95,9 @@ func GenBasicMemInfoData(l int) {
 // GenMemInfoData generates the random data for the BasicMemInfo struct.  The
 // resulting slice of structs will have l elements.
 func GenMemInfoData(l int) {
-	MemInfoData = make([]jsn.MemInfo, l)
+	MemInfoData = make([]MemInfo, l)
 	for i := 0; i < l; i++ {
-		MemInfoData[i] = jsn.MemInfo{
+		MemInfoData[i] = MemInfo{
 			MemTotal:          rand.Intn(maxInt64),
 			MemFree:           rand.Intn(maxInt64),
 			MemAvailable:      rand.Intn(maxInt64),
@@ -149,11 +146,11 @@ func GenMemInfoData(l int) {
 // element being n bytes in length.  The resulting slice of structs will have
 // l elements.
 func GenMessageData(n, l int) {
-	MessageData = make([]jsn.Message, l)
+	MessageData = make([]Message, l)
 	for i := 0; i < l; i++ {
 		id := RandBytes(8)
 		data := RandBytes(n)
-		MessageData[i] = jsn.Message{
+		MessageData[i] = Message{
 			ID:     id,
 			DestID: rand.Uint32(),
 			Type:   int8(rand.Intn(1<<7 - 1)),
@@ -164,13 +161,13 @@ func GenMessageData(n, l int) {
 }
 
 func GenRedditAccountData(l int) {
-	RedditAccountData = make([]jsn.RedditAccount, l)
+	RedditAccountData = make([]RedditAccount, l)
 	for i := 0; i < l; i++ {
-		RedditAccountData[i] = jsn.RedditAccount{
+		RedditAccountData[i] = RedditAccount{
 			ID:   RandString(20),
 			Name: RandString(rand.Intn(30)),
 			Kind: RandString(5),
-			Data: jsn.AccountData{
+			Data: AccountData{
 				CommentKarma: rand.Intn(maxInt64),
 				HasMail:      RandBool(),
 				HasModMail:   RandBool(),
