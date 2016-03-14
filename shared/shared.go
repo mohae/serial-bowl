@@ -72,11 +72,9 @@ func init() {
 func GenData() {
 	GenBasicMemInfoData(Len)
 	GenMemInfoData(Len)
-	GenMessageData(16, Len)
-	GenMessageData(256, Len)
-	GenMessageData(1024, Len)
-	GenMessageData(4096, Len)
 	GenRedditAccountData(Len)
+	// Message data is generated at start of each message data length test
+	// As each block of message data tests use a different message.Data length.
 }
 
 // GenBasicMemInfoData generates the random data for the BasicMemInfo struct.

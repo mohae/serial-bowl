@@ -80,6 +80,7 @@ message AccountData {
     bool IsFriend = 6;
     bool IsGold = 7;
     int64 LinkKarma = 8;
-    string Name = 9;
-    bool Over18 = 10;
+    string ModHash = 9;
+    string Name = 10;
+    bool Over18 = 11;
 }

@@ -4,34 +4,18 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/mohae/serial-bowl/pb"
 	"github.com/mohae/serial-bowl/shared"
 )
 
 func main() {
 	shared.GenData()
 	var r shared.Result
-	// Reddit Account
-	// Flatbuffers Serialize
-	br := testing.Benchmark(BenchRedditAccountFBSerialize)
-	r.SetFromBenchmarkResult(br)
-	fmt.Printf("RedditAccountSerializeFB:\t%s\n", r.String())
-	// JSON Marshal
-	br = testing.Benchmark(BenchRedditAccountJSONMarshal)
-	r.SetFromBenchmarkResult(br)
-	fmt.Printf("RedditAccountJSONMarshal:\t%s\n", r.String())
-	// Flatbuffers Deserialize
-	br = testing.Benchmark(BenchRedditAccountFBDeserialize)
-	r.SetFromBenchmarkResult(br)
-	fmt.Printf("RedditAccountDeserializeFB:\t%s\n", r.String())
-	// JSON Unmarshal
-	br = testing.Benchmark(BenchRedditAccountJSONUnmarshal)
-	r.SetFromBenchmarkResult(br)
-	fmt.Printf("RedditAccountJSONUnmarshal:\t%s\n", r.String())
 
 	// BasicMemInfo
 	// Flatbuffers Serialize
 	fmt.Println("")
-	br = testing.Benchmark(BenchBasicMemInfoFBSerialize)
+	br := testing.Benchmark(BenchBasicMemInfoFBSerialize)
 	r.SetFromBenchmarkResult(br)
 	fmt.Printf("BasicMemInfoSerializeFB:\t%s\n", r.String())
 	// JSON Marshal
@@ -46,25 +30,39 @@ func main() {
 	br = testing.Benchmark(BenchBasicMemInfoJSONUnmarshal)
 	r.SetFromBenchmarkResult(br)
 	fmt.Printf("BasicMemInfoJSONUnmarshal:\t%s\n", r.String())
+	// PB v3
+	m, u := pb.BenchBasicMemInfo()
+	r.SetFromBenchmarkResult(m)
+	fmt.Printf("PB v3 Marshal: BasicMemInfo:\t%s\n", r.String())
+	r.SetFromBenchmarkResult(u)
+	fmt.Printf("PB v3 Unmarshal: BasicMemInfo:\t%s\n", r.String())
 
-	// MemInfo
+	// Marshal/Serialize: MemInfo
+	fmt.Println("Marshal: MemInfo")
 	// Flatbuffers Serialize
-	fmt.Println("")
 	br = testing.Benchmark(BenchMemInfoFBSerialize)
 	r.SetFromBenchmarkResult(br)
-	fmt.Printf("MemInfoSerializeFB:\t\t%s\n", r.String())
+	fmt.Printf("Flatbuffers: MemInfo:\t\t%s\n", r.String())
 	// JSON Marshal
 	br = testing.Benchmark(BenchMemInfoJSONMarshal)
 	r.SetFromBenchmarkResult(br)
-	fmt.Printf("MemInfoJSONMarshal:\t\t%s\n", r.String())
+	fmt.Printf("JSON: MemInfo:\t\t%s\n", r.String())
+	// Unmarshal/Deserialize
+	fmt.Println("Unmarshal: MemInfo")
 	// Flatbuffers Deserialize
 	br = testing.Benchmark(BenchMemInfoFBDeserialize)
 	r.SetFromBenchmarkResult(br)
-	fmt.Printf("MemInfoDeserializeFB:\t\t%s\n", r.String())
+	fmt.Printf("Flatbuffers MemInfo:\t\t%s\n", r.String())
 	// JSON Unmarshal
 	br = testing.Benchmark(BenchMemInfoJSONUnmarshal)
 	r.SetFromBenchmarkResult(br)
-	fmt.Printf("MemInfoJSONUnmarshal:\t\t%s\n", r.String())
+	fmt.Printf("JSON MemInfo:\t\t%s\n", r.String())
+	// PB v3
+	m, u = pb.BenchMemInfo()
+	r.SetFromBenchmarkResult(m)
+	fmt.Printf("PB v3 Marshal: MemInfo:\t%s\n", r.String())
+	r.SetFromBenchmarkResult(u)
+	fmt.Printf("PB v3 Unmarshal: MemInfo:\t%s\n", r.String())
 
 	// Message Data
 	dataLen := []int{256, 1024, 4096}
@@ -79,10 +77,6 @@ func main() {
 		br = testing.Benchmark(BenchMessageJSONMarshal)
 		r.SetFromBenchmarkResult(br)
 		fmt.Printf("MessageJSONMarshal:\t\t%s\n", r.String())
-		// Protbuf Marshal
-		br = testing.Benchmark(BenchMessagePBMarshal)
-		r.SetFromBenchmarkResult(br)
-		fmt.Printf("MessagePBMarshal:\t\t%s\n", r.String())
 		// Flatbuffers Deserialize
 		br = testing.Benchmark(BenchMessageFBDeserialize)
 		r.SetFromBenchmarkResult(br)
@@ -91,10 +85,36 @@ func main() {
 		br = testing.Benchmark(BenchMessageJSONUnmarshal)
 		r.SetFromBenchmarkResult(br)
 		fmt.Printf("MessageJSONUnmarshal:\t\t%s\n", r.String())
-		// Protobuf Unmarshal
-		br = testing.Benchmark(BenchMessagePBUnmarshal)
-		r.SetFromBenchmarkResult(br)
-		fmt.Printf("MessagePBUnmarshal:\t\t%s\n", r.String())
+		// PB v3
+		m, u = pb.BenchMessage()
+		r.SetFromBenchmarkResult(m)
+		fmt.Printf("PB v3 Marshal: Message:\t%s\n", r.String())
+		r.SetFromBenchmarkResult(u)
+		fmt.Printf("PB v3 Unmarshal: Message:\t%s\n", r.String())
 
 	}
+
+	// Reddit Account
+	// Flatbuffers Serialize
+	br = testing.Benchmark(BenchRedditAccountFBSerialize)
+	r.SetFromBenchmarkResult(br)
+	fmt.Printf("RedditAccountFBSerialize:\t%s\n", r.String())
+	// JSON Marshal
+	br = testing.Benchmark(BenchRedditAccountJSONMarshal)
+	r.SetFromBenchmarkResult(br)
+	fmt.Printf("RedditAccountJSONMarshal:\t%s\n", r.String())
+	// Flatbuffers Deserialize
+	br = testing.Benchmark(BenchRedditAccountFBDeserialize)
+	r.SetFromBenchmarkResult(br)
+	fmt.Printf("RedditAccountFBDeserialize:\t%s\n", r.String())
+	// JSON Unmarshal
+	br = testing.Benchmark(BenchRedditAccountJSONUnmarshal)
+	r.SetFromBenchmarkResult(br)
+	fmt.Printf("RedditAccountJSONUnmarshal:\t%s\n", r.String())
+	// PB v3
+	m, u = pb.BenchRedditAccount()
+	r.SetFromBenchmarkResult(m)
+	fmt.Printf("PB v3:  RedditAccountMarshal:\t%s\n", r.String())
+	r.SetFromBenchmarkResult(u)
+	fmt.Printf("PB v3:  RedditAccountUnmarshal:\t%s\n", r.String())
 }
