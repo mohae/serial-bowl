@@ -58,7 +58,7 @@ message MemInfo {
 
 message Message {
     bytes ID = 1;
-    fixed32 DestID = 2;
+    uint32 DestID = 2;
     int32 Type = 3;  // int8 in other formats
     int32 Kind = 4;  // int16 in other formats
     bytes Data = 5;
