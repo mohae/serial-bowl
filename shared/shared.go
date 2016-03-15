@@ -99,7 +99,7 @@ type Bench struct {
 	Results  map[Op]Result // A map of Result keyed by Op.
 }
 
-func (b Bench) Output() []string {
+func (b Bench) TXTOutput() []string {
 	var out []string
 	for _, v := range Ops {
 		r, ok := b.Results[v]
@@ -113,6 +113,20 @@ func (b Bench) Output() []string {
 
 func (b Bench) formatOutput(op Op, r Result) string {
 	return fmt.Sprintf("%s%s%s%s", column(maxProtoLen, b.Proto.String()), column(maxOpLen, op.String()), column(maxStructTypeLen, b.DataType.String()), r.String())
+}
+
+func (b Bench) CSVOutput() [][]string {
+	var out [][]string
+	for _, v := range Ops {
+		r, ok := b.Results[v]
+		if !ok {
+			continue
+		}
+		tmp := []string{b.Proto.String(), v.String(), b.DataType.String()}
+		tmp = append(tmp, r.CSV()...)
+		out = append(out, tmp)
+	}
+	return out
 }
 
 // Holds result information
@@ -151,6 +165,10 @@ func (r Result) AllocsOpString() string {
 
 func (r Result) String() string {
 	return fmt.Sprintf("%s%s%s%s", column(15, r.OpsString()), column(15, r.NsOpString()), column(18, r.BytesOpString()), column(16, r.AllocsOpString()))
+}
+
+func (r Result) CSV() []string {
+	return []string{fmt.Sprintf("%d", r.Ops), fmt.Sprintf("%d", r.NsOp), fmt.Sprintf("%d", r.BytesOp), fmt.Sprintf("%d", r.AllocsOp)}
 }
 
 func init() {
