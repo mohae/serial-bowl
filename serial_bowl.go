@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"encoding/csv"
 	"flag"
 	"fmt"
@@ -8,6 +9,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/mohae/csv2md"
 	"github.com/mohae/serial-bowl/fb"
 	"github.com/mohae/serial-bowl/jsn"
 	"github.com/mohae/serial-bowl/pb"
@@ -101,10 +103,14 @@ func main() {
 	case "txt":
 		txtOut(w, results)
 	case "csv":
-		fmt.Println("csv")
 		err := csvOut(w, results)
 		if err != nil {
 			fmt.Printf("error creating CSV output: %s\n", err)
+		}
+	case "md":
+		err := mdOut(w, results)
+		if err != nil {
+			fmt.Printf("error creating MarkDown output: %s\n", err)
 		}
 	default:
 		fmt.Printf("unknown output format: %q; defaulting to \"txt\"\n", format)
@@ -151,4 +157,17 @@ func csvOut(w io.Writer, benchResults []shared.Bench) error {
 		}
 	}
 	return nil
+}
+
+func mdOut(w io.Writer, benchResults []shared.Bench) error {
+	var buff bytes.Buffer
+	// first generate the csv
+	err := csvOut(&buff, benchResults)
+	if err != nil {
+		return fmt.Errorf("error while creating intermediate CSV: %s", err)
+	}
+	// then transmogrify to MD
+	t := csv2md.NewTransmogrifier(&buff, w)
+	t.SetFieldAlignment([]string{"l", "l", "l", "r", "r", "r", "r"})
+	return t.MDTable()
 }
