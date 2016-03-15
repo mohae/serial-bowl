@@ -49,6 +49,7 @@ const (
 	Flatbuffers
 	JSON
 	ProtobufV3
+	CapnProto2
 )
 
 // Protos holds a slice of Protocol types.
@@ -81,7 +82,7 @@ func init() {
 		}
 	}
 	maxOpLen += 5
-	Protos = []Proto{Flatbuffers, JSON, ProtobufV3}
+	Protos = []Proto{Flatbuffers, JSON, ProtobufV3, CapnProto2}
 	for _, v := range Protos {
 		if len(v.String()) > maxProtoLen {
 			maxProtoLen = len(v.String())

@@ -4,9 +4,9 @@ package shared
 
 import "fmt"
 
-const _Proto_name = "UnknownProtFlatbuffersJSONProtobufV3"
+const _Proto_name = "UnknownProtFlatbuffersJSONProtobufV3CapnProto2"
 
-var _Proto_index = [...]uint8{0, 11, 22, 26, 36}
+var _Proto_index = [...]uint8{0, 11, 22, 26, 36, 46}
 
 func (i Proto) String() string {
 	if i < 0 || i >= Proto(len(_Proto_index)-1) {
