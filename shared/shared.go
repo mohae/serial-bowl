@@ -3,10 +3,15 @@
 package shared
 
 import (
+	"bytes"
+	"encoding/csv"
 	"fmt"
+	"io"
 	"math/rand"
 	"testing"
 	"time"
+
+	"github.com/mohae/csv2md"
 )
 
 const alphanum = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
@@ -325,4 +330,45 @@ func column(w int, s string) string {
 		padding[i] = 0x20
 	}
 	return fmt.Sprintf("%s%s", string(padding), s)
+}
+
+func TXTOut(w io.Writer, benchResults []Bench) {
+	for _, v := range benchResults {
+		lines := v.TXTOutput()
+		for _, line := range lines {
+			fmt.Fprintln(w, line)
+		}
+	}
+}
+func CSVOut(w io.Writer, benchResults []Bench) error {
+	wr := csv.NewWriter(w)
+	defer wr.Flush()
+	// first write out the header
+	err := wr.Write([]string{"Protocol", "Operation", "Data Type", "Operations", "Ns/Op", "Bytes/Op", "Allocs/Op"})
+	if err != nil {
+		return err
+	}
+	for _, bench := range benchResults {
+		lines := bench.CSVOutput()
+		for _, line := range lines {
+			err := wr.Write(line)
+			if err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
+func MDOut(w io.Writer, benchResults []Bench) error {
+	var buff bytes.Buffer
+	// first generate the csv
+	err := CSVOut(&buff, benchResults)
+	if err != nil {
+		return fmt.Errorf("error while creating intermediate CSV: %s", err)
+	}
+	// then transmogrify to MD
+	t := csv2md.NewTransmogrifier(&buff, w)
+	t.SetFieldAlignment([]string{"l", "l", "l", "r", "r", "r", "r"})
+	return t.MDTable()
 }

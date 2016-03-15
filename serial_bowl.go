@@ -1,15 +1,12 @@
 package main
 
 import (
-	"bytes"
-	"encoding/csv"
 	"flag"
 	"fmt"
 	"io"
 	"os"
 	"time"
 
-	"github.com/mohae/csv2md"
 	"github.com/mohae/serial-bowl/fb"
 	"github.com/mohae/serial-bowl/jsn"
 	"github.com/mohae/serial-bowl/pb"
@@ -101,20 +98,20 @@ func main() {
 	// process the output
 	switch format {
 	case "txt":
-		txtOut(w, results)
+		shared.TXTOut(w, results)
 	case "csv":
-		err := csvOut(w, results)
+		err := shared.CSVOut(w, results)
 		if err != nil {
 			fmt.Printf("error creating CSV output: %s\n", err)
 		}
 	case "md":
-		err := mdOut(w, results)
+		err := shared.MDOut(w, results)
 		if err != nil {
 			fmt.Printf("error creating MarkDown output: %s\n", err)
 		}
 	default:
 		fmt.Printf("unknown output format: %q; defaulting to \"txt\"\n", format)
-		txtOut(w, results)
+		shared.TXTOut(w, results)
 	}
 }
 
@@ -129,45 +126,4 @@ func dot(done chan struct{}) {
 			fmt.Print(".")
 		}
 	}
-}
-
-func txtOut(w io.Writer, benchResults []shared.Bench) {
-	for _, v := range benchResults {
-		lines := v.TXTOutput()
-		for _, line := range lines {
-			fmt.Fprintln(w, line)
-		}
-	}
-}
-func csvOut(w io.Writer, benchResults []shared.Bench) error {
-	wr := csv.NewWriter(w)
-	defer wr.Flush()
-	// first write out the header
-	err := wr.Write([]string{"Protocol", "Operation", "Data Type", "Operations", "Ns/Op", "Bytes/Op", "Allocs/Op"})
-	if err != nil {
-		return err
-	}
-	for _, bench := range benchResults {
-		lines := bench.CSVOutput()
-		for _, line := range lines {
-			err := wr.Write(line)
-			if err != nil {
-				return err
-			}
-		}
-	}
-	return nil
-}
-
-func mdOut(w io.Writer, benchResults []shared.Bench) error {
-	var buff bytes.Buffer
-	// first generate the csv
-	err := csvOut(&buff, benchResults)
-	if err != nil {
-		return fmt.Errorf("error while creating intermediate CSV: %s", err)
-	}
-	// then transmogrify to MD
-	t := csv2md.NewTransmogrifier(&buff, w)
-	t.SetFieldAlignment([]string{"l", "l", "l", "r", "r", "r", "r"})
-	return t.MDTable()
 }
