@@ -14,12 +14,13 @@ var basicMemInfo [][]byte
 var message [][]byte
 
 // BenchBasicMemInfo runs the MemInfo benches for Marshal/Unmarshal.
-func BenchBasicMemInfo() (m, u testing.BenchmarkResult) {
+func BenchBasicMemInfo() shared.Bench {
+	bench := shared.Bench{Proto: shared.ProtobufV3, DataType: shared.BasicMemInfo, Results: map[shared.Op]shared.Result{}}
 	basicMemInfo = make([][]byte, shared.Len)
-	m = testing.Benchmark(basicMemInfoMarshal)
-	u = testing.Benchmark(basicMemInfoUnmarshal)
+	bench.Results[shared.Marshal] = shared.ResultFromBenchmarkResult(testing.Benchmark(basicMemInfoMarshal))
+	bench.Results[shared.Unmarshal] = shared.ResultFromBenchmarkResult(testing.Benchmark(basicMemInfoUnmarshal))
 	basicMemInfo = nil
-	return m, u
+	return bench
 }
 
 func basicMemInfoMarshal(b *testing.B) {
@@ -44,12 +45,13 @@ func basicMemInfoUnmarshal(b *testing.B) {
 }
 
 // BenchMemInfo runs the MemInfo benches for Marshal/Unmarshal.
-func BenchMemInfo() (m, u testing.BenchmarkResult) {
+func BenchMemInfo() shared.Bench {
+	bench := shared.Bench{Proto: shared.ProtobufV3, DataType: shared.MemInfo, Results: map[shared.Op]shared.Result{}}
 	memInfo = make([][]byte, shared.Len)
-	m = testing.Benchmark(memInfoMarshal)
-	u = testing.Benchmark(memInfoUnmarshal)
+	bench.Results[shared.Marshal] = shared.ResultFromBenchmarkResult(testing.Benchmark(memInfoMarshal))
+	bench.Results[shared.Unmarshal] = shared.ResultFromBenchmarkResult(testing.Benchmark(memInfoUnmarshal))
 	memInfo = nil
-	return m, u
+	return bench
 }
 
 func memInfoMarshal(b *testing.B) {
@@ -74,12 +76,13 @@ func memInfoUnmarshal(b *testing.B) {
 }
 
 // BenchMessage runs the Message benches for Marshal/Unmarshal.
-func BenchMessage() (m, u testing.BenchmarkResult) {
+func BenchMessage() shared.Bench {
+	bench := shared.Bench{Proto: shared.ProtobufV3, DataType: shared.Message, Results: map[shared.Op]shared.Result{}}
 	message = make([][]byte, shared.Len)
-	m = testing.Benchmark(messageMarshal)
-	u = testing.Benchmark(messageUnmarshal)
+	bench.Results[shared.Marshal] = shared.ResultFromBenchmarkResult(testing.Benchmark(messageMarshal))
+	bench.Results[shared.Unmarshal] = shared.ResultFromBenchmarkResult(testing.Benchmark(messageUnmarshal))
 	message = nil
-	return m, u
+	return bench
 }
 
 func messageMarshal(b *testing.B) {
@@ -104,12 +107,13 @@ func messageUnmarshal(b *testing.B) {
 }
 
 // BenchmarkRedditAccount runs the RedditAccount benches for Marshal/Unmarshal.
-func BenchRedditAccount() (m, u testing.BenchmarkResult) {
+func BenchRedditAccount() shared.Bench {
+	bench := shared.Bench{Proto: shared.ProtobufV3, DataType: shared.RedditAccount, Results: map[shared.Op]shared.Result{}}
 	redditAccount = make([][]byte, shared.Len)
-	m = testing.Benchmark(redditAccountMarshal)
-	u = testing.Benchmark(redditAccountUnmarshal)
+	bench.Results[shared.Marshal] = shared.ResultFromBenchmarkResult(testing.Benchmark(redditAccountMarshal))
+	bench.Results[shared.Unmarshal] = shared.ResultFromBenchmarkResult(testing.Benchmark(redditAccountUnmarshal))
 	redditAccount = nil
-	return m, u
+	return bench
 }
 
 func redditAccountMarshal(b *testing.B) {
@@ -134,7 +138,7 @@ func redditAccountUnmarshal(b *testing.B) {
 }
 
 // PrepareBasicMemInfoData generates the protobuf version of the data.
-func PrepareBasicMemInfoData(data []shared.BasicMemInfo) []BasicMemInfo {
+func PrepareBasicMemInfoData(data []shared.ShBasicMemInfo) []BasicMemInfo {
 	tmp := make([]BasicMemInfo, len(data))
 	for i := 0; i < len(data); i++ {
 		tmp[i] = BasicMemInfo{
@@ -152,7 +156,7 @@ func PrepareBasicMemInfoData(data []shared.BasicMemInfo) []BasicMemInfo {
 }
 
 // PrepareMemInfoData generates the protobuf version of the data.
-func PrepareMemInfoData(data []shared.MemInfo) []MemInfo {
+func PrepareMemInfoData(data []shared.ShMemInfo) []MemInfo {
 	tmp := make([]MemInfo, len(data))
 	for i := 0; i < len(data); i++ {
 		tmp[i] = MemInfo{
@@ -202,7 +206,7 @@ func PrepareMemInfoData(data []shared.MemInfo) []MemInfo {
 }
 
 // PrepareMessageData generates the protobuf version of the data.
-func PrepareMessageData(data []shared.Message) []Message {
+func PrepareMessageData(data []shared.ShMessage) []Message {
 	tmp := make([]Message, len(data))
 	for i := 0; i < len(data); i++ {
 		tmp[i] = Message{
@@ -217,7 +221,7 @@ func PrepareMessageData(data []shared.Message) []Message {
 }
 
 // PrepareRedditAccountData generates the protobuf version of the data.
-func PrepareRedditAccountData(data []shared.RedditAccount) []RedditAccount {
+func PrepareRedditAccountData(data []shared.ShRedditAccount) []RedditAccount {
 	tmp := make([]RedditAccount, len(data))
 	for i := 0; i < len(data); i++ {
 		tmp[i] = RedditAccount{

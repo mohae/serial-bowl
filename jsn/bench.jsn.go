@@ -13,12 +13,13 @@ var message [][]byte
 var redditAccount [][]byte
 
 // BenchBasicMemInfo runs the BasicMemInfo benches for Marshal/Unmarshal.
-func BenchBasicMemInfo() (m, u testing.BenchmarkResult) {
+func BenchBasicMemInfo() shared.Bench {
+	bench := shared.Bench{Proto: shared.JSON, DataType: shared.BasicMemInfo, Results: map[shared.Op]shared.Result{}}
 	basicMemInfo = make([][]byte, shared.Len)
-	m = testing.Benchmark(basicMemInfoMarshal)
-	u = testing.Benchmark(basicMemInfoUnmarshal)
+	bench.Results[shared.Marshal] = shared.ResultFromBenchmarkResult(testing.Benchmark(basicMemInfoMarshal))
+	bench.Results[shared.Unmarshal] = shared.ResultFromBenchmarkResult(testing.Benchmark(basicMemInfoUnmarshal))
 	basicMemInfo = nil
-	return m, u
+	return bench
 }
 
 func basicMemInfoMarshal(b *testing.B) {
@@ -30,7 +31,7 @@ func basicMemInfoMarshal(b *testing.B) {
 }
 
 func basicMemInfoUnmarshal(b *testing.B) {
-	var tmp shared.BasicMemInfo
+	var tmp shared.ShBasicMemInfo
 	for i := 0; i < b.N; i++ {
 		for j := 0; j < shared.Len; j++ {
 			json.Unmarshal(basicMemInfo[j], &tmp)
@@ -40,12 +41,13 @@ func basicMemInfoUnmarshal(b *testing.B) {
 }
 
 // BenchMemInfo runs the MemInfo benches for Marshal/Unmarshal.
-func BenchMemInfo() (m, u testing.BenchmarkResult) {
+func BenchMemInfo() shared.Bench {
+	bench := shared.Bench{Proto: shared.JSON, DataType: shared.MemInfo, Results: map[shared.Op]shared.Result{}}
 	memInfo = make([][]byte, shared.Len)
-	m = testing.Benchmark(memInfoMarshal)
-	u = testing.Benchmark(memInfoUnmarshal)
+	bench.Results[shared.Marshal] = shared.ResultFromBenchmarkResult(testing.Benchmark(memInfoMarshal))
+	bench.Results[shared.Unmarshal] = shared.ResultFromBenchmarkResult(testing.Benchmark(memInfoUnmarshal))
 	memInfo = nil
-	return m, u
+	return bench
 }
 
 func memInfoMarshal(b *testing.B) {
@@ -57,7 +59,7 @@ func memInfoMarshal(b *testing.B) {
 }
 
 func memInfoUnmarshal(b *testing.B) {
-	var tmp shared.MemInfo
+	var tmp shared.ShMemInfo
 	for i := 0; i < b.N; i++ {
 		for j := 0; j < shared.Len; j++ {
 			json.Unmarshal(memInfo[j], &tmp)
@@ -67,12 +69,13 @@ func memInfoUnmarshal(b *testing.B) {
 }
 
 // BenchMessage runs the MemInfo benches for Marshal/Unmarshal.
-func BenchMessage() (m, u testing.BenchmarkResult) {
+func BenchMessage() shared.Bench {
+	bench := shared.Bench{Proto: shared.JSON, DataType: shared.Message, Results: map[shared.Op]shared.Result{}}
 	message = make([][]byte, shared.Len)
-	m = testing.Benchmark(messageMarshal)
-	u = testing.Benchmark(messageUnmarshal)
+	bench.Results[shared.Marshal] = shared.ResultFromBenchmarkResult(testing.Benchmark(messageMarshal))
+	bench.Results[shared.Unmarshal] = shared.ResultFromBenchmarkResult(testing.Benchmark(messageUnmarshal))
 	message = nil
-	return m, u
+	return bench
 }
 
 func messageMarshal(b *testing.B) {
@@ -84,7 +87,7 @@ func messageMarshal(b *testing.B) {
 }
 
 func messageUnmarshal(b *testing.B) {
-	var tmp shared.Message
+	var tmp shared.ShMessage
 	for i := 0; i < b.N; i++ {
 		for j := 0; j < shared.Len; j++ {
 			json.Unmarshal(message[j], &tmp)
@@ -94,12 +97,13 @@ func messageUnmarshal(b *testing.B) {
 }
 
 // BenchRedditAccount runs the MemInfo benches for Marshal/Unmarshal.
-func BenchRedditAccount() (m, u testing.BenchmarkResult) {
+func BenchRedditAccount() shared.Bench {
+	bench := shared.Bench{Proto: shared.JSON, DataType: shared.RedditAccount, Results: map[shared.Op]shared.Result{}}
 	redditAccount = make([][]byte, shared.Len)
-	m = testing.Benchmark(redditAccountMarshal)
-	u = testing.Benchmark(redditAccountUnmarshal)
+	bench.Results[shared.Marshal] = shared.ResultFromBenchmarkResult(testing.Benchmark(redditAccountMarshal))
+	bench.Results[shared.Unmarshal] = shared.ResultFromBenchmarkResult(testing.Benchmark(redditAccountUnmarshal))
 	redditAccount = nil
-	return m, u
+	return bench
 }
 
 func redditAccountMarshal(b *testing.B) {
@@ -111,7 +115,7 @@ func redditAccountMarshal(b *testing.B) {
 }
 
 func redditAccountUnmarshal(b *testing.B) {
-	var tmp shared.RedditAccount
+	var tmp shared.ShRedditAccount
 	for i := 0; i < b.N; i++ {
 		for j := 0; j < shared.Len; j++ {
 			json.Unmarshal(redditAccount[j], &tmp)

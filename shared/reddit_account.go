@@ -1,6 +1,6 @@
 package shared
 
-type RedditAccount struct {
+type ShRedditAccount struct {
 	ID   string      `json:"id"`
 	Name string      `json:"name"`
 	Kind string      `json:"kind"`

@@ -17,25 +17,120 @@ var Len = 1000
 
 // Data for the benchmarks.  All benchmarks operate off of the same set of
 // randomly generated data.
-var BasicMemInfoData []BasicMemInfo
-var MemInfoData []MemInfo
-var MessageData []Message
-var RedditAccountData []RedditAccount
+var BasicMemInfoData []ShBasicMemInfo
+var MemInfoData []ShMemInfo
+var MessageData []ShMessage
+var RedditAccountData []ShRedditAccount
 
-type Result struct {
-	Ops      int64
-	NsOp     int64
-	MBSec    float64
-	BytesOp  int64
-	AllocsOp int64
+//go:generate stringer -type=Op
+type Op int
+
+const (
+	Marshal Op = iota
+	Unmarshal
+	Serialize
+	Deserialize
+)
+
+// Ops holds a slice of Op values.  This allows consistency in ordering of
+// output from Bench.Results.
+var Ops []Op
+
+//go:generate stringer -type=Proto
+type Proto int
+
+const (
+	UnknownProt Proto = iota
+	Flatbuffers
+	JSON
+	ProtobufV3
+)
+
+// Protos holds a slice of Protocol types.
+var Protos []Proto
+
+//go:generate stringer -type=StructType
+type StructType int
+
+const (
+	UnknownStruct StructType = iota
+	BasicMemInfo
+	MemInfo
+	Message
+	RedditAccount
+)
+
+// StructTypes holds a slice of StructTypes.
+var StructTypes []StructType
+
+// Max Length of various types (for formatting purposes)
+var maxOpLen int
+var maxProtoLen int
+var maxStructTypeLen int
+
+func init() {
+	Ops = []Op{Marshal, Unmarshal, Serialize, Deserialize}
+	for _, v := range Ops {
+		if len(v.String()) > maxOpLen {
+			maxOpLen = len(v.String())
+		}
+	}
+	maxOpLen += 5
+	Protos = []Proto{Flatbuffers, JSON, ProtobufV3}
+	for _, v := range Protos {
+		if len(v.String()) > maxProtoLen {
+			maxProtoLen = len(v.String())
+		}
+	}
+	maxProtoLen += 5
+	StructTypes = []StructType{BasicMemInfo, MemInfo, Message, RedditAccount}
+	for _, v := range StructTypes {
+		if len(v.String()) > maxStructTypeLen {
+			maxStructTypeLen = len(v.String())
+		}
+	}
+	maxStructTypeLen += 5
 }
 
-func (r *Result) SetFromBenchmarkResult(br testing.BenchmarkResult) {
+// Bench holds information about a serialization protocol's benchmark.
+type Bench struct {
+	Proto    Proto         // the type of protocol buffer
+	DataType StructType    // the struct being benched
+	Results  map[Op]Result // A map of Result keyed by Op.
+}
+
+func (b Bench) Output() []string {
+	var out []string
+	for _, v := range Ops {
+		r, ok := b.Results[v]
+		if !ok {
+			continue
+		}
+		out = append(out, b.formatOutput(v, r))
+	}
+	return out
+}
+
+func (b Bench) formatOutput(op Op, r Result) string {
+	return fmt.Sprintf("%s%s%s%s", column(maxProtoLen, b.Proto.String()), column(maxOpLen, op.String()), column(maxStructTypeLen, b.DataType.String()), r.String())
+}
+
+// Holds result information
+type Result struct {
+	Ops      int64 // the number of operations performed
+	NsOp     int64 // The amount of time, in Nanoseconds, per Op.
+	BytesOp  int64 // The number of bytes allocated per Op.
+	AllocsOp int64 // The number of Allocations per Op.
+}
+
+// ResultFromBenchmarkResult creates a Result{} from a testing.BenchmarkResult.
+func ResultFromBenchmarkResult(br testing.BenchmarkResult) Result {
+	var r Result
 	r.Ops = int64(br.N) * int64(Len)
 	r.NsOp = br.T.Nanoseconds() / r.Ops
-	r.MBSec = (float64(br.Bytes) * float64(r.Ops) / 1e6) / br.T.Seconds()
 	r.BytesOp = int64(br.MemBytes) / r.Ops
 	r.AllocsOp = int64(br.MemAllocs) / r.Ops
+	return r
 }
 
 func (r Result) OpsString() string {
@@ -44,10 +139,6 @@ func (r Result) OpsString() string {
 
 func (r Result) NsOpString() string {
 	return fmt.Sprintf("%d ns/Op", r.NsOp)
-}
-
-func (r Result) MBSecString() string {
-	return fmt.Sprintf("%9.2f MB/s", r.MBSec)
 }
 
 func (r Result) BytesOpString() string {
@@ -77,9 +168,9 @@ func GenData() {
 // GenBasicMemInfoData generates the random data for the BasicMemInfo struct.
 // The resulting slice of structs will have l elements.
 func GenBasicMemInfoData(l int) {
-	BasicMemInfoData = make([]BasicMemInfo, l)
+	BasicMemInfoData = make([]ShBasicMemInfo, l)
 	for i := 0; i < l; i++ {
-		BasicMemInfoData[i] = BasicMemInfo{
+		BasicMemInfoData[i] = ShBasicMemInfo{
 			MemTotal:     rand.Intn(maxInt64),
 			MemFree:      rand.Intn(maxInt64),
 			MemAvailable: rand.Intn(maxInt64),
@@ -95,9 +186,9 @@ func GenBasicMemInfoData(l int) {
 // GenMemInfoData generates the random data for the BasicMemInfo struct.  The
 // resulting slice of structs will have l elements.
 func GenMemInfoData(l int) {
-	MemInfoData = make([]MemInfo, l)
+	MemInfoData = make([]ShMemInfo, l)
 	for i := 0; i < l; i++ {
-		MemInfoData[i] = MemInfo{
+		MemInfoData[i] = ShMemInfo{
 			MemTotal:          rand.Intn(maxInt64),
 			MemFree:           rand.Intn(maxInt64),
 			MemAvailable:      rand.Intn(maxInt64),
@@ -146,11 +237,11 @@ func GenMemInfoData(l int) {
 // element being n bytes in length.  The resulting slice of structs will have
 // l elements.
 func GenMessageData(n, l int) {
-	MessageData = make([]Message, l)
+	MessageData = make([]ShMessage, l)
 	for i := 0; i < l; i++ {
 		id := RandBytes(8)
 		data := RandBytes(n)
-		MessageData[i] = Message{
+		MessageData[i] = ShMessage{
 			ID:     id,
 			DestID: rand.Uint32(),
 			Type:   int8(rand.Intn(1<<7 - 1)),
@@ -161,9 +252,9 @@ func GenMessageData(n, l int) {
 }
 
 func GenRedditAccountData(l int) {
-	RedditAccountData = make([]RedditAccount, l)
+	RedditAccountData = make([]ShRedditAccount, l)
 	for i := 0; i < l; i++ {
-		RedditAccountData[i] = RedditAccount{
+		RedditAccountData[i] = ShRedditAccount{
 			ID:   RandString(20),
 			Name: RandString(rand.Intn(30)),
 			Kind: RandString(5),

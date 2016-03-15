@@ -1,6 +1,6 @@
 package shared
 
-type MemInfo struct {
+type ShMemInfo struct {
 	MemTotal          int `json:"mem_total"`
 	MemFree           int `json:"mem_free"`
 	MemAvailable      int `json:"mem_available"`
@@ -43,7 +43,7 @@ type MemInfo struct {
 	DirectMap2M       int `json:"direct_map_2m"`
 }
 
-type BasicMemInfo struct {
+type ShBasicMemInfo struct {
 	MemTotal     int `json:""`
 	MemFree      int `json:""`
 	MemAvailable int `json:""`

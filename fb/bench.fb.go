@@ -15,12 +15,13 @@ var redditAccount [][]byte
 var bldr = flatbuffers.NewBuilder(0)
 
 // BenchBasicMemInfo runs the BasicMemInfo benches for Serialize/Deserialize.
-func BenchBasicMemInfo() (m, u testing.BenchmarkResult) {
+func BenchBasicMemInfo() shared.Bench {
+	bench := shared.Bench{Proto: shared.Flatbuffers, DataType: shared.BasicMemInfo, Results: map[shared.Op]shared.Result{}}
 	basicMemInfo = make([][]byte, shared.Len)
-	m = testing.Benchmark(basicMemInfoSerialize)
-	u = testing.Benchmark(basicMemInfoDeserialize)
+	bench.Results[shared.Serialize] = shared.ResultFromBenchmarkResult(testing.Benchmark(basicMemInfoSerialize))
+	bench.Results[shared.Deserialize] = shared.ResultFromBenchmarkResult(testing.Benchmark(basicMemInfoDeserialize))
 	basicMemInfo = nil
-	return m, u
+	return bench
 }
 
 func basicMemInfoSerialize(b *testing.B) {
@@ -41,7 +42,7 @@ func basicMemInfoDeserialize(b *testing.B) {
 	_ = tmp
 }
 
-func serializeBasicMemInfo(sh shared.BasicMemInfo) []byte {
+func serializeBasicMemInfo(sh shared.ShBasicMemInfo) []byte {
 	bldr.Reset()
 	BasicMemInfoStart(bldr)
 	BasicMemInfoAddMemTotal(bldr, int64(sh.MemTotal))
@@ -57,12 +58,13 @@ func serializeBasicMemInfo(sh shared.BasicMemInfo) []byte {
 }
 
 // BenchMemInfo runs the MemInfo benches for Serialize/Deserialize.
-func BenchMemInfo() (m, u testing.BenchmarkResult) {
+func BenchMemInfo() shared.Bench {
+	bench := shared.Bench{Proto: shared.Flatbuffers, DataType: shared.MemInfo, Results: map[shared.Op]shared.Result{}}
 	memInfo = make([][]byte, shared.Len)
-	m = testing.Benchmark(memInfoSerialize)
-	u = testing.Benchmark(memInfoDeserialize)
+	bench.Results[shared.Serialize] = shared.ResultFromBenchmarkResult(testing.Benchmark(memInfoSerialize))
+	bench.Results[shared.Deserialize] = shared.ResultFromBenchmarkResult(testing.Benchmark(memInfoDeserialize))
 	memInfo = nil
-	return m, u
+	return bench
 }
 
 func memInfoSerialize(b *testing.B) {
@@ -83,7 +85,7 @@ func memInfoDeserialize(b *testing.B) {
 	_ = tmp
 }
 
-func serializeMemInfo(sh shared.MemInfo) []byte {
+func serializeMemInfo(sh shared.ShMemInfo) []byte {
 	bldr.Reset()
 	MemInfoStart(bldr)
 	MemInfoAddMemTotal(bldr, int64(sh.MemTotal))
@@ -131,12 +133,13 @@ func serializeMemInfo(sh shared.MemInfo) []byte {
 }
 
 // BenchMessage runs the Message benches for Serialize/Deserialize.
-func BenchMessage() (m, u testing.BenchmarkResult) {
+func BenchMessage() shared.Bench {
+	bench := shared.Bench{Proto: shared.Flatbuffers, DataType: shared.Message, Results: map[shared.Op]shared.Result{}}
 	message = make([][]byte, shared.Len)
-	m = testing.Benchmark(messageSerialize)
-	u = testing.Benchmark(messageDeserialize)
+	bench.Results[shared.Serialize] = shared.ResultFromBenchmarkResult(testing.Benchmark(messageSerialize))
+	bench.Results[shared.Deserialize] = shared.ResultFromBenchmarkResult(testing.Benchmark(messageDeserialize))
 	message = nil
-	return m, u
+	return bench
 }
 
 func messageSerialize(b *testing.B) {
@@ -157,7 +160,7 @@ func messageDeserialize(b *testing.B) {
 	_ = tmp
 }
 
-func serializeMessage(sh shared.Message) []byte {
+func serializeMessage(sh shared.ShMessage) []byte {
 	bldr.Reset()
 	id := bldr.CreateByteVector(sh.ID)
 	data := bldr.CreateByteVector(sh.Data)
@@ -171,12 +174,13 @@ func serializeMessage(sh shared.Message) []byte {
 }
 
 // BenchRedditAccount runs the RedditAccount benches for Serialize/Deserialize.
-func BenchRedditAccount() (m, u testing.BenchmarkResult) {
+func BenchRedditAccount() shared.Bench {
+	bench := shared.Bench{Proto: shared.Flatbuffers, DataType: shared.RedditAccount, Results: map[shared.Op]shared.Result{}}
 	redditAccount = make([][]byte, shared.Len)
-	m = testing.Benchmark(redditAccountSerialize)
-	u = testing.Benchmark(redditAccountDeserialize)
+	bench.Results[shared.Serialize] = shared.ResultFromBenchmarkResult(testing.Benchmark(redditAccountSerialize))
+	bench.Results[shared.Deserialize] = shared.ResultFromBenchmarkResult(testing.Benchmark(redditAccountDeserialize))
 	redditAccount = nil
-	return m, u
+	return bench
 }
 
 func redditAccountSerialize(b *testing.B) {
@@ -197,7 +201,7 @@ func redditAccountDeserialize(b *testing.B) {
 	_ = tmp
 }
 
-func serializeRedditAccount(sh shared.RedditAccount) []byte {
+func serializeRedditAccount(sh shared.ShRedditAccount) []byte {
 	bldr.Reset()
 	rid := bldr.CreateString(sh.ID)
 	rname := bldr.CreateString(sh.Name)
