@@ -1,6 +1,7 @@
 package fb
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/google/flatbuffers/go"
@@ -16,7 +17,7 @@ var bldr = flatbuffers.NewBuilder(0)
 
 // BenchBasicMemInfo runs the BasicMemInfo benches for Serialize/Deserialize.
 func BenchBasicMemInfo() shared.Bench {
-	bench := shared.Bench{Proto: shared.Flatbuffers, DataType: shared.BasicMemInfo, Results: map[shared.Op]shared.Result{}}
+	bench := shared.Bench{Proto: shared.Flatbuffers, StructString: shared.BasicMemInfo.String(), Results: map[shared.Op]shared.Result{}}
 	basicMemInfo = make([][]byte, shared.Len)
 	bench.Results[shared.Serialize] = shared.ResultFromBenchmarkResult(testing.Benchmark(basicMemInfoSerialize))
 	bench.Results[shared.Deserialize] = shared.ResultFromBenchmarkResult(testing.Benchmark(basicMemInfoDeserialize))
@@ -59,7 +60,7 @@ func serializeBasicMemInfo(sh shared.ShBasicMemInfo) []byte {
 
 // BenchMemInfo runs the MemInfo benches for Serialize/Deserialize.
 func BenchMemInfo() shared.Bench {
-	bench := shared.Bench{Proto: shared.Flatbuffers, DataType: shared.MemInfo, Results: map[shared.Op]shared.Result{}}
+	bench := shared.Bench{Proto: shared.Flatbuffers, StructString: shared.MemInfo.String(), Results: map[shared.Op]shared.Result{}}
 	memInfo = make([][]byte, shared.Len)
 	bench.Results[shared.Serialize] = shared.ResultFromBenchmarkResult(testing.Benchmark(memInfoSerialize))
 	bench.Results[shared.Deserialize] = shared.ResultFromBenchmarkResult(testing.Benchmark(memInfoDeserialize))
@@ -133,8 +134,8 @@ func serializeMemInfo(sh shared.ShMemInfo) []byte {
 }
 
 // BenchMessage runs the Message benches for Serialize/Deserialize.
-func BenchMessage() shared.Bench {
-	bench := shared.Bench{Proto: shared.Flatbuffers, DataType: shared.Message, Results: map[shared.Op]shared.Result{}}
+func BenchMessage(l int) shared.Bench {
+	bench := shared.Bench{Proto: shared.Flatbuffers, StructString: fmt.Sprintf("%s %dB", shared.Message.String(), l), Results: map[shared.Op]shared.Result{}}
 	message = make([][]byte, shared.Len)
 	bench.Results[shared.Serialize] = shared.ResultFromBenchmarkResult(testing.Benchmark(messageSerialize))
 	bench.Results[shared.Deserialize] = shared.ResultFromBenchmarkResult(testing.Benchmark(messageDeserialize))
@@ -175,7 +176,7 @@ func serializeMessage(sh shared.ShMessage) []byte {
 
 // BenchRedditAccount runs the RedditAccount benches for Serialize/Deserialize.
 func BenchRedditAccount() shared.Bench {
-	bench := shared.Bench{Proto: shared.Flatbuffers, DataType: shared.RedditAccount, Results: map[shared.Op]shared.Result{}}
+	bench := shared.Bench{Proto: shared.Flatbuffers, StructString: shared.RedditAccount.String(), Results: map[shared.Op]shared.Result{}}
 	redditAccount = make([][]byte, shared.Len)
 	bench.Results[shared.Serialize] = shared.ResultFromBenchmarkResult(testing.Benchmark(redditAccountSerialize))
 	bench.Results[shared.Deserialize] = shared.ResultFromBenchmarkResult(testing.Benchmark(redditAccountDeserialize))

@@ -99,9 +99,9 @@ func init() {
 
 // Bench holds information about a serialization protocol's benchmark.
 type Bench struct {
-	Proto    Proto         // the type of protocol buffer
-	DataType StructType    // the struct being benched
-	Results  map[Op]Result // A map of Result keyed by Op.
+	Proto        Proto         // the type of protocol buffer
+	StructString string        // the struct being benched
+	Results      map[Op]Result // A map of Result keyed by Op.
 }
 
 func (b Bench) TXTOutput() []string {
@@ -117,7 +117,7 @@ func (b Bench) TXTOutput() []string {
 }
 
 func (b Bench) formatOutput(op Op, r Result) string {
-	return fmt.Sprintf("%s%s%s%s", column(maxProtoLen, b.Proto.String()), column(maxOpLen, op.String()), column(maxStructTypeLen, b.DataType.String()), r.String())
+	return fmt.Sprintf("%s%s%s%s", column(maxProtoLen, b.Proto.String()), column(maxOpLen, op.String()), column(maxStructTypeLen, b.StructString), r.String())
 }
 
 func (b Bench) CSVOutput() [][]string {
@@ -127,7 +127,7 @@ func (b Bench) CSVOutput() [][]string {
 		if !ok {
 			continue
 		}
-		tmp := []string{b.Proto.String(), v.String(), b.DataType.String()}
+		tmp := []string{b.Proto.String(), v.String(), b.StructString}
 		tmp = append(tmp, r.CSV()...)
 		out = append(out, tmp)
 	}

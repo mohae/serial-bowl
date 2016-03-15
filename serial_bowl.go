@@ -58,13 +58,13 @@ func main() {
 	for _, v := range dataLen {
 		shared.GenMessageData(v, shared.Len)
 		// Flatbuffers
-		b = fb.BenchMessage()
+		b = fb.BenchMessage(v)
 		results = append(results, b)
 		// JSON Marshal
-		b = jsn.BenchMessage()
+		b = jsn.BenchMessage(v)
 		results = append(results, b)
 		// PBv3
-		b = pb.BenchMessage()
+		b = pb.BenchMessage(v)
 		results = append(results, b)
 	}
 
