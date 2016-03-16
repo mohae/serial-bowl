@@ -61,7 +61,7 @@ func main() {
 	results = append(results, b)
 
 	// Message Data
-	dataLen := []int{16, 256, 1024, 4096}
+	dataLen := []int{16, 64, 256, 1024, 2048, 4096}
 	for _, v := range dataLen {
 		shared.GenMessageData(v, shared.Len)
 		// CapnProto2
