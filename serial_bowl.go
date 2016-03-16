@@ -7,6 +7,7 @@ import (
 	"os"
 	"time"
 
+	pcg "github.com/dgryski/go-pcgr"
 	"github.com/mohae/serial-bowl/capnp"
 	"github.com/mohae/serial-bowl/fb"
 	"github.com/mohae/serial-bowl/jsn"
@@ -63,7 +64,9 @@ func main() {
 	// Message Data
 	dataLen := []int{16, 64, 256, 1024, 2048, 4096}
 	for _, v := range dataLen {
-		shared.GenMessageData(v, shared.Len)
+		var rnd pcg.Rand
+		rnd.Seed(shared.SeedVal())
+		shared.GenMessageData(v, shared.Len, rnd)
 		// CapnProto2
 		// TODO: 4096 Bytes of data causes the following error:
 		// capnp: NewMessage called on arena with data

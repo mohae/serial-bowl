@@ -4,13 +4,15 @@ package shared
 
 import (
 	"bytes"
+	crand "crypto/rand"
 	"encoding/csv"
 	"fmt"
 	"io"
+	"math/big"
 	"math/rand"
 	"testing"
-	"time"
 
+	pcg "github.com/dgryski/go-pcgr"
 	"github.com/mohae/csv2md"
 )
 
@@ -176,21 +178,19 @@ func (r Result) CSV() []string {
 	return []string{fmt.Sprintf("%d", r.Ops), fmt.Sprintf("%d", r.NsOp), fmt.Sprintf("%d", r.BytesOp), fmt.Sprintf("%d", r.AllocsOp)}
 }
 
-func init() {
-	rand.Seed(time.Now().UnixNano())
-}
-
 func GenData() {
-	GenBasicMemInfoData(Len)
-	GenMemInfoData(Len)
-	GenRedditAccountData(Len)
+	var rnd pcg.Rand
+	rnd.Seed(SeedVal())
+	GenBasicMemInfoData(Len, rnd)
+	GenMemInfoData(Len, rnd)
+	GenRedditAccountData(Len, rnd)
 	// Message data is generated at start of each message data length test
 	// As each block of message data tests use a different message.Data length.
 }
 
 // GenBasicMemInfoData generates the random data for the BasicMemInfo struct.
 // The resulting slice of structs will have l elements.
-func GenBasicMemInfoData(l int) {
+func GenBasicMemInfoData(l int, rand pcg.Rand) {
 	BasicMemInfoData = make([]ShBasicMemInfo, l)
 	for i := 0; i < l; i++ {
 		BasicMemInfoData[i] = ShBasicMemInfo{
@@ -208,7 +208,7 @@ func GenBasicMemInfoData(l int) {
 
 // GenMemInfoData generates the random data for the BasicMemInfo struct.  The
 // resulting slice of structs will have l elements.
-func GenMemInfoData(l int) {
+func GenMemInfoData(l int, rand pcg.Rand) {
 	MemInfoData = make([]ShMemInfo, l)
 	for i := 0; i < l; i++ {
 		MemInfoData[i] = ShMemInfo{
@@ -259,27 +259,27 @@ func GenMemInfoData(l int) {
 // GenMessageData generates the random data for the Message struct whose data
 // element being n bytes in length.  The resulting slice of structs will have
 // l elements.
-func GenMessageData(n, l int) {
+func GenMessageData(n, l int, rand pcg.Rand) {
 	MessageData = make([]ShMessage, l)
 	for i := 0; i < l; i++ {
 		id := RandBytes(8)
 		data := RandBytes(n)
 		MessageData[i] = ShMessage{
 			ID:     id,
-			DestID: rand.Uint32(),
-			Type:   int8(rand.Intn(1<<7 - 1)),
-			Kind:   int16(rand.Intn(1<<15 - 1)),
+			DestID: rand.Next(),
+			Type:   int8(rand.Bound(1<<7 - 1)),
+			Kind:   int16(rand.Bound(1<<15 - 1)),
 			Data:   data,
 		}
 	}
 }
 
-func GenRedditAccountData(l int) {
+func GenRedditAccountData(l int, rand pcg.Rand) {
 	RedditAccountData = make([]ShRedditAccount, l)
 	for i := 0; i < l; i++ {
 		RedditAccountData[i] = ShRedditAccount{
 			ID:   RandString(20),
-			Name: RandString(rand.Intn(30)),
+			Name: RandString(int(rand.Bound(30))),
 			Kind: RandString(5),
 			Data: AccountData{
 				CommentKarma: rand.Int63(),
@@ -291,7 +291,7 @@ func GenRedditAccountData(l int) {
 				IsGold:       RandBool(),
 				LinkKarma:    rand.Int63(),
 				ModHash:      RandString(88),
-				Name:         RandString(rand.Intn(30)),
+				Name:         RandString(int(rand.Bound(30))),
 				Over18:       RandBool(),
 			},
 		}
@@ -371,4 +371,14 @@ func MDOut(w io.Writer, benchResults []Bench) error {
 	t := csv2md.NewTransmogrifier(&buff, w)
 	t.SetFieldAlignment([]string{"l", "l", "l", "r", "r", "r", "r"})
 	return t.MDTable()
+}
+
+// seedVal gets a random int64 to use for a seed value
+func SeedVal() int64 {
+	bi := big.NewInt(1<<63 - 1)
+	r, err := crand.Int(crand.Reader, bi)
+	if err != nil {
+		panic(fmt.Sprintf("entropy read error: %s\n", err))
+	}
+	return (r.Int64())
 }
