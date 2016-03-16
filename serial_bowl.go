@@ -7,6 +7,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/mohae/serial-bowl/capnp"
 	"github.com/mohae/serial-bowl/fb"
 	"github.com/mohae/serial-bowl/jsn"
 	"github.com/mohae/serial-bowl/pb"
@@ -33,8 +34,11 @@ func main() {
 	shared.GenData()
 	var results []shared.Bench
 	// BasicMemInfo
+	// CapnProto2
+	b := capnp.BenchBasicMemInfo()
+	results = append(results, b)
 	// Flatbuffers
-	b := fb.BenchBasicMemInfo()
+	b = fb.BenchBasicMemInfo()
 	results = append(results, b)
 	// JSON
 	b = jsn.BenchBasicMemInfo()
@@ -43,6 +47,9 @@ func main() {
 	b = pb.BenchBasicMemInfo()
 	results = append(results, b)
 	// MemInfo
+	// CapnProto2
+	b = capnp.BenchMemInfo()
+	results = append(results, b)
 	// Flatbuffers
 	b = fb.BenchMemInfo()
 	results = append(results, b)
@@ -57,6 +64,16 @@ func main() {
 	dataLen := []int{16, 256, 1024, 4096}
 	for _, v := range dataLen {
 		shared.GenMessageData(v, shared.Len)
+		// CapnProto2
+		// TODO: 4096 Bytes of data causes the following error:
+		// capnp: NewMessage called on arena with data
+		// figure out how to resolve.
+		if v == 4096 {
+			goto skipCap
+		}
+		b = capnp.BenchMessage(v)
+		results = append(results, b)
+	skipCap:
 		// Flatbuffers
 		b = fb.BenchMessage(v)
 		results = append(results, b)
@@ -69,6 +86,9 @@ func main() {
 	}
 
 	// Reddit Account
+	// CapnProto2
+	b = capnp.BenchRedditAccount()
+	results = append(results, b)
 	// Flatbuffers
 	b = fb.BenchRedditAccount()
 	results = append(results, b)
@@ -77,6 +97,7 @@ func main() {
 	results = append(results, b)
 	// PB v3
 	b = pb.BenchRedditAccount()
+
 	results = append(results, b)
 	close(done)
 	fmt.Println("")
