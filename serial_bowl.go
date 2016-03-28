@@ -65,6 +65,12 @@ func main() {
 	// JSON
 	b = jsn.BenchMemInfo()
 	results = append(results, b)
+	// FFJSON
+	b = ffjson.BenchMemInfo()
+	results = append(results, b)
+	// FFJSON Buf
+	b = ffjsonbuf.BenchMemInfo()
+	results = append(results, b)
 	// PBv3
 	b = pb.BenchMemInfo()
 	results = append(results, b)

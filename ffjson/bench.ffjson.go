@@ -72,8 +72,8 @@ func memInfoMarshal(b *testing.B) {
 func memInfoUnmarshal(b *testing.B) {
 	var tmp ShMemInfo
 	for i := 0; i < b.N; i++ {
-		for j := 0; j < len(basicMemInfo); j++ {
-			_ = tmp.UnmarshalJSON(basicMemInfo[j])
+		for j := 0; j < len(memInfo); j++ {
+			_ = tmp.UnmarshalJSON(memInfo[j])
 		}
 	}
 	_ = tmp

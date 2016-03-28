@@ -327,6 +327,9 @@ func RandBool() bool {
 // column returns a right justified string of width w.
 func column(w int, s string) string {
 	pad := w - len(s)
+	if pad < 0 {
+		pad = 2
+	}
 	padding := make([]byte, pad)
 	for i := 0; i < pad; i++ {
 		padding[i] = 0x20
