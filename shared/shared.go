@@ -50,6 +50,7 @@ const (
 	Flatbuffers
 	JSON
 	FFJSON
+	FFJSONBuffer
 	ProtobufV3
 	CapnProto2
 )

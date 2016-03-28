@@ -11,6 +11,7 @@ import (
 	"github.com/mohae/serial-bowl/capnp"
 	"github.com/mohae/serial-bowl/fb"
 	"github.com/mohae/serial-bowl/ffjson"
+	"github.com/mohae/serial-bowl/ffjsonbuf"
 	"github.com/mohae/serial-bowl/jsn"
 	"github.com/mohae/serial-bowl/pb"
 	"github.com/mohae/serial-bowl/shared"
@@ -47,6 +48,9 @@ func main() {
 	results = append(results, b)
 	// FFJSON
 	b = ffjson.BenchBasicMemInfo()
+	results = append(results, b)
+	// FFJSON Buf
+	b = ffjsonbuf.BenchBasicMemInfo()
 	results = append(results, b)
 	// PBv3
 	b = pb.BenchBasicMemInfo()
@@ -90,6 +94,9 @@ func main() {
 		// FFJSON
 		b = ffjson.BenchMessage(v)
 		results = append(results, b)
+		// FFJSONBuf
+		b = ffjsonbuf.BenchMessage(v)
+		results = append(results, b)
 		// PBv3
 		b = pb.BenchMessage(v)
 		results = append(results, b)
@@ -107,6 +114,9 @@ func main() {
 	results = append(results, b)
 	// FFJSON
 	b = ffjson.BenchRedditAccount()
+	results = append(results, b)
+	// FFJSONBuf
+	b = ffjsonbuf.BenchRedditAccount()
 	results = append(results, b)
 	// PB v3
 	b = pb.BenchRedditAccount()
@@ -150,6 +160,7 @@ func main() {
 }
 
 func dot(done chan struct{}) {
+	var i int
 	t := time.NewTicker(time.Second)
 	defer t.Stop()
 	for {
@@ -157,7 +168,11 @@ func dot(done chan struct{}) {
 		case <-done:
 			return
 		case <-t.C:
+			i++
 			fmt.Print(".")
+			if i%60 == 0 {
+				fmt.Print("\n")
+			}
 		}
 	}
 }
