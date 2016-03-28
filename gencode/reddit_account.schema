@@ -1,0 +1,20 @@
+struct RedditAccount {
+	ID   string
+	Name string
+	Kind string
+	Data AccountData
+}
+
+struct AccountData {
+	CommentKarma int64
+	HasMail      bool
+	HasModMail   bool
+	ID           string
+	InboxCount   int64
+	IsFriend     bool
+	IsGold       bool
+	LinkKarma    int64
+	ModHash      string
+	Name         string
+	Over18       bool
+}

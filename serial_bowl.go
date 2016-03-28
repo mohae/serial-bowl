@@ -12,6 +12,7 @@ import (
 	"github.com/mohae/serial-bowl/fb"
 	"github.com/mohae/serial-bowl/ffjson"
 	"github.com/mohae/serial-bowl/ffjsonbuf"
+	"github.com/mohae/serial-bowl/gencode"
 	"github.com/mohae/serial-bowl/jsn"
 	"github.com/mohae/serial-bowl/pb"
 	"github.com/mohae/serial-bowl/shared"
@@ -43,6 +44,9 @@ func main() {
 	// Flatbuffers
 	b = fb.BenchBasicMemInfo()
 	results = append(results, b)
+	// Gencode
+	b = gencode.BenchBasicMemInfo()
+	results = append(results, b)
 	// JSON
 	b = jsn.BenchBasicMemInfo()
 	results = append(results, b)
@@ -61,6 +65,9 @@ func main() {
 	results = append(results, b)
 	// Flatbuffers
 	b = fb.BenchMemInfo()
+	results = append(results, b)
+	// Gencode
+	b = gencode.BenchMemInfo()
 	results = append(results, b)
 	// JSON
 	b = jsn.BenchMemInfo()
@@ -94,6 +101,9 @@ func main() {
 		// Flatbuffers
 		b = fb.BenchMessage(v)
 		results = append(results, b)
+		// Gencode
+		b = gencode.BenchMessage(v)
+		results = append(results, b)
 		// JSON Marshal
 		b = jsn.BenchMessage(v)
 		results = append(results, b)
@@ -114,6 +124,9 @@ func main() {
 	results = append(results, b)
 	// Flatbuffers
 	b = fb.BenchRedditAccount()
+	results = append(results, b)
+	// Gencode
+	b = gencode.BenchRedditAccount()
 	results = append(results, b)
 	// JSON Marshal
 	b = jsn.BenchRedditAccount()

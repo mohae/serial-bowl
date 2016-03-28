@@ -48,6 +48,7 @@ type Proto int
 const (
 	UnknownProt Proto = iota
 	Flatbuffers
+	GenCode
 	JSON
 	FFJSON
 	FFJSONBuffer
