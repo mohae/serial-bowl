@@ -49,6 +49,7 @@ const (
 	UnknownProt Proto = iota
 	Flatbuffers
 	JSON
+	FFJSON
 	ProtobufV3
 	CapnProto2
 )

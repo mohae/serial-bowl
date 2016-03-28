@@ -10,6 +10,7 @@ import (
 	pcg "github.com/dgryski/go-pcgr"
 	"github.com/mohae/serial-bowl/capnp"
 	"github.com/mohae/serial-bowl/fb"
+	"github.com/mohae/serial-bowl/ffjson"
 	"github.com/mohae/serial-bowl/jsn"
 	"github.com/mohae/serial-bowl/pb"
 	"github.com/mohae/serial-bowl/shared"
@@ -43,6 +44,9 @@ func main() {
 	results = append(results, b)
 	// JSON
 	b = jsn.BenchBasicMemInfo()
+	results = append(results, b)
+	// FFJSON
+	b = ffjson.BenchBasicMemInfo()
 	results = append(results, b)
 	// PBv3
 	b = pb.BenchBasicMemInfo()
@@ -83,6 +87,9 @@ func main() {
 		// JSON Marshal
 		b = jsn.BenchMessage(v)
 		results = append(results, b)
+		// FFJSON
+		b = ffjson.BenchMessage(v)
+		results = append(results, b)
 		// PBv3
 		b = pb.BenchMessage(v)
 		results = append(results, b)
@@ -97,6 +104,9 @@ func main() {
 	results = append(results, b)
 	// JSON Marshal
 	b = jsn.BenchRedditAccount()
+	results = append(results, b)
+	// FFJSON
+	b = ffjson.BenchRedditAccount()
 	results = append(results, b)
 	// PB v3
 	b = pb.BenchRedditAccount()
