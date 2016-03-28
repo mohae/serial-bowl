@@ -44,12 +44,12 @@ type ShMemInfo struct {
 }
 
 type ShBasicMemInfo struct {
-	MemTotal     int64 `json:""`
-	MemFree      int64 `json:""`
-	MemAvailable int64 `json:""`
-	Buffers      int64 `json:""`
-	Cached       int64 `json:""`
-	SwapCached   int64 `json:""`
-	SwapTotal    int64 `json:""`
-	SwapFree     int64 `json:""`
+	MemTotal     int64 `json:"mem_total"`
+	MemFree      int64 `json:"mem_free"`
+	MemAvailable int64 `json:"mem_available"`
+	Buffers      int64 `json:"buffers"`
+	Cached       int64 `json:"cached"`
+	SwapCached   int64 `json:"swap_cached"`
+	SwapTotal    int64 `json:"swap_total"`
+	SwapFree     int64 `json:"swap_free"`
 }

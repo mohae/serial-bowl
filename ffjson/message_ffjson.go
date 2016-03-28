@@ -9,12 +9,11 @@ import (
 	"bytes"
 	"encoding/base64"
 	"fmt"
-	"reflect"
-
 	fflib "github.com/pquerna/ffjson/fflib/v1"
+	"reflect"
 )
 
-func (mj *ShMessage) MarshalJSON() ([]byte, error) {
+func (mj *Message) MarshalJSON() ([]byte, error) {
 	var buf fflib.Buffer
 	if mj == nil {
 		buf.WriteString("null")
@@ -26,7 +25,7 @@ func (mj *ShMessage) MarshalJSON() ([]byte, error) {
 	}
 	return buf.Bytes(), nil
 }
-func (mj *ShMessage) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
+func (mj *Message) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	if mj == nil {
 		buf.WriteString("null")
 		return nil
@@ -70,38 +69,38 @@ func (mj *ShMessage) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 }
 
 const (
-	ffj_t_ShMessagebase = iota
-	ffj_t_ShMessageno_such_key
+	ffj_t_Messagebase = iota
+	ffj_t_Messageno_such_key
 
-	ffj_t_ShMessage_ID
+	ffj_t_Message_ID
 
-	ffj_t_ShMessage_DestID
+	ffj_t_Message_DestID
 
-	ffj_t_ShMessage_Type
+	ffj_t_Message_Type
 
-	ffj_t_ShMessage_Kind
+	ffj_t_Message_Kind
 
-	ffj_t_ShMessage_Data
+	ffj_t_Message_Data
 )
 
-var ffj_key_ShMessage_ID = []byte("id")
+var ffj_key_Message_ID = []byte("id")
 
-var ffj_key_ShMessage_DestID = []byte("dest_id")
+var ffj_key_Message_DestID = []byte("dest_id")
 
-var ffj_key_ShMessage_Type = []byte("type")
+var ffj_key_Message_Type = []byte("type")
 
-var ffj_key_ShMessage_Kind = []byte("kind")
+var ffj_key_Message_Kind = []byte("kind")
 
-var ffj_key_ShMessage_Data = []byte("data")
+var ffj_key_Message_Data = []byte("data")
 
-func (uj *ShMessage) UnmarshalJSON(input []byte) error {
+func (uj *Message) UnmarshalJSON(input []byte) error {
 	fs := fflib.NewFFLexer(input)
 	return uj.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
 }
 
-func (uj *ShMessage) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
+func (uj *Message) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
 	var err error = nil
-	currentKey := ffj_t_ShMessagebase
+	currentKey := ffj_t_Messagebase
 	_ = currentKey
 	tok := fflib.FFTok_init
 	wantedTok := fflib.FFTok_init
@@ -147,7 +146,7 @@ mainparse:
 			kn := fs.Output.Bytes()
 			if len(kn) <= 0 {
 				// "" case. hrm.
-				currentKey = ffj_t_ShMessageno_such_key
+				currentKey = ffj_t_Messageno_such_key
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			} else {
@@ -155,74 +154,74 @@ mainparse:
 
 				case 'd':
 
-					if bytes.Equal(ffj_key_ShMessage_DestID, kn) {
-						currentKey = ffj_t_ShMessage_DestID
+					if bytes.Equal(ffj_key_Message_DestID, kn) {
+						currentKey = ffj_t_Message_DestID
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_ShMessage_Data, kn) {
-						currentKey = ffj_t_ShMessage_Data
+					} else if bytes.Equal(ffj_key_Message_Data, kn) {
+						currentKey = ffj_t_Message_Data
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'i':
 
-					if bytes.Equal(ffj_key_ShMessage_ID, kn) {
-						currentKey = ffj_t_ShMessage_ID
+					if bytes.Equal(ffj_key_Message_ID, kn) {
+						currentKey = ffj_t_Message_ID
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'k':
 
-					if bytes.Equal(ffj_key_ShMessage_Kind, kn) {
-						currentKey = ffj_t_ShMessage_Kind
+					if bytes.Equal(ffj_key_Message_Kind, kn) {
+						currentKey = ffj_t_Message_Kind
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 't':
 
-					if bytes.Equal(ffj_key_ShMessage_Type, kn) {
-						currentKey = ffj_t_ShMessage_Type
+					if bytes.Equal(ffj_key_Message_Type, kn) {
+						currentKey = ffj_t_Message_Type
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_ShMessage_Data, kn) {
-					currentKey = ffj_t_ShMessage_Data
+				if fflib.SimpleLetterEqualFold(ffj_key_Message_Data, kn) {
+					currentKey = ffj_t_Message_Data
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_ShMessage_Kind, kn) {
-					currentKey = ffj_t_ShMessage_Kind
+				if fflib.EqualFoldRight(ffj_key_Message_Kind, kn) {
+					currentKey = ffj_t_Message_Kind
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_ShMessage_Type, kn) {
-					currentKey = ffj_t_ShMessage_Type
+				if fflib.SimpleLetterEqualFold(ffj_key_Message_Type, kn) {
+					currentKey = ffj_t_Message_Type
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_ShMessage_DestID, kn) {
-					currentKey = ffj_t_ShMessage_DestID
+				if fflib.EqualFoldRight(ffj_key_Message_DestID, kn) {
+					currentKey = ffj_t_Message_DestID
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_ShMessage_ID, kn) {
-					currentKey = ffj_t_ShMessage_ID
+				if fflib.SimpleLetterEqualFold(ffj_key_Message_ID, kn) {
+					currentKey = ffj_t_Message_ID
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				currentKey = ffj_t_ShMessageno_such_key
+				currentKey = ffj_t_Messageno_such_key
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			}
@@ -239,22 +238,22 @@ mainparse:
 			if tok == fflib.FFTok_left_brace || tok == fflib.FFTok_left_bracket || tok == fflib.FFTok_integer || tok == fflib.FFTok_double || tok == fflib.FFTok_string || tok == fflib.FFTok_bool || tok == fflib.FFTok_null {
 				switch currentKey {
 
-				case ffj_t_ShMessage_ID:
+				case ffj_t_Message_ID:
 					goto handle_ID
 
-				case ffj_t_ShMessage_DestID:
+				case ffj_t_Message_DestID:
 					goto handle_DestID
 
-				case ffj_t_ShMessage_Type:
+				case ffj_t_Message_Type:
 					goto handle_Type
 
-				case ffj_t_ShMessage_Kind:
+				case ffj_t_Message_Kind:
 					goto handle_Kind
 
-				case ffj_t_ShMessage_Data:
+				case ffj_t_Message_Data:
 					goto handle_Data
 
-				case ffj_t_ShMessageno_such_key:
+				case ffj_t_Messageno_such_key:
 					err = fs.SkipField(tok)
 					if err != nil {
 						return fs.WrapErr(err)

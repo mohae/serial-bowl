@@ -9,7 +9,6 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-
 	fflib "github.com/pquerna/ffjson/fflib/v1"
 )
 
@@ -751,7 +750,7 @@ done:
 	return nil
 }
 
-func (mj *ShRedditAccount) MarshalJSON() ([]byte, error) {
+func (mj *RedditAccount) MarshalJSON() ([]byte, error) {
 	var buf fflib.Buffer
 	if mj == nil {
 		buf.WriteString("null")
@@ -763,7 +762,7 @@ func (mj *ShRedditAccount) MarshalJSON() ([]byte, error) {
 	}
 	return buf.Bytes(), nil
 }
-func (mj *ShRedditAccount) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
+func (mj *RedditAccount) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	if mj == nil {
 		buf.WriteString("null")
 		return nil
@@ -793,34 +792,34 @@ func (mj *ShRedditAccount) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 }
 
 const (
-	ffj_t_ShRedditAccountbase = iota
-	ffj_t_ShRedditAccountno_such_key
+	ffj_t_RedditAccountbase = iota
+	ffj_t_RedditAccountno_such_key
 
-	ffj_t_ShRedditAccount_ID
+	ffj_t_RedditAccount_ID
 
-	ffj_t_ShRedditAccount_Name
+	ffj_t_RedditAccount_Name
 
-	ffj_t_ShRedditAccount_Kind
+	ffj_t_RedditAccount_Kind
 
-	ffj_t_ShRedditAccount_Data
+	ffj_t_RedditAccount_Data
 )
 
-var ffj_key_ShRedditAccount_ID = []byte("id")
+var ffj_key_RedditAccount_ID = []byte("id")
 
-var ffj_key_ShRedditAccount_Name = []byte("name")
+var ffj_key_RedditAccount_Name = []byte("name")
 
-var ffj_key_ShRedditAccount_Kind = []byte("kind")
+var ffj_key_RedditAccount_Kind = []byte("kind")
 
-var ffj_key_ShRedditAccount_Data = []byte("data")
+var ffj_key_RedditAccount_Data = []byte("data")
 
-func (uj *ShRedditAccount) UnmarshalJSON(input []byte) error {
+func (uj *RedditAccount) UnmarshalJSON(input []byte) error {
 	fs := fflib.NewFFLexer(input)
 	return uj.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
 }
 
-func (uj *ShRedditAccount) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
+func (uj *RedditAccount) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
 	var err error = nil
-	currentKey := ffj_t_ShRedditAccountbase
+	currentKey := ffj_t_RedditAccountbase
 	_ = currentKey
 	tok := fflib.FFTok_init
 	wantedTok := fflib.FFTok_init
@@ -866,7 +865,7 @@ mainparse:
 			kn := fs.Output.Bytes()
 			if len(kn) <= 0 {
 				// "" case. hrm.
-				currentKey = ffj_t_ShRedditAccountno_such_key
+				currentKey = ffj_t_RedditAccountno_such_key
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			} else {
@@ -874,63 +873,63 @@ mainparse:
 
 				case 'd':
 
-					if bytes.Equal(ffj_key_ShRedditAccount_Data, kn) {
-						currentKey = ffj_t_ShRedditAccount_Data
+					if bytes.Equal(ffj_key_RedditAccount_Data, kn) {
+						currentKey = ffj_t_RedditAccount_Data
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'i':
 
-					if bytes.Equal(ffj_key_ShRedditAccount_ID, kn) {
-						currentKey = ffj_t_ShRedditAccount_ID
+					if bytes.Equal(ffj_key_RedditAccount_ID, kn) {
+						currentKey = ffj_t_RedditAccount_ID
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'k':
 
-					if bytes.Equal(ffj_key_ShRedditAccount_Kind, kn) {
-						currentKey = ffj_t_ShRedditAccount_Kind
+					if bytes.Equal(ffj_key_RedditAccount_Kind, kn) {
+						currentKey = ffj_t_RedditAccount_Kind
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'n':
 
-					if bytes.Equal(ffj_key_ShRedditAccount_Name, kn) {
-						currentKey = ffj_t_ShRedditAccount_Name
+					if bytes.Equal(ffj_key_RedditAccount_Name, kn) {
+						currentKey = ffj_t_RedditAccount_Name
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_ShRedditAccount_Data, kn) {
-					currentKey = ffj_t_ShRedditAccount_Data
+				if fflib.SimpleLetterEqualFold(ffj_key_RedditAccount_Data, kn) {
+					currentKey = ffj_t_RedditAccount_Data
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_ShRedditAccount_Kind, kn) {
-					currentKey = ffj_t_ShRedditAccount_Kind
+				if fflib.EqualFoldRight(ffj_key_RedditAccount_Kind, kn) {
+					currentKey = ffj_t_RedditAccount_Kind
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_ShRedditAccount_Name, kn) {
-					currentKey = ffj_t_ShRedditAccount_Name
+				if fflib.SimpleLetterEqualFold(ffj_key_RedditAccount_Name, kn) {
+					currentKey = ffj_t_RedditAccount_Name
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_ShRedditAccount_ID, kn) {
-					currentKey = ffj_t_ShRedditAccount_ID
+				if fflib.SimpleLetterEqualFold(ffj_key_RedditAccount_ID, kn) {
+					currentKey = ffj_t_RedditAccount_ID
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				currentKey = ffj_t_ShRedditAccountno_such_key
+				currentKey = ffj_t_RedditAccountno_such_key
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			}
@@ -947,19 +946,19 @@ mainparse:
 			if tok == fflib.FFTok_left_brace || tok == fflib.FFTok_left_bracket || tok == fflib.FFTok_integer || tok == fflib.FFTok_double || tok == fflib.FFTok_string || tok == fflib.FFTok_bool || tok == fflib.FFTok_null {
 				switch currentKey {
 
-				case ffj_t_ShRedditAccount_ID:
+				case ffj_t_RedditAccount_ID:
 					goto handle_ID
 
-				case ffj_t_ShRedditAccount_Name:
+				case ffj_t_RedditAccount_Name:
 					goto handle_Name
 
-				case ffj_t_ShRedditAccount_Kind:
+				case ffj_t_RedditAccount_Kind:
 					goto handle_Kind
 
-				case ffj_t_ShRedditAccount_Data:
+				case ffj_t_RedditAccount_Data:
 					goto handle_Data
 
-				case ffj_t_ShRedditAccountno_such_key:
+				case ffj_t_RedditAccountno_such_key:
 					err = fs.SkipField(tok)
 					if err != nil {
 						return fs.WrapErr(err)
@@ -1053,7 +1052,7 @@ handle_Kind:
 
 handle_Data:
 
-	/* handler: uj.Data type=shared.AccountData kind=struct quoted=false*/
+	/* handler: uj.Data type=ffjsonbuf.AccountData kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {

@@ -15,8 +15,8 @@ var redditAccount [][]byte
 
 // BenchBasicMemInfo runs the BasicMemInfo benches for Marshal/Unmarshal.
 func BenchBasicMemInfo() shared.Bench {
-	bench := shared.Bench{Proto: shared.JSON, StructString: shared.BasicMemInfo.String(), Results: map[shared.Op]shared.Result{}}
 	basicMemInfo = make([][]byte, shared.Len)
+	bench := shared.Bench{Proto: shared.JSON, StructString: shared.BasicMemInfo.String(), Results: map[shared.Op]shared.Result{}}
 	bench.Results[shared.Marshal] = shared.ResultFromBenchmarkResult(testing.Benchmark(basicMemInfoMarshal))
 	bench.Results[shared.Unmarshal] = shared.ResultFromBenchmarkResult(testing.Benchmark(basicMemInfoUnmarshal))
 	basicMemInfo = nil
@@ -43,8 +43,8 @@ func basicMemInfoUnmarshal(b *testing.B) {
 
 // BenchMemInfo runs the MemInfo benches for Marshal/Unmarshal.
 func BenchMemInfo() shared.Bench {
-	bench := shared.Bench{Proto: shared.JSON, StructString: shared.MemInfo.String(), Results: map[shared.Op]shared.Result{}}
 	memInfo = make([][]byte, shared.Len)
+	bench := shared.Bench{Proto: shared.JSON, StructString: shared.MemInfo.String(), Results: map[shared.Op]shared.Result{}}
 	bench.Results[shared.Marshal] = shared.ResultFromBenchmarkResult(testing.Benchmark(memInfoMarshal))
 	bench.Results[shared.Unmarshal] = shared.ResultFromBenchmarkResult(testing.Benchmark(memInfoUnmarshal))
 	memInfo = nil
@@ -71,8 +71,8 @@ func memInfoUnmarshal(b *testing.B) {
 
 // BenchMessage runs the MemInfo benches for Marshal/Unmarshal.
 func BenchMessage(l int) shared.Bench {
-	bench := shared.Bench{Proto: shared.JSON, StructString: fmt.Sprintf("%s %dB", shared.Message.String(), l), Results: map[shared.Op]shared.Result{}}
 	message = make([][]byte, shared.Len)
+	bench := shared.Bench{Proto: shared.JSON, StructString: fmt.Sprintf("%s %dB", shared.Message.String(), l), Results: map[shared.Op]shared.Result{}}
 	bench.Results[shared.Marshal] = shared.ResultFromBenchmarkResult(testing.Benchmark(messageMarshal))
 	bench.Results[shared.Unmarshal] = shared.ResultFromBenchmarkResult(testing.Benchmark(messageUnmarshal))
 	message = nil
@@ -99,8 +99,8 @@ func messageUnmarshal(b *testing.B) {
 
 // BenchRedditAccount runs the MemInfo benches for Marshal/Unmarshal.
 func BenchRedditAccount() shared.Bench {
-	bench := shared.Bench{Proto: shared.JSON, StructString: shared.RedditAccount.String(), Results: map[shared.Op]shared.Result{}}
 	redditAccount = make([][]byte, shared.Len)
+	bench := shared.Bench{Proto: shared.JSON, StructString: shared.RedditAccount.String(), Results: map[shared.Op]shared.Result{}}
 	bench.Results[shared.Marshal] = shared.ResultFromBenchmarkResult(testing.Benchmark(redditAccountMarshal))
 	bench.Results[shared.Unmarshal] = shared.ResultFromBenchmarkResult(testing.Benchmark(redditAccountUnmarshal))
 	redditAccount = nil

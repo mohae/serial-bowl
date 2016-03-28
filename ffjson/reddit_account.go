@@ -1,6 +1,6 @@
 package ffjson
 
-type ShRedditAccount struct {
+type RedditAccount struct {
 	ID   string      `json:"id"`
 	Name string      `json:"name"`
 	Kind string      `json:"kind"`

@@ -15,33 +15,34 @@ var (
 )
 
 var (
-	shBasicMemInfos  []ShBasicMemInfo
-	shMemInfos       []ShMemInfo
-	shMessages       []ShMessage
-	shRedditAccounts []ShRedditAccount
+	basicMemInfos  []BasicMemInfo
+	memInfos       []MemInfo
+	messages       []Message
+	redditAccounts []RedditAccount
 )
 
 // BenchBasicMemInfo runs the BasicMemInfo benches for Marshal/Unmarshal.
 func BenchBasicMemInfo() shared.Bench {
-	shBasicMemInfos = PrepareBasicMemInfoData(shared.BasicMemInfoData)
-	bench := shared.Bench{Proto: shared.FFJSON, StructString: shared.BasicMemInfo.String(), Results: map[shared.Op]shared.Result{}}
+	basicMemInfos = PrepareBasicMemInfoData(shared.BasicMemInfoData)
 	basicMemInfo = make([][]byte, shared.Len)
+	bench := shared.Bench{Proto: shared.FFJSON, StructString: shared.BasicMemInfo.String(), Results: map[shared.Op]shared.Result{}}
 	bench.Results[shared.Marshal] = shared.ResultFromBenchmarkResult(testing.Benchmark(basicMemInfoMarshal))
 	bench.Results[shared.Unmarshal] = shared.ResultFromBenchmarkResult(testing.Benchmark(basicMemInfoUnmarshal))
 	basicMemInfo = nil
+	basicMemInfos = nil
 	return bench
 }
 
 func basicMemInfoMarshal(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		for j := 0; j < len(shared.BasicMemInfoData); j++ {
-			basicMemInfo[j], _ = shBasicMemInfos[j].MarshalJSON()
+			basicMemInfo[j], _ = basicMemInfos[j].MarshalJSON()
 		}
 	}
 }
 
 func basicMemInfoUnmarshal(b *testing.B) {
-	var tmp ShBasicMemInfo
+	var tmp BasicMemInfo
 	for i := 0; i < b.N; i++ {
 		for j := 0; j < len(basicMemInfo); j++ {
 			_ = tmp.UnmarshalJSON(basicMemInfo[j])
@@ -52,25 +53,26 @@ func basicMemInfoUnmarshal(b *testing.B) {
 
 // BenchMemInfo runs the MemInfo benches for Marshal/Unmarshal.
 func BenchMemInfo() shared.Bench {
-	bench := shared.Bench{Proto: shared.FFJSON, StructString: shared.MemInfo.String(), Results: map[shared.Op]shared.Result{}}
+	memInfos = PrepareMemInfoData(shared.MemInfoData)
 	memInfo = make([][]byte, shared.Len)
-	shMemInfos = PrepareMemInfoData(shared.MemInfoData)
+	bench := shared.Bench{Proto: shared.FFJSON, StructString: shared.MemInfo.String(), Results: map[shared.Op]shared.Result{}}
 	bench.Results[shared.Marshal] = shared.ResultFromBenchmarkResult(testing.Benchmark(memInfoMarshal))
 	bench.Results[shared.Unmarshal] = shared.ResultFromBenchmarkResult(testing.Benchmark(memInfoUnmarshal))
 	memInfo = nil
+	memInfos = nil
 	return bench
 }
 
 func memInfoMarshal(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		for j := 0; j < shared.Len; j++ {
-			memInfo[j], _ = shMemInfos[j].MarshalJSON()
+			memInfo[j], _ = memInfos[j].MarshalJSON()
 		}
 	}
 }
 
 func memInfoUnmarshal(b *testing.B) {
-	var tmp ShMemInfo
+	var tmp MemInfo
 	for i := 0; i < b.N; i++ {
 		for j := 0; j < len(memInfo); j++ {
 			_ = tmp.UnmarshalJSON(memInfo[j])
@@ -81,25 +83,26 @@ func memInfoUnmarshal(b *testing.B) {
 
 // BenchMessage runs the MemInfo benches for Marshal/Unmarshal.
 func BenchMessage(l int) shared.Bench {
-	bench := shared.Bench{Proto: shared.FFJSON, StructString: fmt.Sprintf("%s %dB", shared.Message.String(), l), Results: map[shared.Op]shared.Result{}}
+	messages = PrepareMessageData(shared.MessageData)
 	message = make([][]byte, shared.Len)
-	shMessages = PrepareMessageData(shared.MessageData)
+	bench := shared.Bench{Proto: shared.FFJSON, StructString: fmt.Sprintf("%s %dB", shared.Message.String(), l), Results: map[shared.Op]shared.Result{}}
 	bench.Results[shared.Marshal] = shared.ResultFromBenchmarkResult(testing.Benchmark(messageMarshal))
 	bench.Results[shared.Unmarshal] = shared.ResultFromBenchmarkResult(testing.Benchmark(messageUnmarshal))
 	message = nil
+	messages = nil
 	return bench
 }
 
 func messageMarshal(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		for j := 0; j < shared.Len; j++ {
-			message[j], _ = shMessages[j].MarshalJSON()
+			message[j], _ = messages[j].MarshalJSON()
 		}
 	}
 }
 
 func messageUnmarshal(b *testing.B) {
-	var tmp ShMessage
+	var tmp Message
 	for i := 0; i < b.N; i++ {
 		for j := 0; j < shared.Len; j++ {
 			_ = tmp.UnmarshalJSON(message[j])
@@ -110,25 +113,26 @@ func messageUnmarshal(b *testing.B) {
 
 // BenchRedditAccount runs the MemInfo benches for Marshal/Unmarshal.
 func BenchRedditAccount() shared.Bench {
-	bench := shared.Bench{Proto: shared.FFJSON, StructString: shared.RedditAccount.String(), Results: map[shared.Op]shared.Result{}}
+	redditAccounts = PrepareRedditAccountData(shared.RedditAccountData)
 	redditAccount = make([][]byte, shared.Len)
-	shRedditAccounts = PrepareRedditAccountData(shared.RedditAccountData)
+	bench := shared.Bench{Proto: shared.FFJSON, StructString: shared.RedditAccount.String(), Results: map[shared.Op]shared.Result{}}
 	bench.Results[shared.Marshal] = shared.ResultFromBenchmarkResult(testing.Benchmark(redditAccountMarshal))
 	bench.Results[shared.Unmarshal] = shared.ResultFromBenchmarkResult(testing.Benchmark(redditAccountUnmarshal))
 	redditAccount = nil
+	redditAccounts = nil
 	return bench
 }
 
 func redditAccountMarshal(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		for j := 0; j < shared.Len; j++ {
-			redditAccount[j], _ = shRedditAccounts[j].MarshalJSON()
+			redditAccount[j], _ = redditAccounts[j].MarshalJSON()
 		}
 	}
 }
 
 func redditAccountUnmarshal(b *testing.B) {
-	var tmp ShRedditAccount
+	var tmp RedditAccount
 	for i := 0; i < b.N; i++ {
 		for j := 0; j < shared.Len; j++ {
 			_ = tmp.UnmarshalJSON(redditAccount[j])
@@ -137,11 +141,11 @@ func redditAccountUnmarshal(b *testing.B) {
 	_ = tmp
 }
 
-// PrepareBasicMemInfoData generates the protobuf version of the data.
-func PrepareBasicMemInfoData(data []shared.ShBasicMemInfo) []ShBasicMemInfo {
-	tmp := make([]ShBasicMemInfo, len(data))
+// PrepareBasicMemInfoData generates the ffjson version of the data.
+func PrepareBasicMemInfoData(data []shared.ShBasicMemInfo) []BasicMemInfo {
+	tmp := make([]BasicMemInfo, len(data))
 	for i := 0; i < len(data); i++ {
-		tmp[i] = ShBasicMemInfo{
+		tmp[i] = BasicMemInfo{
 			MemTotal:     data[i].MemTotal,
 			MemFree:      data[i].MemFree,
 			MemAvailable: data[i].MemAvailable,
@@ -155,11 +159,11 @@ func PrepareBasicMemInfoData(data []shared.ShBasicMemInfo) []ShBasicMemInfo {
 	return tmp
 }
 
-// PrepareMemInfoData generates the protobuf version of the data.
-func PrepareMemInfoData(data []shared.ShMemInfo) []ShMemInfo {
-	tmp := make([]ShMemInfo, len(data))
+// PrepareMemInfoData generates the ffjson version of the data.
+func PrepareMemInfoData(data []shared.ShMemInfo) []MemInfo {
+	tmp := make([]MemInfo, len(data))
 	for i := 0; i < len(data); i++ {
-		tmp[i] = ShMemInfo{
+		tmp[i] = MemInfo{
 			MemTotal:          data[i].MemTotal,
 			MemFree:           data[i].MemFree,
 			MemAvailable:      data[i].MemAvailable,
@@ -205,11 +209,11 @@ func PrepareMemInfoData(data []shared.ShMemInfo) []ShMemInfo {
 	return tmp
 }
 
-// PrepareMessageData generates the protobuf version of the data.
-func PrepareMessageData(data []shared.ShMessage) []ShMessage {
-	tmp := make([]ShMessage, len(data))
+// PrepareMessageData generates the ffjson version of the data.
+func PrepareMessageData(data []shared.ShMessage) []Message {
+	tmp := make([]Message, len(data))
 	for i := 0; i < len(data); i++ {
-		tmp[i] = ShMessage{
+		tmp[i] = Message{
 			ID:     data[i].ID,
 			DestID: data[i].DestID,
 			Type:   data[i].Type,
@@ -220,11 +224,11 @@ func PrepareMessageData(data []shared.ShMessage) []ShMessage {
 	return tmp
 }
 
-// PrepareRedditAccountData generates the protobuf version of the data.
-func PrepareRedditAccountData(data []shared.ShRedditAccount) []ShRedditAccount {
-	tmp := make([]ShRedditAccount, len(data))
+// PrepareRedditAccountData generates the ffjson version of the data.
+func PrepareRedditAccountData(data []shared.ShRedditAccount) []RedditAccount {
+	tmp := make([]RedditAccount, len(data))
 	for i := 0; i < len(data); i++ {
-		tmp[i] = ShRedditAccount{
+		tmp[i] = RedditAccount{
 			ID:   data[i].ID,
 			Name: data[i].Name,
 			Kind: data[i].Kind,

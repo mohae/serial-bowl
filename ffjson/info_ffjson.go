@@ -8,11 +8,10 @@ package ffjson
 import (
 	"bytes"
 	"fmt"
-
 	fflib "github.com/pquerna/ffjson/fflib/v1"
 )
 
-func (mj *ShBasicMemInfo) MarshalJSON() ([]byte, error) {
+func (mj *BasicMemInfo) MarshalJSON() ([]byte, error) {
 	var buf fflib.Buffer
 	if mj == nil {
 		buf.WriteString("null")
@@ -24,7 +23,7 @@ func (mj *ShBasicMemInfo) MarshalJSON() ([]byte, error) {
 	}
 	return buf.Bytes(), nil
 }
-func (mj *ShBasicMemInfo) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
+func (mj *BasicMemInfo) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	if mj == nil {
 		buf.WriteString("null")
 		return nil
@@ -33,71 +32,71 @@ func (mj *ShBasicMemInfo) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	var obj []byte
 	_ = obj
 	_ = err
-	buf.WriteString(`{"MemTotal":`)
+	buf.WriteString(`{"mem_total":`)
 	fflib.FormatBits2(buf, uint64(mj.MemTotal), 10, mj.MemTotal < 0)
-	buf.WriteString(`,"MemFree":`)
+	buf.WriteString(`,"mem_free":`)
 	fflib.FormatBits2(buf, uint64(mj.MemFree), 10, mj.MemFree < 0)
-	buf.WriteString(`,"MemAvailable":`)
+	buf.WriteString(`,"mem_available":`)
 	fflib.FormatBits2(buf, uint64(mj.MemAvailable), 10, mj.MemAvailable < 0)
-	buf.WriteString(`,"Buffers":`)
+	buf.WriteString(`,"buffers":`)
 	fflib.FormatBits2(buf, uint64(mj.Buffers), 10, mj.Buffers < 0)
-	buf.WriteString(`,"Cached":`)
+	buf.WriteString(`,"cached":`)
 	fflib.FormatBits2(buf, uint64(mj.Cached), 10, mj.Cached < 0)
-	buf.WriteString(`,"SwapCached":`)
+	buf.WriteString(`,"swap_cached":`)
 	fflib.FormatBits2(buf, uint64(mj.SwapCached), 10, mj.SwapCached < 0)
-	buf.WriteString(`,"SwapTotal":`)
+	buf.WriteString(`,"swap_total":`)
 	fflib.FormatBits2(buf, uint64(mj.SwapTotal), 10, mj.SwapTotal < 0)
-	buf.WriteString(`,"SwapFree":`)
+	buf.WriteString(`,"swap_free":`)
 	fflib.FormatBits2(buf, uint64(mj.SwapFree), 10, mj.SwapFree < 0)
 	buf.WriteByte('}')
 	return nil
 }
 
 const (
-	ffj_t_ShBasicMemInfobase = iota
-	ffj_t_ShBasicMemInfono_such_key
+	ffj_t_BasicMemInfobase = iota
+	ffj_t_BasicMemInfono_such_key
 
-	ffj_t_ShBasicMemInfo_MemTotal
+	ffj_t_BasicMemInfo_MemTotal
 
-	ffj_t_ShBasicMemInfo_MemFree
+	ffj_t_BasicMemInfo_MemFree
 
-	ffj_t_ShBasicMemInfo_MemAvailable
+	ffj_t_BasicMemInfo_MemAvailable
 
-	ffj_t_ShBasicMemInfo_Buffers
+	ffj_t_BasicMemInfo_Buffers
 
-	ffj_t_ShBasicMemInfo_Cached
+	ffj_t_BasicMemInfo_Cached
 
-	ffj_t_ShBasicMemInfo_SwapCached
+	ffj_t_BasicMemInfo_SwapCached
 
-	ffj_t_ShBasicMemInfo_SwapTotal
+	ffj_t_BasicMemInfo_SwapTotal
 
-	ffj_t_ShBasicMemInfo_SwapFree
+	ffj_t_BasicMemInfo_SwapFree
 )
 
-var ffj_key_ShBasicMemInfo_MemTotal = []byte("MemTotal")
+var ffj_key_BasicMemInfo_MemTotal = []byte("mem_total")
 
-var ffj_key_ShBasicMemInfo_MemFree = []byte("MemFree")
+var ffj_key_BasicMemInfo_MemFree = []byte("mem_free")
 
-var ffj_key_ShBasicMemInfo_MemAvailable = []byte("MemAvailable")
+var ffj_key_BasicMemInfo_MemAvailable = []byte("mem_available")
 
-var ffj_key_ShBasicMemInfo_Buffers = []byte("Buffers")
+var ffj_key_BasicMemInfo_Buffers = []byte("buffers")
 
-var ffj_key_ShBasicMemInfo_Cached = []byte("Cached")
+var ffj_key_BasicMemInfo_Cached = []byte("cached")
 
-var ffj_key_ShBasicMemInfo_SwapCached = []byte("SwapCached")
+var ffj_key_BasicMemInfo_SwapCached = []byte("swap_cached")
 
-var ffj_key_ShBasicMemInfo_SwapTotal = []byte("SwapTotal")
+var ffj_key_BasicMemInfo_SwapTotal = []byte("swap_total")
 
-var ffj_key_ShBasicMemInfo_SwapFree = []byte("SwapFree")
+var ffj_key_BasicMemInfo_SwapFree = []byte("swap_free")
 
-func (uj *ShBasicMemInfo) UnmarshalJSON(input []byte) error {
+func (uj *BasicMemInfo) UnmarshalJSON(input []byte) error {
 	fs := fflib.NewFFLexer(input)
 	return uj.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
 }
 
-func (uj *ShBasicMemInfo) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
+func (uj *BasicMemInfo) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
 	var err error = nil
-	currentKey := ffj_t_ShBasicMemInfobase
+	currentKey := ffj_t_BasicMemInfobase
 	_ = currentKey
 	tok := fflib.FFTok_init
 	wantedTok := fflib.FFTok_init
@@ -143,115 +142,115 @@ mainparse:
 			kn := fs.Output.Bytes()
 			if len(kn) <= 0 {
 				// "" case. hrm.
-				currentKey = ffj_t_ShBasicMemInfono_such_key
+				currentKey = ffj_t_BasicMemInfono_such_key
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			} else {
 				switch kn[0] {
 
-				case 'B':
+				case 'b':
 
-					if bytes.Equal(ffj_key_ShBasicMemInfo_Buffers, kn) {
-						currentKey = ffj_t_ShBasicMemInfo_Buffers
+					if bytes.Equal(ffj_key_BasicMemInfo_Buffers, kn) {
+						currentKey = ffj_t_BasicMemInfo_Buffers
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
-				case 'C':
+				case 'c':
 
-					if bytes.Equal(ffj_key_ShBasicMemInfo_Cached, kn) {
-						currentKey = ffj_t_ShBasicMemInfo_Cached
+					if bytes.Equal(ffj_key_BasicMemInfo_Cached, kn) {
+						currentKey = ffj_t_BasicMemInfo_Cached
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
-				case 'M':
+				case 'm':
 
-					if bytes.Equal(ffj_key_ShBasicMemInfo_MemTotal, kn) {
-						currentKey = ffj_t_ShBasicMemInfo_MemTotal
+					if bytes.Equal(ffj_key_BasicMemInfo_MemTotal, kn) {
+						currentKey = ffj_t_BasicMemInfo_MemTotal
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_ShBasicMemInfo_MemFree, kn) {
-						currentKey = ffj_t_ShBasicMemInfo_MemFree
+					} else if bytes.Equal(ffj_key_BasicMemInfo_MemFree, kn) {
+						currentKey = ffj_t_BasicMemInfo_MemFree
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_ShBasicMemInfo_MemAvailable, kn) {
-						currentKey = ffj_t_ShBasicMemInfo_MemAvailable
-						state = fflib.FFParse_want_colon
-						goto mainparse
-					}
-
-				case 'S':
-
-					if bytes.Equal(ffj_key_ShBasicMemInfo_SwapCached, kn) {
-						currentKey = ffj_t_ShBasicMemInfo_SwapCached
-						state = fflib.FFParse_want_colon
-						goto mainparse
-
-					} else if bytes.Equal(ffj_key_ShBasicMemInfo_SwapTotal, kn) {
-						currentKey = ffj_t_ShBasicMemInfo_SwapTotal
-						state = fflib.FFParse_want_colon
-						goto mainparse
-
-					} else if bytes.Equal(ffj_key_ShBasicMemInfo_SwapFree, kn) {
-						currentKey = ffj_t_ShBasicMemInfo_SwapFree
+					} else if bytes.Equal(ffj_key_BasicMemInfo_MemAvailable, kn) {
+						currentKey = ffj_t_BasicMemInfo_MemAvailable
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
+				case 's':
+
+					if bytes.Equal(ffj_key_BasicMemInfo_SwapCached, kn) {
+						currentKey = ffj_t_BasicMemInfo_SwapCached
+						state = fflib.FFParse_want_colon
+						goto mainparse
+
+					} else if bytes.Equal(ffj_key_BasicMemInfo_SwapTotal, kn) {
+						currentKey = ffj_t_BasicMemInfo_SwapTotal
+						state = fflib.FFParse_want_colon
+						goto mainparse
+
+					} else if bytes.Equal(ffj_key_BasicMemInfo_SwapFree, kn) {
+						currentKey = ffj_t_BasicMemInfo_SwapFree
+						state = fflib.FFParse_want_colon
+						goto mainparse
+					}
+
 				}
 
-				if fflib.EqualFoldRight(ffj_key_ShBasicMemInfo_SwapFree, kn) {
-					currentKey = ffj_t_ShBasicMemInfo_SwapFree
+				if fflib.EqualFoldRight(ffj_key_BasicMemInfo_SwapFree, kn) {
+					currentKey = ffj_t_BasicMemInfo_SwapFree
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_ShBasicMemInfo_SwapTotal, kn) {
-					currentKey = ffj_t_ShBasicMemInfo_SwapTotal
+				if fflib.EqualFoldRight(ffj_key_BasicMemInfo_SwapTotal, kn) {
+					currentKey = ffj_t_BasicMemInfo_SwapTotal
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_ShBasicMemInfo_SwapCached, kn) {
-					currentKey = ffj_t_ShBasicMemInfo_SwapCached
+				if fflib.EqualFoldRight(ffj_key_BasicMemInfo_SwapCached, kn) {
+					currentKey = ffj_t_BasicMemInfo_SwapCached
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_ShBasicMemInfo_Cached, kn) {
-					currentKey = ffj_t_ShBasicMemInfo_Cached
+				if fflib.SimpleLetterEqualFold(ffj_key_BasicMemInfo_Cached, kn) {
+					currentKey = ffj_t_BasicMemInfo_Cached
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_ShBasicMemInfo_Buffers, kn) {
-					currentKey = ffj_t_ShBasicMemInfo_Buffers
+				if fflib.EqualFoldRight(ffj_key_BasicMemInfo_Buffers, kn) {
+					currentKey = ffj_t_BasicMemInfo_Buffers
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_ShBasicMemInfo_MemAvailable, kn) {
-					currentKey = ffj_t_ShBasicMemInfo_MemAvailable
+				if fflib.AsciiEqualFold(ffj_key_BasicMemInfo_MemAvailable, kn) {
+					currentKey = ffj_t_BasicMemInfo_MemAvailable
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_ShBasicMemInfo_MemFree, kn) {
-					currentKey = ffj_t_ShBasicMemInfo_MemFree
+				if fflib.AsciiEqualFold(ffj_key_BasicMemInfo_MemFree, kn) {
+					currentKey = ffj_t_BasicMemInfo_MemFree
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_ShBasicMemInfo_MemTotal, kn) {
-					currentKey = ffj_t_ShBasicMemInfo_MemTotal
+				if fflib.AsciiEqualFold(ffj_key_BasicMemInfo_MemTotal, kn) {
+					currentKey = ffj_t_BasicMemInfo_MemTotal
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				currentKey = ffj_t_ShBasicMemInfono_such_key
+				currentKey = ffj_t_BasicMemInfono_such_key
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			}
@@ -268,31 +267,31 @@ mainparse:
 			if tok == fflib.FFTok_left_brace || tok == fflib.FFTok_left_bracket || tok == fflib.FFTok_integer || tok == fflib.FFTok_double || tok == fflib.FFTok_string || tok == fflib.FFTok_bool || tok == fflib.FFTok_null {
 				switch currentKey {
 
-				case ffj_t_ShBasicMemInfo_MemTotal:
+				case ffj_t_BasicMemInfo_MemTotal:
 					goto handle_MemTotal
 
-				case ffj_t_ShBasicMemInfo_MemFree:
+				case ffj_t_BasicMemInfo_MemFree:
 					goto handle_MemFree
 
-				case ffj_t_ShBasicMemInfo_MemAvailable:
+				case ffj_t_BasicMemInfo_MemAvailable:
 					goto handle_MemAvailable
 
-				case ffj_t_ShBasicMemInfo_Buffers:
+				case ffj_t_BasicMemInfo_Buffers:
 					goto handle_Buffers
 
-				case ffj_t_ShBasicMemInfo_Cached:
+				case ffj_t_BasicMemInfo_Cached:
 					goto handle_Cached
 
-				case ffj_t_ShBasicMemInfo_SwapCached:
+				case ffj_t_BasicMemInfo_SwapCached:
 					goto handle_SwapCached
 
-				case ffj_t_ShBasicMemInfo_SwapTotal:
+				case ffj_t_BasicMemInfo_SwapTotal:
 					goto handle_SwapTotal
 
-				case ffj_t_ShBasicMemInfo_SwapFree:
+				case ffj_t_BasicMemInfo_SwapFree:
 					goto handle_SwapFree
 
-				case ffj_t_ShBasicMemInfono_such_key:
+				case ffj_t_BasicMemInfono_such_key:
 					err = fs.SkipField(tok)
 					if err != nil {
 						return fs.WrapErr(err)
@@ -563,7 +562,7 @@ done:
 	return nil
 }
 
-func (mj *ShMemInfo) MarshalJSON() ([]byte, error) {
+func (mj *MemInfo) MarshalJSON() ([]byte, error) {
 	var buf fflib.Buffer
 	if mj == nil {
 		buf.WriteString("null")
@@ -575,7 +574,7 @@ func (mj *ShMemInfo) MarshalJSON() ([]byte, error) {
 	}
 	return buf.Bytes(), nil
 }
-func (mj *ShMemInfo) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
+func (mj *MemInfo) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	if mj == nil {
 		buf.WriteString("null")
 		return nil
@@ -669,178 +668,178 @@ func (mj *ShMemInfo) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 }
 
 const (
-	ffj_t_ShMemInfobase = iota
-	ffj_t_ShMemInfono_such_key
+	ffj_t_MemInfobase = iota
+	ffj_t_MemInfono_such_key
 
-	ffj_t_ShMemInfo_MemTotal
+	ffj_t_MemInfo_MemTotal
 
-	ffj_t_ShMemInfo_MemFree
+	ffj_t_MemInfo_MemFree
 
-	ffj_t_ShMemInfo_MemAvailable
+	ffj_t_MemInfo_MemAvailable
 
-	ffj_t_ShMemInfo_Buffers
+	ffj_t_MemInfo_Buffers
 
-	ffj_t_ShMemInfo_Cached
+	ffj_t_MemInfo_Cached
 
-	ffj_t_ShMemInfo_SwapCached
+	ffj_t_MemInfo_SwapCached
 
-	ffj_t_ShMemInfo_Active
+	ffj_t_MemInfo_Active
 
-	ffj_t_ShMemInfo_Inactive
+	ffj_t_MemInfo_Inactive
 
-	ffj_t_ShMemInfo_ActiveAnon
+	ffj_t_MemInfo_ActiveAnon
 
-	ffj_t_ShMemInfo_InactiveAnon
+	ffj_t_MemInfo_InactiveAnon
 
-	ffj_t_ShMemInfo_ActiveFile
+	ffj_t_MemInfo_ActiveFile
 
-	ffj_t_ShMemInfo_InactiveFile
+	ffj_t_MemInfo_InactiveFile
 
-	ffj_t_ShMemInfo_Unevictable
+	ffj_t_MemInfo_Unevictable
 
-	ffj_t_ShMemInfo_Mlocked
+	ffj_t_MemInfo_Mlocked
 
-	ffj_t_ShMemInfo_SwapTotal
+	ffj_t_MemInfo_SwapTotal
 
-	ffj_t_ShMemInfo_SwapFree
+	ffj_t_MemInfo_SwapFree
 
-	ffj_t_ShMemInfo_Dirty
+	ffj_t_MemInfo_Dirty
 
-	ffj_t_ShMemInfo_Writeback
+	ffj_t_MemInfo_Writeback
 
-	ffj_t_ShMemInfo_AnonPages
+	ffj_t_MemInfo_AnonPages
 
-	ffj_t_ShMemInfo_Mapped
+	ffj_t_MemInfo_Mapped
 
-	ffj_t_ShMemInfo_Shmem
+	ffj_t_MemInfo_Shmem
 
-	ffj_t_ShMemInfo_Slab
+	ffj_t_MemInfo_Slab
 
-	ffj_t_ShMemInfo_SReclaimable
+	ffj_t_MemInfo_SReclaimable
 
-	ffj_t_ShMemInfo_SUnreclaim
+	ffj_t_MemInfo_SUnreclaim
 
-	ffj_t_ShMemInfo_KernelStack
+	ffj_t_MemInfo_KernelStack
 
-	ffj_t_ShMemInfo_NFSUnstable
+	ffj_t_MemInfo_NFSUnstable
 
-	ffj_t_ShMemInfo_Bounce
+	ffj_t_MemInfo_Bounce
 
-	ffj_t_ShMemInfo_WritebackTmp
+	ffj_t_MemInfo_WritebackTmp
 
-	ffj_t_ShMemInfo_CommitLimit
+	ffj_t_MemInfo_CommitLimit
 
-	ffj_t_ShMemInfo_VmallocTotal
+	ffj_t_MemInfo_VmallocTotal
 
-	ffj_t_ShMemInfo_VmallocUsed
+	ffj_t_MemInfo_VmallocUsed
 
-	ffj_t_ShMemInfo_VmallocChunk
+	ffj_t_MemInfo_VmallocChunk
 
-	ffj_t_ShMemInfo_HardwareCorrupted
+	ffj_t_MemInfo_HardwareCorrupted
 
-	ffj_t_ShMemInfo_AnonHugePages
+	ffj_t_MemInfo_AnonHugePages
 
-	ffj_t_ShMemInfo_HugePagesTotal
+	ffj_t_MemInfo_HugePagesTotal
 
-	ffj_t_ShMemInfo_HugePagesFree
+	ffj_t_MemInfo_HugePagesFree
 
-	ffj_t_ShMemInfo_HugePagesRsvd
+	ffj_t_MemInfo_HugePagesRsvd
 
-	ffj_t_ShMemInfo_Hugepagesize
+	ffj_t_MemInfo_Hugepagesize
 
-	ffj_t_ShMemInfo_DirectMap4k
+	ffj_t_MemInfo_DirectMap4k
 
-	ffj_t_ShMemInfo_DirectMap2M
+	ffj_t_MemInfo_DirectMap2M
 )
 
-var ffj_key_ShMemInfo_MemTotal = []byte("mem_total")
+var ffj_key_MemInfo_MemTotal = []byte("mem_total")
 
-var ffj_key_ShMemInfo_MemFree = []byte("mem_free")
+var ffj_key_MemInfo_MemFree = []byte("mem_free")
 
-var ffj_key_ShMemInfo_MemAvailable = []byte("mem_available")
+var ffj_key_MemInfo_MemAvailable = []byte("mem_available")
 
-var ffj_key_ShMemInfo_Buffers = []byte("buffers")
+var ffj_key_MemInfo_Buffers = []byte("buffers")
 
-var ffj_key_ShMemInfo_Cached = []byte("cached")
+var ffj_key_MemInfo_Cached = []byte("cached")
 
-var ffj_key_ShMemInfo_SwapCached = []byte("swap_cached")
+var ffj_key_MemInfo_SwapCached = []byte("swap_cached")
 
-var ffj_key_ShMemInfo_Active = []byte("active")
+var ffj_key_MemInfo_Active = []byte("active")
 
-var ffj_key_ShMemInfo_Inactive = []byte("inactive")
+var ffj_key_MemInfo_Inactive = []byte("inactive")
 
-var ffj_key_ShMemInfo_ActiveAnon = []byte("active_anon")
+var ffj_key_MemInfo_ActiveAnon = []byte("active_anon")
 
-var ffj_key_ShMemInfo_InactiveAnon = []byte("inactive_anon")
+var ffj_key_MemInfo_InactiveAnon = []byte("inactive_anon")
 
-var ffj_key_ShMemInfo_ActiveFile = []byte("active_file")
+var ffj_key_MemInfo_ActiveFile = []byte("active_file")
 
-var ffj_key_ShMemInfo_InactiveFile = []byte("inactive_file")
+var ffj_key_MemInfo_InactiveFile = []byte("inactive_file")
 
-var ffj_key_ShMemInfo_Unevictable = []byte("unevictable")
+var ffj_key_MemInfo_Unevictable = []byte("unevictable")
 
-var ffj_key_ShMemInfo_Mlocked = []byte("mlocked")
+var ffj_key_MemInfo_Mlocked = []byte("mlocked")
 
-var ffj_key_ShMemInfo_SwapTotal = []byte("swap_total")
+var ffj_key_MemInfo_SwapTotal = []byte("swap_total")
 
-var ffj_key_ShMemInfo_SwapFree = []byte("swap_free")
+var ffj_key_MemInfo_SwapFree = []byte("swap_free")
 
-var ffj_key_ShMemInfo_Dirty = []byte("dirty")
+var ffj_key_MemInfo_Dirty = []byte("dirty")
 
-var ffj_key_ShMemInfo_Writeback = []byte("writeback")
+var ffj_key_MemInfo_Writeback = []byte("writeback")
 
-var ffj_key_ShMemInfo_AnonPages = []byte("anon_pages")
+var ffj_key_MemInfo_AnonPages = []byte("anon_pages")
 
-var ffj_key_ShMemInfo_Mapped = []byte("mapped")
+var ffj_key_MemInfo_Mapped = []byte("mapped")
 
-var ffj_key_ShMemInfo_Shmem = []byte("sh_mem")
+var ffj_key_MemInfo_Shmem = []byte("sh_mem")
 
-var ffj_key_ShMemInfo_Slab = []byte("slab")
+var ffj_key_MemInfo_Slab = []byte("slab")
 
-var ffj_key_ShMemInfo_SReclaimable = []byte("s_reclaimable")
+var ffj_key_MemInfo_SReclaimable = []byte("s_reclaimable")
 
-var ffj_key_ShMemInfo_SUnreclaim = []byte("s_unreclaim")
+var ffj_key_MemInfo_SUnreclaim = []byte("s_unreclaim")
 
-var ffj_key_ShMemInfo_KernelStack = []byte("kernel_stack")
+var ffj_key_MemInfo_KernelStack = []byte("kernel_stack")
 
-var ffj_key_ShMemInfo_NFSUnstable = []byte("nfs_unstable")
+var ffj_key_MemInfo_NFSUnstable = []byte("nfs_unstable")
 
-var ffj_key_ShMemInfo_Bounce = []byte("bounce")
+var ffj_key_MemInfo_Bounce = []byte("bounce")
 
-var ffj_key_ShMemInfo_WritebackTmp = []byte("writeback_tmp")
+var ffj_key_MemInfo_WritebackTmp = []byte("writeback_tmp")
 
-var ffj_key_ShMemInfo_CommitLimit = []byte("commit_limit")
+var ffj_key_MemInfo_CommitLimit = []byte("commit_limit")
 
-var ffj_key_ShMemInfo_VmallocTotal = []byte("vmalloc_total")
+var ffj_key_MemInfo_VmallocTotal = []byte("vmalloc_total")
 
-var ffj_key_ShMemInfo_VmallocUsed = []byte("vmalloc_used")
+var ffj_key_MemInfo_VmallocUsed = []byte("vmalloc_used")
 
-var ffj_key_ShMemInfo_VmallocChunk = []byte("vmalloc_chunked")
+var ffj_key_MemInfo_VmallocChunk = []byte("vmalloc_chunked")
 
-var ffj_key_ShMemInfo_HardwareCorrupted = []byte("hardware_corrupted")
+var ffj_key_MemInfo_HardwareCorrupted = []byte("hardware_corrupted")
 
-var ffj_key_ShMemInfo_AnonHugePages = []byte("anon_huge_pages")
+var ffj_key_MemInfo_AnonHugePages = []byte("anon_huge_pages")
 
-var ffj_key_ShMemInfo_HugePagesTotal = []byte("huge_pages_total")
+var ffj_key_MemInfo_HugePagesTotal = []byte("huge_pages_total")
 
-var ffj_key_ShMemInfo_HugePagesFree = []byte("huge_pages_free")
+var ffj_key_MemInfo_HugePagesFree = []byte("huge_pages_free")
 
-var ffj_key_ShMemInfo_HugePagesRsvd = []byte("huge_pages_rsvd")
+var ffj_key_MemInfo_HugePagesRsvd = []byte("huge_pages_rsvd")
 
-var ffj_key_ShMemInfo_Hugepagesize = []byte("huge_pages_size")
+var ffj_key_MemInfo_Hugepagesize = []byte("huge_pages_size")
 
-var ffj_key_ShMemInfo_DirectMap4k = []byte("direct_map_4k")
+var ffj_key_MemInfo_DirectMap4k = []byte("direct_map_4k")
 
-var ffj_key_ShMemInfo_DirectMap2M = []byte("direct_map_2m")
+var ffj_key_MemInfo_DirectMap2M = []byte("direct_map_2m")
 
-func (uj *ShMemInfo) UnmarshalJSON(input []byte) error {
+func (uj *MemInfo) UnmarshalJSON(input []byte) error {
 	fs := fflib.NewFFLexer(input)
 	return uj.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
 }
 
-func (uj *ShMemInfo) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
+func (uj *MemInfo) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
 	var err error = nil
-	currentKey := ffj_t_ShMemInfobase
+	currentKey := ffj_t_MemInfobase
 	_ = currentKey
 	tok := fflib.FFTok_init
 	wantedTok := fflib.FFTok_init
@@ -886,7 +885,7 @@ mainparse:
 			kn := fs.Output.Bytes()
 			if len(kn) <= 0 {
 				// "" case. hrm.
-				currentKey = ffj_t_ShMemInfono_such_key
+				currentKey = ffj_t_MemInfono_such_key
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			} else {
@@ -894,486 +893,486 @@ mainparse:
 
 				case 'a':
 
-					if bytes.Equal(ffj_key_ShMemInfo_Active, kn) {
-						currentKey = ffj_t_ShMemInfo_Active
+					if bytes.Equal(ffj_key_MemInfo_Active, kn) {
+						currentKey = ffj_t_MemInfo_Active
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_ShMemInfo_ActiveAnon, kn) {
-						currentKey = ffj_t_ShMemInfo_ActiveAnon
+					} else if bytes.Equal(ffj_key_MemInfo_ActiveAnon, kn) {
+						currentKey = ffj_t_MemInfo_ActiveAnon
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_ShMemInfo_ActiveFile, kn) {
-						currentKey = ffj_t_ShMemInfo_ActiveFile
+					} else if bytes.Equal(ffj_key_MemInfo_ActiveFile, kn) {
+						currentKey = ffj_t_MemInfo_ActiveFile
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_ShMemInfo_AnonPages, kn) {
-						currentKey = ffj_t_ShMemInfo_AnonPages
+					} else if bytes.Equal(ffj_key_MemInfo_AnonPages, kn) {
+						currentKey = ffj_t_MemInfo_AnonPages
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_ShMemInfo_AnonHugePages, kn) {
-						currentKey = ffj_t_ShMemInfo_AnonHugePages
+					} else if bytes.Equal(ffj_key_MemInfo_AnonHugePages, kn) {
+						currentKey = ffj_t_MemInfo_AnonHugePages
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'b':
 
-					if bytes.Equal(ffj_key_ShMemInfo_Buffers, kn) {
-						currentKey = ffj_t_ShMemInfo_Buffers
+					if bytes.Equal(ffj_key_MemInfo_Buffers, kn) {
+						currentKey = ffj_t_MemInfo_Buffers
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_ShMemInfo_Bounce, kn) {
-						currentKey = ffj_t_ShMemInfo_Bounce
+					} else if bytes.Equal(ffj_key_MemInfo_Bounce, kn) {
+						currentKey = ffj_t_MemInfo_Bounce
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'c':
 
-					if bytes.Equal(ffj_key_ShMemInfo_Cached, kn) {
-						currentKey = ffj_t_ShMemInfo_Cached
+					if bytes.Equal(ffj_key_MemInfo_Cached, kn) {
+						currentKey = ffj_t_MemInfo_Cached
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_ShMemInfo_CommitLimit, kn) {
-						currentKey = ffj_t_ShMemInfo_CommitLimit
+					} else if bytes.Equal(ffj_key_MemInfo_CommitLimit, kn) {
+						currentKey = ffj_t_MemInfo_CommitLimit
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'd':
 
-					if bytes.Equal(ffj_key_ShMemInfo_Dirty, kn) {
-						currentKey = ffj_t_ShMemInfo_Dirty
+					if bytes.Equal(ffj_key_MemInfo_Dirty, kn) {
+						currentKey = ffj_t_MemInfo_Dirty
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_ShMemInfo_DirectMap4k, kn) {
-						currentKey = ffj_t_ShMemInfo_DirectMap4k
+					} else if bytes.Equal(ffj_key_MemInfo_DirectMap4k, kn) {
+						currentKey = ffj_t_MemInfo_DirectMap4k
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_ShMemInfo_DirectMap2M, kn) {
-						currentKey = ffj_t_ShMemInfo_DirectMap2M
+					} else if bytes.Equal(ffj_key_MemInfo_DirectMap2M, kn) {
+						currentKey = ffj_t_MemInfo_DirectMap2M
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'h':
 
-					if bytes.Equal(ffj_key_ShMemInfo_HardwareCorrupted, kn) {
-						currentKey = ffj_t_ShMemInfo_HardwareCorrupted
+					if bytes.Equal(ffj_key_MemInfo_HardwareCorrupted, kn) {
+						currentKey = ffj_t_MemInfo_HardwareCorrupted
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_ShMemInfo_HugePagesTotal, kn) {
-						currentKey = ffj_t_ShMemInfo_HugePagesTotal
+					} else if bytes.Equal(ffj_key_MemInfo_HugePagesTotal, kn) {
+						currentKey = ffj_t_MemInfo_HugePagesTotal
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_ShMemInfo_HugePagesFree, kn) {
-						currentKey = ffj_t_ShMemInfo_HugePagesFree
+					} else if bytes.Equal(ffj_key_MemInfo_HugePagesFree, kn) {
+						currentKey = ffj_t_MemInfo_HugePagesFree
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_ShMemInfo_HugePagesRsvd, kn) {
-						currentKey = ffj_t_ShMemInfo_HugePagesRsvd
+					} else if bytes.Equal(ffj_key_MemInfo_HugePagesRsvd, kn) {
+						currentKey = ffj_t_MemInfo_HugePagesRsvd
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_ShMemInfo_Hugepagesize, kn) {
-						currentKey = ffj_t_ShMemInfo_Hugepagesize
+					} else if bytes.Equal(ffj_key_MemInfo_Hugepagesize, kn) {
+						currentKey = ffj_t_MemInfo_Hugepagesize
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'i':
 
-					if bytes.Equal(ffj_key_ShMemInfo_Inactive, kn) {
-						currentKey = ffj_t_ShMemInfo_Inactive
+					if bytes.Equal(ffj_key_MemInfo_Inactive, kn) {
+						currentKey = ffj_t_MemInfo_Inactive
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_ShMemInfo_InactiveAnon, kn) {
-						currentKey = ffj_t_ShMemInfo_InactiveAnon
+					} else if bytes.Equal(ffj_key_MemInfo_InactiveAnon, kn) {
+						currentKey = ffj_t_MemInfo_InactiveAnon
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_ShMemInfo_InactiveFile, kn) {
-						currentKey = ffj_t_ShMemInfo_InactiveFile
+					} else if bytes.Equal(ffj_key_MemInfo_InactiveFile, kn) {
+						currentKey = ffj_t_MemInfo_InactiveFile
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'k':
 
-					if bytes.Equal(ffj_key_ShMemInfo_KernelStack, kn) {
-						currentKey = ffj_t_ShMemInfo_KernelStack
+					if bytes.Equal(ffj_key_MemInfo_KernelStack, kn) {
+						currentKey = ffj_t_MemInfo_KernelStack
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'm':
 
-					if bytes.Equal(ffj_key_ShMemInfo_MemTotal, kn) {
-						currentKey = ffj_t_ShMemInfo_MemTotal
+					if bytes.Equal(ffj_key_MemInfo_MemTotal, kn) {
+						currentKey = ffj_t_MemInfo_MemTotal
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_ShMemInfo_MemFree, kn) {
-						currentKey = ffj_t_ShMemInfo_MemFree
+					} else if bytes.Equal(ffj_key_MemInfo_MemFree, kn) {
+						currentKey = ffj_t_MemInfo_MemFree
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_ShMemInfo_MemAvailable, kn) {
-						currentKey = ffj_t_ShMemInfo_MemAvailable
+					} else if bytes.Equal(ffj_key_MemInfo_MemAvailable, kn) {
+						currentKey = ffj_t_MemInfo_MemAvailable
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_ShMemInfo_Mlocked, kn) {
-						currentKey = ffj_t_ShMemInfo_Mlocked
+					} else if bytes.Equal(ffj_key_MemInfo_Mlocked, kn) {
+						currentKey = ffj_t_MemInfo_Mlocked
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_ShMemInfo_Mapped, kn) {
-						currentKey = ffj_t_ShMemInfo_Mapped
+					} else if bytes.Equal(ffj_key_MemInfo_Mapped, kn) {
+						currentKey = ffj_t_MemInfo_Mapped
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'n':
 
-					if bytes.Equal(ffj_key_ShMemInfo_NFSUnstable, kn) {
-						currentKey = ffj_t_ShMemInfo_NFSUnstable
+					if bytes.Equal(ffj_key_MemInfo_NFSUnstable, kn) {
+						currentKey = ffj_t_MemInfo_NFSUnstable
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 's':
 
-					if bytes.Equal(ffj_key_ShMemInfo_SwapCached, kn) {
-						currentKey = ffj_t_ShMemInfo_SwapCached
+					if bytes.Equal(ffj_key_MemInfo_SwapCached, kn) {
+						currentKey = ffj_t_MemInfo_SwapCached
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_ShMemInfo_SwapTotal, kn) {
-						currentKey = ffj_t_ShMemInfo_SwapTotal
+					} else if bytes.Equal(ffj_key_MemInfo_SwapTotal, kn) {
+						currentKey = ffj_t_MemInfo_SwapTotal
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_ShMemInfo_SwapFree, kn) {
-						currentKey = ffj_t_ShMemInfo_SwapFree
+					} else if bytes.Equal(ffj_key_MemInfo_SwapFree, kn) {
+						currentKey = ffj_t_MemInfo_SwapFree
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_ShMemInfo_Shmem, kn) {
-						currentKey = ffj_t_ShMemInfo_Shmem
+					} else if bytes.Equal(ffj_key_MemInfo_Shmem, kn) {
+						currentKey = ffj_t_MemInfo_Shmem
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_ShMemInfo_Slab, kn) {
-						currentKey = ffj_t_ShMemInfo_Slab
+					} else if bytes.Equal(ffj_key_MemInfo_Slab, kn) {
+						currentKey = ffj_t_MemInfo_Slab
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_ShMemInfo_SReclaimable, kn) {
-						currentKey = ffj_t_ShMemInfo_SReclaimable
+					} else if bytes.Equal(ffj_key_MemInfo_SReclaimable, kn) {
+						currentKey = ffj_t_MemInfo_SReclaimable
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_ShMemInfo_SUnreclaim, kn) {
-						currentKey = ffj_t_ShMemInfo_SUnreclaim
+					} else if bytes.Equal(ffj_key_MemInfo_SUnreclaim, kn) {
+						currentKey = ffj_t_MemInfo_SUnreclaim
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'u':
 
-					if bytes.Equal(ffj_key_ShMemInfo_Unevictable, kn) {
-						currentKey = ffj_t_ShMemInfo_Unevictable
+					if bytes.Equal(ffj_key_MemInfo_Unevictable, kn) {
+						currentKey = ffj_t_MemInfo_Unevictable
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'v':
 
-					if bytes.Equal(ffj_key_ShMemInfo_VmallocTotal, kn) {
-						currentKey = ffj_t_ShMemInfo_VmallocTotal
+					if bytes.Equal(ffj_key_MemInfo_VmallocTotal, kn) {
+						currentKey = ffj_t_MemInfo_VmallocTotal
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_ShMemInfo_VmallocUsed, kn) {
-						currentKey = ffj_t_ShMemInfo_VmallocUsed
+					} else if bytes.Equal(ffj_key_MemInfo_VmallocUsed, kn) {
+						currentKey = ffj_t_MemInfo_VmallocUsed
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_ShMemInfo_VmallocChunk, kn) {
-						currentKey = ffj_t_ShMemInfo_VmallocChunk
+					} else if bytes.Equal(ffj_key_MemInfo_VmallocChunk, kn) {
+						currentKey = ffj_t_MemInfo_VmallocChunk
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'w':
 
-					if bytes.Equal(ffj_key_ShMemInfo_Writeback, kn) {
-						currentKey = ffj_t_ShMemInfo_Writeback
+					if bytes.Equal(ffj_key_MemInfo_Writeback, kn) {
+						currentKey = ffj_t_MemInfo_Writeback
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_ShMemInfo_WritebackTmp, kn) {
-						currentKey = ffj_t_ShMemInfo_WritebackTmp
+					} else if bytes.Equal(ffj_key_MemInfo_WritebackTmp, kn) {
+						currentKey = ffj_t_MemInfo_WritebackTmp
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_ShMemInfo_DirectMap2M, kn) {
-					currentKey = ffj_t_ShMemInfo_DirectMap2M
+				if fflib.AsciiEqualFold(ffj_key_MemInfo_DirectMap2M, kn) {
+					currentKey = ffj_t_MemInfo_DirectMap2M
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_ShMemInfo_DirectMap4k, kn) {
-					currentKey = ffj_t_ShMemInfo_DirectMap4k
+				if fflib.EqualFoldRight(ffj_key_MemInfo_DirectMap4k, kn) {
+					currentKey = ffj_t_MemInfo_DirectMap4k
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_ShMemInfo_Hugepagesize, kn) {
-					currentKey = ffj_t_ShMemInfo_Hugepagesize
+				if fflib.EqualFoldRight(ffj_key_MemInfo_Hugepagesize, kn) {
+					currentKey = ffj_t_MemInfo_Hugepagesize
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_ShMemInfo_HugePagesRsvd, kn) {
-					currentKey = ffj_t_ShMemInfo_HugePagesRsvd
+				if fflib.EqualFoldRight(ffj_key_MemInfo_HugePagesRsvd, kn) {
+					currentKey = ffj_t_MemInfo_HugePagesRsvd
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_ShMemInfo_HugePagesFree, kn) {
-					currentKey = ffj_t_ShMemInfo_HugePagesFree
+				if fflib.EqualFoldRight(ffj_key_MemInfo_HugePagesFree, kn) {
+					currentKey = ffj_t_MemInfo_HugePagesFree
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_ShMemInfo_HugePagesTotal, kn) {
-					currentKey = ffj_t_ShMemInfo_HugePagesTotal
+				if fflib.EqualFoldRight(ffj_key_MemInfo_HugePagesTotal, kn) {
+					currentKey = ffj_t_MemInfo_HugePagesTotal
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_ShMemInfo_AnonHugePages, kn) {
-					currentKey = ffj_t_ShMemInfo_AnonHugePages
+				if fflib.EqualFoldRight(ffj_key_MemInfo_AnonHugePages, kn) {
+					currentKey = ffj_t_MemInfo_AnonHugePages
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_ShMemInfo_HardwareCorrupted, kn) {
-					currentKey = ffj_t_ShMemInfo_HardwareCorrupted
+				if fflib.AsciiEqualFold(ffj_key_MemInfo_HardwareCorrupted, kn) {
+					currentKey = ffj_t_MemInfo_HardwareCorrupted
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_ShMemInfo_VmallocChunk, kn) {
-					currentKey = ffj_t_ShMemInfo_VmallocChunk
+				if fflib.EqualFoldRight(ffj_key_MemInfo_VmallocChunk, kn) {
+					currentKey = ffj_t_MemInfo_VmallocChunk
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_ShMemInfo_VmallocUsed, kn) {
-					currentKey = ffj_t_ShMemInfo_VmallocUsed
+				if fflib.EqualFoldRight(ffj_key_MemInfo_VmallocUsed, kn) {
+					currentKey = ffj_t_MemInfo_VmallocUsed
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_ShMemInfo_VmallocTotal, kn) {
-					currentKey = ffj_t_ShMemInfo_VmallocTotal
+				if fflib.AsciiEqualFold(ffj_key_MemInfo_VmallocTotal, kn) {
+					currentKey = ffj_t_MemInfo_VmallocTotal
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_ShMemInfo_CommitLimit, kn) {
-					currentKey = ffj_t_ShMemInfo_CommitLimit
+				if fflib.AsciiEqualFold(ffj_key_MemInfo_CommitLimit, kn) {
+					currentKey = ffj_t_MemInfo_CommitLimit
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_ShMemInfo_WritebackTmp, kn) {
-					currentKey = ffj_t_ShMemInfo_WritebackTmp
+				if fflib.EqualFoldRight(ffj_key_MemInfo_WritebackTmp, kn) {
+					currentKey = ffj_t_MemInfo_WritebackTmp
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_ShMemInfo_Bounce, kn) {
-					currentKey = ffj_t_ShMemInfo_Bounce
+				if fflib.SimpleLetterEqualFold(ffj_key_MemInfo_Bounce, kn) {
+					currentKey = ffj_t_MemInfo_Bounce
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_ShMemInfo_NFSUnstable, kn) {
-					currentKey = ffj_t_ShMemInfo_NFSUnstable
+				if fflib.EqualFoldRight(ffj_key_MemInfo_NFSUnstable, kn) {
+					currentKey = ffj_t_MemInfo_NFSUnstable
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_ShMemInfo_KernelStack, kn) {
-					currentKey = ffj_t_ShMemInfo_KernelStack
+				if fflib.EqualFoldRight(ffj_key_MemInfo_KernelStack, kn) {
+					currentKey = ffj_t_MemInfo_KernelStack
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_ShMemInfo_SUnreclaim, kn) {
-					currentKey = ffj_t_ShMemInfo_SUnreclaim
+				if fflib.EqualFoldRight(ffj_key_MemInfo_SUnreclaim, kn) {
+					currentKey = ffj_t_MemInfo_SUnreclaim
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_ShMemInfo_SReclaimable, kn) {
-					currentKey = ffj_t_ShMemInfo_SReclaimable
+				if fflib.EqualFoldRight(ffj_key_MemInfo_SReclaimable, kn) {
+					currentKey = ffj_t_MemInfo_SReclaimable
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_ShMemInfo_Slab, kn) {
-					currentKey = ffj_t_ShMemInfo_Slab
+				if fflib.EqualFoldRight(ffj_key_MemInfo_Slab, kn) {
+					currentKey = ffj_t_MemInfo_Slab
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_ShMemInfo_Shmem, kn) {
-					currentKey = ffj_t_ShMemInfo_Shmem
+				if fflib.EqualFoldRight(ffj_key_MemInfo_Shmem, kn) {
+					currentKey = ffj_t_MemInfo_Shmem
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_ShMemInfo_Mapped, kn) {
-					currentKey = ffj_t_ShMemInfo_Mapped
+				if fflib.SimpleLetterEqualFold(ffj_key_MemInfo_Mapped, kn) {
+					currentKey = ffj_t_MemInfo_Mapped
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_ShMemInfo_AnonPages, kn) {
-					currentKey = ffj_t_ShMemInfo_AnonPages
+				if fflib.EqualFoldRight(ffj_key_MemInfo_AnonPages, kn) {
+					currentKey = ffj_t_MemInfo_AnonPages
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_ShMemInfo_Writeback, kn) {
-					currentKey = ffj_t_ShMemInfo_Writeback
+				if fflib.EqualFoldRight(ffj_key_MemInfo_Writeback, kn) {
+					currentKey = ffj_t_MemInfo_Writeback
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_ShMemInfo_Dirty, kn) {
-					currentKey = ffj_t_ShMemInfo_Dirty
+				if fflib.SimpleLetterEqualFold(ffj_key_MemInfo_Dirty, kn) {
+					currentKey = ffj_t_MemInfo_Dirty
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_ShMemInfo_SwapFree, kn) {
-					currentKey = ffj_t_ShMemInfo_SwapFree
+				if fflib.EqualFoldRight(ffj_key_MemInfo_SwapFree, kn) {
+					currentKey = ffj_t_MemInfo_SwapFree
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_ShMemInfo_SwapTotal, kn) {
-					currentKey = ffj_t_ShMemInfo_SwapTotal
+				if fflib.EqualFoldRight(ffj_key_MemInfo_SwapTotal, kn) {
+					currentKey = ffj_t_MemInfo_SwapTotal
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_ShMemInfo_Mlocked, kn) {
-					currentKey = ffj_t_ShMemInfo_Mlocked
+				if fflib.EqualFoldRight(ffj_key_MemInfo_Mlocked, kn) {
+					currentKey = ffj_t_MemInfo_Mlocked
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_ShMemInfo_Unevictable, kn) {
-					currentKey = ffj_t_ShMemInfo_Unevictable
+				if fflib.SimpleLetterEqualFold(ffj_key_MemInfo_Unevictable, kn) {
+					currentKey = ffj_t_MemInfo_Unevictable
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_ShMemInfo_InactiveFile, kn) {
-					currentKey = ffj_t_ShMemInfo_InactiveFile
+				if fflib.AsciiEqualFold(ffj_key_MemInfo_InactiveFile, kn) {
+					currentKey = ffj_t_MemInfo_InactiveFile
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_ShMemInfo_ActiveFile, kn) {
-					currentKey = ffj_t_ShMemInfo_ActiveFile
+				if fflib.AsciiEqualFold(ffj_key_MemInfo_ActiveFile, kn) {
+					currentKey = ffj_t_MemInfo_ActiveFile
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_ShMemInfo_InactiveAnon, kn) {
-					currentKey = ffj_t_ShMemInfo_InactiveAnon
+				if fflib.AsciiEqualFold(ffj_key_MemInfo_InactiveAnon, kn) {
+					currentKey = ffj_t_MemInfo_InactiveAnon
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_ShMemInfo_ActiveAnon, kn) {
-					currentKey = ffj_t_ShMemInfo_ActiveAnon
+				if fflib.AsciiEqualFold(ffj_key_MemInfo_ActiveAnon, kn) {
+					currentKey = ffj_t_MemInfo_ActiveAnon
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_ShMemInfo_Inactive, kn) {
-					currentKey = ffj_t_ShMemInfo_Inactive
+				if fflib.SimpleLetterEqualFold(ffj_key_MemInfo_Inactive, kn) {
+					currentKey = ffj_t_MemInfo_Inactive
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_ShMemInfo_Active, kn) {
-					currentKey = ffj_t_ShMemInfo_Active
+				if fflib.SimpleLetterEqualFold(ffj_key_MemInfo_Active, kn) {
+					currentKey = ffj_t_MemInfo_Active
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_ShMemInfo_SwapCached, kn) {
-					currentKey = ffj_t_ShMemInfo_SwapCached
+				if fflib.EqualFoldRight(ffj_key_MemInfo_SwapCached, kn) {
+					currentKey = ffj_t_MemInfo_SwapCached
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_ShMemInfo_Cached, kn) {
-					currentKey = ffj_t_ShMemInfo_Cached
+				if fflib.SimpleLetterEqualFold(ffj_key_MemInfo_Cached, kn) {
+					currentKey = ffj_t_MemInfo_Cached
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_ShMemInfo_Buffers, kn) {
-					currentKey = ffj_t_ShMemInfo_Buffers
+				if fflib.EqualFoldRight(ffj_key_MemInfo_Buffers, kn) {
+					currentKey = ffj_t_MemInfo_Buffers
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_ShMemInfo_MemAvailable, kn) {
-					currentKey = ffj_t_ShMemInfo_MemAvailable
+				if fflib.AsciiEqualFold(ffj_key_MemInfo_MemAvailable, kn) {
+					currentKey = ffj_t_MemInfo_MemAvailable
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_ShMemInfo_MemFree, kn) {
-					currentKey = ffj_t_ShMemInfo_MemFree
+				if fflib.AsciiEqualFold(ffj_key_MemInfo_MemFree, kn) {
+					currentKey = ffj_t_MemInfo_MemFree
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_ShMemInfo_MemTotal, kn) {
-					currentKey = ffj_t_ShMemInfo_MemTotal
+				if fflib.AsciiEqualFold(ffj_key_MemInfo_MemTotal, kn) {
+					currentKey = ffj_t_MemInfo_MemTotal
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				currentKey = ffj_t_ShMemInfono_such_key
+				currentKey = ffj_t_MemInfono_such_key
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			}
@@ -1390,127 +1389,127 @@ mainparse:
 			if tok == fflib.FFTok_left_brace || tok == fflib.FFTok_left_bracket || tok == fflib.FFTok_integer || tok == fflib.FFTok_double || tok == fflib.FFTok_string || tok == fflib.FFTok_bool || tok == fflib.FFTok_null {
 				switch currentKey {
 
-				case ffj_t_ShMemInfo_MemTotal:
+				case ffj_t_MemInfo_MemTotal:
 					goto handle_MemTotal
 
-				case ffj_t_ShMemInfo_MemFree:
+				case ffj_t_MemInfo_MemFree:
 					goto handle_MemFree
 
-				case ffj_t_ShMemInfo_MemAvailable:
+				case ffj_t_MemInfo_MemAvailable:
 					goto handle_MemAvailable
 
-				case ffj_t_ShMemInfo_Buffers:
+				case ffj_t_MemInfo_Buffers:
 					goto handle_Buffers
 
-				case ffj_t_ShMemInfo_Cached:
+				case ffj_t_MemInfo_Cached:
 					goto handle_Cached
 
-				case ffj_t_ShMemInfo_SwapCached:
+				case ffj_t_MemInfo_SwapCached:
 					goto handle_SwapCached
 
-				case ffj_t_ShMemInfo_Active:
+				case ffj_t_MemInfo_Active:
 					goto handle_Active
 
-				case ffj_t_ShMemInfo_Inactive:
+				case ffj_t_MemInfo_Inactive:
 					goto handle_Inactive
 
-				case ffj_t_ShMemInfo_ActiveAnon:
+				case ffj_t_MemInfo_ActiveAnon:
 					goto handle_ActiveAnon
 
-				case ffj_t_ShMemInfo_InactiveAnon:
+				case ffj_t_MemInfo_InactiveAnon:
 					goto handle_InactiveAnon
 
-				case ffj_t_ShMemInfo_ActiveFile:
+				case ffj_t_MemInfo_ActiveFile:
 					goto handle_ActiveFile
 
-				case ffj_t_ShMemInfo_InactiveFile:
+				case ffj_t_MemInfo_InactiveFile:
 					goto handle_InactiveFile
 
-				case ffj_t_ShMemInfo_Unevictable:
+				case ffj_t_MemInfo_Unevictable:
 					goto handle_Unevictable
 
-				case ffj_t_ShMemInfo_Mlocked:
+				case ffj_t_MemInfo_Mlocked:
 					goto handle_Mlocked
 
-				case ffj_t_ShMemInfo_SwapTotal:
+				case ffj_t_MemInfo_SwapTotal:
 					goto handle_SwapTotal
 
-				case ffj_t_ShMemInfo_SwapFree:
+				case ffj_t_MemInfo_SwapFree:
 					goto handle_SwapFree
 
-				case ffj_t_ShMemInfo_Dirty:
+				case ffj_t_MemInfo_Dirty:
 					goto handle_Dirty
 
-				case ffj_t_ShMemInfo_Writeback:
+				case ffj_t_MemInfo_Writeback:
 					goto handle_Writeback
 
-				case ffj_t_ShMemInfo_AnonPages:
+				case ffj_t_MemInfo_AnonPages:
 					goto handle_AnonPages
 
-				case ffj_t_ShMemInfo_Mapped:
+				case ffj_t_MemInfo_Mapped:
 					goto handle_Mapped
 
-				case ffj_t_ShMemInfo_Shmem:
+				case ffj_t_MemInfo_Shmem:
 					goto handle_Shmem
 
-				case ffj_t_ShMemInfo_Slab:
+				case ffj_t_MemInfo_Slab:
 					goto handle_Slab
 
-				case ffj_t_ShMemInfo_SReclaimable:
+				case ffj_t_MemInfo_SReclaimable:
 					goto handle_SReclaimable
 
-				case ffj_t_ShMemInfo_SUnreclaim:
+				case ffj_t_MemInfo_SUnreclaim:
 					goto handle_SUnreclaim
 
-				case ffj_t_ShMemInfo_KernelStack:
+				case ffj_t_MemInfo_KernelStack:
 					goto handle_KernelStack
 
-				case ffj_t_ShMemInfo_NFSUnstable:
+				case ffj_t_MemInfo_NFSUnstable:
 					goto handle_NFSUnstable
 
-				case ffj_t_ShMemInfo_Bounce:
+				case ffj_t_MemInfo_Bounce:
 					goto handle_Bounce
 
-				case ffj_t_ShMemInfo_WritebackTmp:
+				case ffj_t_MemInfo_WritebackTmp:
 					goto handle_WritebackTmp
 
-				case ffj_t_ShMemInfo_CommitLimit:
+				case ffj_t_MemInfo_CommitLimit:
 					goto handle_CommitLimit
 
-				case ffj_t_ShMemInfo_VmallocTotal:
+				case ffj_t_MemInfo_VmallocTotal:
 					goto handle_VmallocTotal
 
-				case ffj_t_ShMemInfo_VmallocUsed:
+				case ffj_t_MemInfo_VmallocUsed:
 					goto handle_VmallocUsed
 
-				case ffj_t_ShMemInfo_VmallocChunk:
+				case ffj_t_MemInfo_VmallocChunk:
 					goto handle_VmallocChunk
 
-				case ffj_t_ShMemInfo_HardwareCorrupted:
+				case ffj_t_MemInfo_HardwareCorrupted:
 					goto handle_HardwareCorrupted
 
-				case ffj_t_ShMemInfo_AnonHugePages:
+				case ffj_t_MemInfo_AnonHugePages:
 					goto handle_AnonHugePages
 
-				case ffj_t_ShMemInfo_HugePagesTotal:
+				case ffj_t_MemInfo_HugePagesTotal:
 					goto handle_HugePagesTotal
 
-				case ffj_t_ShMemInfo_HugePagesFree:
+				case ffj_t_MemInfo_HugePagesFree:
 					goto handle_HugePagesFree
 
-				case ffj_t_ShMemInfo_HugePagesRsvd:
+				case ffj_t_MemInfo_HugePagesRsvd:
 					goto handle_HugePagesRsvd
 
-				case ffj_t_ShMemInfo_Hugepagesize:
+				case ffj_t_MemInfo_Hugepagesize:
 					goto handle_Hugepagesize
 
-				case ffj_t_ShMemInfo_DirectMap4k:
+				case ffj_t_MemInfo_DirectMap4k:
 					goto handle_DirectMap4k
 
-				case ffj_t_ShMemInfo_DirectMap2M:
+				case ffj_t_MemInfo_DirectMap2M:
 					goto handle_DirectMap2M
 
-				case ffj_t_ShMemInfono_such_key:
+				case ffj_t_MemInfono_such_key:
 					err = fs.SkipField(tok)
 					if err != nil {
 						return fs.WrapErr(err)
