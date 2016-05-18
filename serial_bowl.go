@@ -35,10 +35,57 @@ func init() {
 func main() {
 	flag.Parse()
 	done := make(chan struct{})
+	// start the visual ticker
 	go dot(done)
+
+	// generate all of the test data
 	shared.GenData()
+
+	// Run the benchmarks
+	results := benchBasicMemInfo()
+	results = append(results, benchMemInfo()...)
+	results = append(results, benchMessage()...)
+	results = append(results, benchRedditAccount()...)
+
+	close(done)
+	fmt.Println("")
+	fmt.Println("generating output...")
+	// set the output
+	var w io.Writer
+	var err error
+	switch output {
+	case "stdout":
+		w = os.Stdout
+	default:
+		w, err = os.OpenFile(output, os.O_CREATE|os.O_TRUNC|os.O_RDWR, 0644)
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+		defer w.(*os.File).Close()
+	}
+	// process the output
+	switch format {
+	case "txt":
+		shared.TXTOut(w, results)
+	case "csv":
+		err := shared.CSVOut(w, results)
+		if err != nil {
+			fmt.Printf("error creating CSV output: %s\n", err)
+		}
+	case "md":
+		err := shared.MDOut(w, results)
+		if err != nil {
+			fmt.Printf("error creating MarkDown output: %s\n", err)
+		}
+	default:
+		fmt.Printf("unknown output format: %q; defaulting to \"txt\"\n", format)
+		shared.TXTOut(w, results)
+	}
+}
+
+func benchBasicMemInfo() []shared.Bench {
 	var results []shared.Bench
-	// BasicMemInfo
 	// CapnProto2
 	b := capnp.BenchBasicMemInfo()
 	results = append(results, b)
@@ -63,9 +110,14 @@ func main() {
 	// PBv3
 	b = pb.BenchBasicMemInfo()
 	results = append(results, b)
-	// MemInfo
+
+	return results
+}
+
+func benchMemInfo() []shared.Bench {
+	var results []shared.Bench
 	// CapnProto2
-	b = capnp.BenchMemInfo()
+	b := capnp.BenchMemInfo()
 	results = append(results, b)
 	// Flatbuffers
 	b = fb.BenchMemInfo()
@@ -88,6 +140,13 @@ func main() {
 	// PBv3
 	b = pb.BenchMemInfo()
 	results = append(results, b)
+
+	return results
+}
+
+func benchMessage() []shared.Bench {
+	var results []shared.Bench
+	var b shared.Bench
 
 	// Message Data
 	dataLen := []int{16, 64, 256, 1024, 2048, 4096}
@@ -128,9 +187,13 @@ func main() {
 		results = append(results, b)
 	}
 
-	// Reddit Account
+	return results
+}
+
+func benchRedditAccount() []shared.Bench {
+	var results []shared.Bench
 	// CapnProto2
-	b = capnp.BenchRedditAccount()
+	b := capnp.BenchRedditAccount()
 	results = append(results, b)
 	// Flatbuffers
 	b = fb.BenchRedditAccount()
@@ -153,42 +216,7 @@ func main() {
 	// PB v3
 	b = pb.BenchRedditAccount()
 
-	results = append(results, b)
-	close(done)
-	fmt.Println("")
-	fmt.Println("generating output...")
-	// set the output
-	var w io.Writer
-	var err error
-	switch output {
-	case "stdout":
-		w = os.Stdout
-	default:
-		w, err = os.OpenFile(output, os.O_CREATE|os.O_TRUNC|os.O_RDWR, 0644)
-		if err != nil {
-			fmt.Println(err)
-			os.Exit(1)
-		}
-		defer w.(*os.File).Close()
-	}
-	// process the output
-	switch format {
-	case "txt":
-		shared.TXTOut(w, results)
-	case "csv":
-		err := shared.CSVOut(w, results)
-		if err != nil {
-			fmt.Printf("error creating CSV output: %s\n", err)
-		}
-	case "md":
-		err := shared.MDOut(w, results)
-		if err != nil {
-			fmt.Printf("error creating MarkDown output: %s\n", err)
-		}
-	default:
-		fmt.Printf("unknown output format: %q; defaulting to \"txt\"\n", format)
-		shared.TXTOut(w, results)
-	}
+	return results
 }
 
 func dot(done chan struct{}) {
