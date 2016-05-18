@@ -49,6 +49,7 @@ const (
 	UnknownProt Proto = iota
 	Flatbuffers
 	GenCode
+	Gob
 	JSON
 	FFJSON
 	FFJSONBuffer
