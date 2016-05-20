@@ -3,17 +3,8 @@
 package shared
 
 import (
-	"bytes"
-	crand "crypto/rand"
-	"encoding/csv"
-	"fmt"
-	"io"
-	"math/big"
-	"math/rand"
-	"testing"
-
 	pcg "github.com/dgryski/go-pcgr"
-	"github.com/mohae/csv2md"
+	"github.com/mohae/benchutil"
 )
 
 const alphanum = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
@@ -75,9 +66,13 @@ const (
 var StructTypes []StructType
 
 // Max Length of various types (for formatting purposes)
-var maxOpLen int
-var maxProtoLen int
-var maxStructTypeLen int
+// and other formatting info
+var (
+	maxOpLen         int
+	maxProtoLen      int
+	maxStructTypeLen int
+	PadLen           int = 2
+)
 
 func init() {
 	Ops = []Op{Marshal, Unmarshal, Serialize, Deserialize}
@@ -86,105 +81,26 @@ func init() {
 			maxOpLen = len(v.String())
 		}
 	}
-	maxOpLen += 5
+	maxOpLen += PadLen
 	Protos = []Proto{Flatbuffers, JSON, ProtobufV3, CapnProto2}
 	for _, v := range Protos {
 		if len(v.String()) > maxProtoLen {
 			maxProtoLen = len(v.String())
 		}
 	}
-	maxProtoLen += 5
+	maxProtoLen += PadLen
 	StructTypes = []StructType{BasicMemInfo, MemInfo, Message, RedditAccount}
 	for _, v := range StructTypes {
 		if len(v.String()) > maxStructTypeLen {
 			maxStructTypeLen = len(v.String())
 		}
 	}
-	maxStructTypeLen += 5
-}
-
-// Bench holds information about a serialization protocol's benchmark.
-type Bench struct {
-	Proto        Proto         // the type of protocol buffer
-	StructString string        // the struct being benched
-	Results      map[Op]Result // A map of Result keyed by Op.
-}
-
-func (b Bench) TXTOutput() []string {
-	var out []string
-	for _, v := range Ops {
-		r, ok := b.Results[v]
-		if !ok {
-			continue
-		}
-		out = append(out, b.formatOutput(v, r))
-	}
-	return out
-}
-
-func (b Bench) formatOutput(op Op, r Result) string {
-	return fmt.Sprintf("%s%s%s%s", column(maxProtoLen, b.Proto.String()), column(maxOpLen, op.String()), column(maxStructTypeLen, b.StructString), r.String())
-}
-
-func (b Bench) CSVOutput() [][]string {
-	var out [][]string
-	for _, v := range Ops {
-		r, ok := b.Results[v]
-		if !ok {
-			continue
-		}
-		tmp := []string{b.Proto.String(), v.String(), b.StructString}
-		tmp = append(tmp, r.CSV()...)
-		out = append(out, tmp)
-	}
-	return out
-}
-
-// Holds result information
-type Result struct {
-	Ops      int64 // the number of operations performed
-	NsOp     int64 // The amount of time, in Nanoseconds, per Op.
-	BytesOp  int64 // The number of bytes allocated per Op.
-	AllocsOp int64 // The number of Allocations per Op.
-}
-
-// ResultFromBenchmarkResult creates a Result{} from a testing.BenchmarkResult.
-func ResultFromBenchmarkResult(br testing.BenchmarkResult) Result {
-	var r Result
-	r.Ops = int64(br.N) * int64(Len)
-	r.NsOp = br.T.Nanoseconds() / r.Ops
-	r.BytesOp = int64(br.MemBytes) / r.Ops
-	r.AllocsOp = int64(br.MemAllocs) / r.Ops
-	return r
-}
-
-func (r Result) OpsString() string {
-	return fmt.Sprintf("%d ops", r.Ops)
-}
-
-func (r Result) NsOpString() string {
-	return fmt.Sprintf("%d ns/Op", r.NsOp)
-}
-
-func (r Result) BytesOpString() string {
-	return fmt.Sprintf("%d bytes/Op", r.BytesOp)
-}
-
-func (r Result) AllocsOpString() string {
-	return fmt.Sprintf("%d allocs/Op", r.AllocsOp)
-}
-
-func (r Result) String() string {
-	return fmt.Sprintf("%s%s%s%s", column(15, r.OpsString()), column(15, r.NsOpString()), column(18, r.BytesOpString()), column(16, r.AllocsOpString()))
-}
-
-func (r Result) CSV() []string {
-	return []string{fmt.Sprintf("%d", r.Ops), fmt.Sprintf("%d", r.NsOp), fmt.Sprintf("%d", r.BytesOp), fmt.Sprintf("%d", r.AllocsOp)}
+	maxStructTypeLen += PadLen
 }
 
 func GenData() {
 	var rnd pcg.Rand
-	rnd.Seed(SeedVal())
+	rnd.Seed(benchutil.SeedVal())
 	GenBasicMemInfoData(Len, rnd)
 	GenMemInfoData(Len, rnd)
 	GenRedditAccountData(Len, rnd)
@@ -266,8 +182,8 @@ func GenMemInfoData(l int, rand pcg.Rand) {
 func GenMessageData(n, l int, rand pcg.Rand) {
 	MessageData = make([]ShMessage, l)
 	for i := 0; i < l; i++ {
-		id := RandBytes(8)
-		data := RandBytes(n)
+		id := benchutil.RandBytes(8)
+		data := benchutil.RandBytes(n)
 		MessageData[i] = ShMessage{
 			ID:     id,
 			DestID: rand.Next(),
@@ -282,110 +198,22 @@ func GenRedditAccountData(l int, rand pcg.Rand) {
 	RedditAccountData = make([]ShRedditAccount, l)
 	for i := 0; i < l; i++ {
 		RedditAccountData[i] = ShRedditAccount{
-			ID:   RandString(20),
-			Name: RandString(int(rand.Bound(30))),
-			Kind: RandString(5),
+			ID:   benchutil.RandString(20),
+			Name: benchutil.RandString(int(rand.Bound(30))),
+			Kind: benchutil.RandString(5),
 			Data: AccountData{
 				CommentKarma: rand.Int63(),
-				HasMail:      RandBool(),
-				HasModMail:   RandBool(),
-				ID:           RandString(20),
+				HasMail:      benchutil.RandBool(),
+				HasModMail:   benchutil.RandBool(),
+				ID:           benchutil.RandString(20),
 				InboxCount:   rand.Int63(),
-				IsFriend:     RandBool(),
-				IsGold:       RandBool(),
+				IsFriend:     benchutil.RandBool(),
+				IsGold:       benchutil.RandBool(),
 				LinkKarma:    rand.Int63(),
-				ModHash:      RandString(88),
-				Name:         RandString(int(rand.Bound(30))),
-				Over18:       RandBool(),
+				ModHash:      benchutil.RandString(88),
+				Name:         benchutil.RandString(int(rand.Bound(30))),
+				Over18:       benchutil.RandBool(),
 			},
 		}
 	}
-}
-
-// RandString returns a randomly generated string of length l.
-func RandString(l int) string {
-	return string(RandBytes(l))
-}
-
-// RandBytes returns a randomly generated []byte of length l.  The values of
-// these bytes are restricted to the ASCII alphanum range; that doesn't matter
-// for the purposes of these benchmarks.
-func RandBytes(l int) []byte {
-	b := make([]byte, l)
-	for i := 0; i < l; i++ {
-		b[i] = alphanum[rand.Intn(len(alphanum))]
-	}
-	return b
-}
-
-// RandBool returns a pseudo-random bool value.
-func RandBool() bool {
-	if rand.Int31()%2 == 0 {
-		return false
-	}
-	return true
-}
-
-// column returns a right justified string of width w.
-func column(w int, s string) string {
-	pad := w - len(s)
-	if pad < 0 {
-		pad = 2
-	}
-	padding := make([]byte, pad)
-	for i := 0; i < pad; i++ {
-		padding[i] = 0x20
-	}
-	return fmt.Sprintf("%s%s", string(padding), s)
-}
-
-func TXTOut(w io.Writer, benchResults []Bench) {
-	for _, v := range benchResults {
-		lines := v.TXTOutput()
-		for _, line := range lines {
-			fmt.Fprintln(w, line)
-		}
-	}
-}
-func CSVOut(w io.Writer, benchResults []Bench) error {
-	wr := csv.NewWriter(w)
-	defer wr.Flush()
-	// first write out the header
-	err := wr.Write([]string{"Protocol", "Operation", "Data Type", "Operations", "Ns/Op", "Bytes/Op", "Allocs/Op"})
-	if err != nil {
-		return err
-	}
-	for _, bench := range benchResults {
-		lines := bench.CSVOutput()
-		for _, line := range lines {
-			err := wr.Write(line)
-			if err != nil {
-				return err
-			}
-		}
-	}
-	return nil
-}
-
-func MDOut(w io.Writer, benchResults []Bench) error {
-	var buff bytes.Buffer
-	// first generate the csv
-	err := CSVOut(&buff, benchResults)
-	if err != nil {
-		return fmt.Errorf("error while creating intermediate CSV: %s", err)
-	}
-	// then transmogrify to MD
-	t := csv2md.NewTransmogrifier(&buff, w)
-	t.SetFieldAlignment([]string{"l", "l", "l", "r", "r", "r", "r"})
-	return t.MDTable()
-}
-
-// seedVal gets a random int64 to use for a seed value
-func SeedVal() int64 {
-	bi := big.NewInt(1<<63 - 1)
-	r, err := crand.Int(crand.Reader, bi)
-	if err != nil {
-		panic(fmt.Sprintf("entropy read error: %s\n", err))
-	}
-	return (r.Int64())
 }

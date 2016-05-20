@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"time"
 
 	pcg "github.com/dgryski/go-pcgr"
+	"github.com/mohae/benchutil"
 	"github.com/mohae/serial-bowl/capnp"
 	"github.com/mohae/serial-bowl/fb"
 	"github.com/mohae/serial-bowl/ffjson"
@@ -21,8 +21,12 @@ import (
 
 // flags
 var (
-	output string
-	format string
+	output         string
+	format         string
+	section        bool
+	sectionHeaders bool
+	nameSections   bool
+	systemInfo     bool
 )
 
 func init() {
@@ -30,26 +34,22 @@ func init() {
 	flag.StringVar(&output, "o", "stdout", "output destination (short)")
 	flag.StringVar(&format, "format", "txt", "format of output")
 	flag.StringVar(&format, "f", "txt", "format of output")
+	flag.BoolVar(&nameSections, "namesections", false, "use group as section name: some restrictions apply")
+	flag.BoolVar(&nameSections, "n", false, "use group as section name: some restrictions apply")
+	flag.BoolVar(&section, "sections", false, "don't separate groups of tests into sections")
+	flag.BoolVar(&section, "s", false, "don't separate groups of tests into sections")
+	flag.BoolVar(&sectionHeaders, "sectionheader", false, "if there are sections, add a section header row")
+	flag.BoolVar(&sectionHeaders, "h", false, "if there are sections, add a section header row")
+	flag.BoolVar(&systemInfo, "sysinfo", false, "add the system information to the output")
+	flag.BoolVar(&systemInfo, "i", false, "add the system information to the output")
 }
 
 func main() {
 	flag.Parse()
 	done := make(chan struct{})
 	// start the visual ticker
-	go dot(done)
+	go benchutil.Dot(done)
 
-	// generate all of the test data
-	shared.GenData()
-
-	// Run the benchmarks
-	results := benchBasicMemInfo()
-	results = append(results, benchMemInfo()...)
-	results = append(results, benchMessage()...)
-	results = append(results, benchRedditAccount()...)
-
-	close(done)
-	fmt.Println("")
-	fmt.Println("generating output...")
 	// set the output
 	var w io.Writer
 	var err error
@@ -64,95 +64,102 @@ func main() {
 		}
 		defer w.(*os.File).Close()
 	}
+
+	// generate all of the test data
+	shared.GenData()
+
+	// get the benchmark for the desired format
 	// process the output
+	var bench benchutil.Benchmarker
 	switch format {
-	case "txt":
-		shared.TXTOut(w, results)
 	case "csv":
-		err := shared.CSVOut(w, results)
-		if err != nil {
-			fmt.Printf("error creating CSV output: %s\n", err)
-		}
+		bench = benchutil.NewCSVBench(w)
 	case "md":
-		err := shared.MDOut(w, results)
-		if err != nil {
-			fmt.Printf("error creating MarkDown output: %s\n", err)
-		}
+		bench = benchutil.NewMDBench(w)
+		bench.(*benchutil.MDBench).GroupAsSectionName = nameSections
 	default:
-		fmt.Printf("unknown output format: %q; defaulting to \"txt\"\n", format)
-		shared.TXTOut(w, results)
+		bench = benchutil.NewStringBench(w)
+	}
+	bench.SectionPerGroup(section)
+	bench.SectionHeaders(sectionHeaders)
+	bench.IncludeSystemInfo(systemInfo)
+
+	// Run the benchmarks
+	benchBasicMemInfo(bench)
+	benchMemInfo(bench)
+	benchMessage(bench)
+	benchRedditAccount(bench)
+
+	close(done)
+	fmt.Println("\ngenerating output...\n")
+	err = bench.Out()
+	if err != nil {
+		fmt.Printf("error generating output: %s\n", err)
 	}
 }
 
-func benchBasicMemInfo() []shared.Bench {
-	var results []shared.Bench
+func benchBasicMemInfo(bench benchutil.Benchmarker) {
 	// CapnProto2
 	b := capnp.BenchBasicMemInfo()
-	results = append(results, b)
+	bench.Append(b...)
 	// Flatbuffers
 	b = fb.BenchBasicMemInfo()
-	results = append(results, b)
+	bench.Append(b...)
 	// Gencode
 	b = gencode.BenchBasicMemInfo()
-	results = append(results, b)
+	bench.Append(b...)
 	// Gob
 	b = gobs.BenchBasicMemInfo()
-	results = append(results, b)
+	bench.Append(b...)
 	// JSON
 	b = jsn.BenchBasicMemInfo()
-	results = append(results, b)
+	bench.Append(b...)
 	// FFJSON
 	b = ffjson.BenchBasicMemInfo()
-	results = append(results, b)
+	bench.Append(b...)
 	// FFJSON Buf
 	b = ffjsonbuf.BenchBasicMemInfo()
-	results = append(results, b)
+	bench.Append(b...)
 	// PBv3
 	b = pb.BenchBasicMemInfo()
-	results = append(results, b)
-
-	return results
+	bench.Append(b...)
 }
 
-func benchMemInfo() []shared.Bench {
-	var results []shared.Bench
+func benchMemInfo(bench benchutil.Benchmarker) {
 	// CapnProto2
 	b := capnp.BenchMemInfo()
-	results = append(results, b)
+	bench.Append(b...)
 	// Flatbuffers
 	b = fb.BenchMemInfo()
-	results = append(results, b)
+	bench.Append(b...)
 	// Gencode
 	b = gencode.BenchMemInfo()
-	results = append(results, b)
+	bench.Append(b...)
 	// Gob
 	b = gobs.BenchMemInfo()
-	results = append(results, b)
+	bench.Append(b...)
 	// JSON
 	b = jsn.BenchMemInfo()
-	results = append(results, b)
+	bench.Append(b...)
 	// FFJSON
 	b = ffjson.BenchMemInfo()
-	results = append(results, b)
+	bench.Append(b...)
 	// FFJSON Buf
 	b = ffjsonbuf.BenchMemInfo()
-	results = append(results, b)
+	bench.Append(b...)
 	// PBv3
 	b = pb.BenchMemInfo()
-	results = append(results, b)
-
-	return results
+	bench.Append(b...)
 }
 
-func benchMessage() []shared.Bench {
-	var results []shared.Bench
-	var b shared.Bench
+func benchMessage(bench benchutil.Benchmarker) {
+	var b []benchutil.Bench
 
 	// Message Data
 	dataLen := []int{16, 64, 256, 1024, 2048, 4096}
 	for _, v := range dataLen {
 		var rnd pcg.Rand
-		rnd.Seed(shared.SeedVal())
+		rnd.Seed(benchutil.SeedVal())
 		shared.GenMessageData(v, shared.Len, rnd)
 		// CapnProto2
 		// TODO: 4096 Bytes of data causes the following error:
@@ -162,77 +169,55 @@ func benchMessage() []shared.Bench {
 			goto skipCap
 		}
 		b = capnp.BenchMessage(v)
-		results = append(results, b)
+		bench.Append(b...)
 	skipCap:
 		// Flatbuffers
 		b = fb.BenchMessage(v)
-		results = append(results, b)
+		bench.Append(b...)
 		// Gencode
 		b = gencode.BenchMessage(v)
-		results = append(results, b)
+		bench.Append(b...)
 		// Gob
 		b = gobs.BenchMessage(v)
-		results = append(results, b)
+		bench.Append(b...)
 		// JSON
 		b = jsn.BenchMessage(v)
-		results = append(results, b)
+		bench.Append(b...)
 		// FFJSON
 		b = ffjson.BenchMessage(v)
-		results = append(results, b)
+		bench.Append(b...)
 		// FFJSONBuf
 		b = ffjsonbuf.BenchMessage(v)
-		results = append(results, b)
+		bench.Append(b...)
 		// PBv3
 		b = pb.BenchMessage(v)
-		results = append(results, b)
+		bench.Append(b...)
 	}
-
-	return results
 }
 
-func benchRedditAccount() []shared.Bench {
-	var results []shared.Bench
+func benchRedditAccount(bench benchutil.Benchmarker) {
 	// CapnProto2
 	b := capnp.BenchRedditAccount()
-	results = append(results, b)
+	bench.Append(b...)
 	// Flatbuffers
 	b = fb.BenchRedditAccount()
-	results = append(results, b)
+	bench.Append(b...)
 	// Gencode
 	b = gencode.BenchRedditAccount()
-	results = append(results, b)
+	bench.Append(b...)
 	// Gob
 	b = gobs.BenchRedditAccount()
-	results = append(results, b)
+	bench.Append(b...)
 	// JSON
 	b = jsn.BenchRedditAccount()
-	results = append(results, b)
+	bench.Append(b...)
 	// FFJSON
 	b = ffjson.BenchRedditAccount()
-	results = append(results, b)
+	bench.Append(b...)
 	// FFJSONBuf
 	b = ffjsonbuf.BenchRedditAccount()
-	results = append(results, b)
+	bench.Append(b...)
 	// PB v3
 	b = pb.BenchRedditAccount()
-
-	return results
-}
-
-func dot(done chan struct{}) {
-	var i int
-	t := time.NewTicker(time.Second)
-	defer t.Stop()
-	for {
-		select {
-		case <-done:
-			return
-		case <-t.C:
-			i++
-			fmt.Print(".")
-			if i%60 == 0 {
-				fmt.Print("\n")
-			}
-		}
-	}
+	bench.Append(b...)
 }

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/mohae/benchutil"
 	"github.com/mohae/serial-bowl/shared"
 )
 
@@ -12,9 +13,7 @@ var (
 	memInfo       [][]byte
 	message       [][]byte
 	redditAccount [][]byte
-)
 
-var (
 	basicMemInfos  []BasicMemInfo
 	memInfos       []MemInfo
 	messages       []Message
@@ -22,15 +21,22 @@ var (
 )
 
 // BenchBasicMemInfo runs the BasicMemInfo benches for Marshal/Unmarshal.
-func BenchBasicMemInfo() shared.Bench {
-	basicMemInfos = PrepareBasicMemInfoData(shared.BasicMemInfoData)
+func BenchBasicMemInfo() []benchutil.Bench {
+	var results []benchutil.Bench
 	basicMemInfo = make([][]byte, shared.Len)
-	bench := shared.Bench{Proto: shared.FFJSON, StructString: shared.BasicMemInfo.String(), Results: map[shared.Op]shared.Result{}}
-	bench.Results[shared.Marshal] = shared.ResultFromBenchmarkResult(testing.Benchmark(basicMemInfoMarshal))
-	bench.Results[shared.Unmarshal] = shared.ResultFromBenchmarkResult(testing.Benchmark(basicMemInfoUnmarshal))
+	basicMemInfos = PrepareBasicMemInfoData(shared.BasicMemInfoData)
+
+	bench := benchutil.NewBench(shared.FFJSON.String())
+	bench.Iterations = shared.Len
+	bench.Group = shared.BasicMemInfo.String()
+	bench.Desc = shared.Marshal.String()
+	bench.Result = benchutil.ResultFromBenchmarkResult(testing.Benchmark(basicMemInfoMarshal))
+	results = append(results, bench)
+	bench.Desc = shared.Unmarshal.String()
+	bench.Result = benchutil.ResultFromBenchmarkResult(testing.Benchmark(basicMemInfoUnmarshal))
+	results = append(results, bench)
 	basicMemInfo = nil
-	basicMemInfos = nil
-	return bench
+	return results
 }
 
 func basicMemInfoMarshal(b *testing.B) {
@@ -52,15 +58,22 @@ func basicMemInfoUnmarshal(b *testing.B) {
 }
 
 // BenchMemInfo runs the MemInfo benches for Marshal/Unmarshal.
-func BenchMemInfo() shared.Bench {
-	memInfos = PrepareMemInfoData(shared.MemInfoData)
+func BenchMemInfo() []benchutil.Bench {
+	var results []benchutil.Bench
 	memInfo = make([][]byte, shared.Len)
-	bench := shared.Bench{Proto: shared.FFJSON, StructString: shared.MemInfo.String(), Results: map[shared.Op]shared.Result{}}
-	bench.Results[shared.Marshal] = shared.ResultFromBenchmarkResult(testing.Benchmark(memInfoMarshal))
-	bench.Results[shared.Unmarshal] = shared.ResultFromBenchmarkResult(testing.Benchmark(memInfoUnmarshal))
+	memInfos = PrepareMemInfoData(shared.MemInfoData)
+
+	bench := benchutil.NewBench(shared.FFJSON.String())
+	bench.Iterations = shared.Len
+	bench.Group = shared.MemInfo.String()
+	bench.Desc = shared.Marshal.String()
+	bench.Result = benchutil.ResultFromBenchmarkResult(testing.Benchmark(memInfoMarshal))
+	results = append(results, bench)
+	bench.Desc = shared.Unmarshal.String()
+	bench.Result = benchutil.ResultFromBenchmarkResult(testing.Benchmark(memInfoUnmarshal))
+	results = append(results, bench)
 	memInfo = nil
-	memInfos = nil
-	return bench
+	return results
 }
 
 func memInfoMarshal(b *testing.B) {
@@ -82,15 +95,23 @@ func memInfoUnmarshal(b *testing.B) {
 }
 
 // BenchMessage runs the MemInfo benches for Marshal/Unmarshal.
-func BenchMessage(l int) shared.Bench {
-	messages = PrepareMessageData(shared.MessageData)
+func BenchMessage(l int) []benchutil.Bench {
+	var results []benchutil.Bench
 	message = make([][]byte, shared.Len)
-	bench := shared.Bench{Proto: shared.FFJSON, StructString: fmt.Sprintf("%s %dB", shared.Message.String(), l), Results: map[shared.Op]shared.Result{}}
-	bench.Results[shared.Marshal] = shared.ResultFromBenchmarkResult(testing.Benchmark(messageMarshal))
-	bench.Results[shared.Unmarshal] = shared.ResultFromBenchmarkResult(testing.Benchmark(messageUnmarshal))
+	messages = PrepareMessageData(shared.MessageData)
+
+	bench := benchutil.NewBench(shared.FFJSON.String())
+	bench.Iterations = shared.Len
+	bench.Group = fmt.Sprintf("%s: %d", shared.Message.String(), l)
+	bench.Desc = shared.Marshal.String()
+	message = make([][]byte, shared.Len)
+	bench.Result = benchutil.ResultFromBenchmarkResult(testing.Benchmark(messageMarshal))
+	results = append(results, bench)
+	bench.Desc = shared.Unmarshal.String()
+	bench.Result = benchutil.ResultFromBenchmarkResult(testing.Benchmark(messageUnmarshal))
+	results = append(results, bench)
 	message = nil
-	messages = nil
-	return bench
+	return results
 }
 
 func messageMarshal(b *testing.B) {
@@ -112,15 +133,23 @@ func messageUnmarshal(b *testing.B) {
 }
 
 // BenchRedditAccount runs the MemInfo benches for Marshal/Unmarshal.
-func BenchRedditAccount() shared.Bench {
-	redditAccounts = PrepareRedditAccountData(shared.RedditAccountData)
+func BenchRedditAccount() []benchutil.Bench {
+	var results []benchutil.Bench
 	redditAccount = make([][]byte, shared.Len)
-	bench := shared.Bench{Proto: shared.FFJSON, StructString: shared.RedditAccount.String(), Results: map[shared.Op]shared.Result{}}
-	bench.Results[shared.Marshal] = shared.ResultFromBenchmarkResult(testing.Benchmark(redditAccountMarshal))
-	bench.Results[shared.Unmarshal] = shared.ResultFromBenchmarkResult(testing.Benchmark(redditAccountUnmarshal))
+	redditAccounts = PrepareRedditAccountData(shared.RedditAccountData)
+
+	bench := benchutil.NewBench(shared.FFJSON.String())
+	bench.Iterations = shared.Len
+	bench.Group = shared.RedditAccount.String()
+	bench.Desc = shared.Marshal.String()
+	redditAccount = make([][]byte, shared.Len)
+	bench.Result = benchutil.ResultFromBenchmarkResult(testing.Benchmark(redditAccountMarshal))
+	results = append(results, bench)
+	bench.Desc = shared.Unmarshal.String()
+	bench.Result = benchutil.ResultFromBenchmarkResult(testing.Benchmark(redditAccountUnmarshal))
+	results = append(results, bench)
 	redditAccount = nil
-	redditAccounts = nil
-	return bench
+	return results
 }
 
 func redditAccountMarshal(b *testing.B) {
