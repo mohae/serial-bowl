@@ -165,7 +165,7 @@ func benchMessage(bench benchutil.Benchmarker) {
 		// TODO: 4096 Bytes of data causes the following error:
 		// capnp: NewMessage called on arena with data
 		// figure out how to resolve.
-		if v == 4096 {
+		if v > 2048 {
 			goto skipCap
 		}
 		b = capnp.BenchMessage(v)
