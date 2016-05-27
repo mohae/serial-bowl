@@ -1,4 +1,4 @@
-package msgpack
+package vmsgpack
 
 import (
 	"fmt"
