@@ -17,6 +17,7 @@ import (
 	"github.com/mohae/serial-bowl/jsn"
 	"github.com/mohae/serial-bowl/pb"
 	"github.com/mohae/serial-bowl/shared"
+	"github.com/mohae/serial-bowl/tmsgp"
 	"github.com/mohae/serial-bowl/vmsgpack"
 )
 
@@ -129,6 +130,9 @@ func benchBasicMemInfo(bench benchutil.Benchmarker) {
 	// vmhailenco/msgPack
 	b = vmsgpack.BenchBasicMemInfo()
 	bench.Append(b...)
+	// tinylib/msgp
+	b = tmsgp.BenchBasicMemInfo()
+	bench.Append(b...)
 	// PBv3
 	b = pb.BenchBasicMemInfo()
 	bench.Append(b...)
@@ -158,6 +162,9 @@ func benchMemInfo(bench benchutil.Benchmarker) {
 	bench.Append(b...)
 	// vmhailenco/msgPack
 	b = vmsgpack.BenchMemInfo()
+	bench.Append(b...)
+	// tinylib/msgp
+	b = tmsgp.BenchMemInfo()
 	bench.Append(b...)
 	// PBv3
 	b = pb.BenchMemInfo()
@@ -204,6 +211,9 @@ func benchMessage(bench benchutil.Benchmarker) {
 		// vmhailenco/msgPack
 		b = vmsgpack.BenchMessage(v)
 		bench.Append(b...)
+		// tinylib/msgp
+		b = tmsgp.BenchMessage(v)
+		bench.Append(b...)
 		// PBv3
 		b = pb.BenchMessage(v)
 		bench.Append(b...)
@@ -234,6 +244,9 @@ func benchRedditAccount(bench benchutil.Benchmarker) {
 	bench.Append(b...)
 	// vmhailenco/msgPack
 	b = vmsgpack.BenchRedditAccount()
+	bench.Append(b...)
+	// tinylib/msgp
+	b = tmsgp.BenchRedditAccount()
 	bench.Append(b...)
 	// PB v3
 	b = pb.BenchRedditAccount()
