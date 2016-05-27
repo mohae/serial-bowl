@@ -23,15 +23,21 @@ var (
 	redditAccounts []RedditAccount
 )
 
+func newBench(s string) benchutil.Bench {
+	bench := benchutil.NewBench("pquerna/ffjson (buffer)")
+	bench.Iterations = shared.Len
+	bench.Group = s
+	bench.SubGroup = shared.JSON.String()
+	return bench
+}
+
 // BenchBasicMemInfo runs the BasicMemInfo benches for Marshal/Unmarshal.
 func BenchBasicMemInfo() []benchutil.Bench {
 	var results []benchutil.Bench
 	basicMemInfo = make([][]byte, shared.Len)
 	basicMemInfos = PrepareBasicMemInfoData(shared.BasicMemInfoData)
 
-	bench := benchutil.NewBench(shared.FFJSONBuffer.String())
-	bench.Iterations = shared.Len
-	bench.Group = shared.BasicMemInfo.String()
+	bench := newBench(shared.BasicMemInfo.String())
 	bench.Desc = shared.Marshal.String()
 	basicMemInfo = make([][]byte, shared.Len)
 	bench.Result = benchutil.ResultFromBenchmarkResult(testing.Benchmark(basicMemInfoMarshal))
@@ -69,9 +75,8 @@ func BenchMemInfo() []benchutil.Bench {
 	memInfo = make([][]byte, shared.Len)
 	memInfos = PrepareMemInfoData(shared.MemInfoData)
 
-	bench := benchutil.NewBench(shared.FFJSONBuffer.String())
+	bench := newBench(shared.MemInfo.String())
 	bench.Iterations = shared.Len
-	bench.Group = shared.MemInfo.String()
 	bench.Desc = shared.Marshal.String()
 	memInfo = make([][]byte, shared.Len)
 	bench.Result = benchutil.ResultFromBenchmarkResult(testing.Benchmark(memInfoMarshal))
@@ -109,9 +114,7 @@ func BenchMessage(l int) []benchutil.Bench {
 	message = make([][]byte, shared.Len)
 	messages = PrepareMessageData(shared.MessageData)
 
-	bench := benchutil.NewBench(shared.FFJSONBuffer.String())
-	bench.Iterations = shared.Len
-	bench.Group = fmt.Sprintf("%s: %d", shared.Message.String(), l)
+	bench := newBench(fmt.Sprintf("%s: %d", shared.Message.String(), l))
 	bench.Desc = shared.Marshal.String()
 	message = make([][]byte, shared.Len)
 	bench.Result = benchutil.ResultFromBenchmarkResult(testing.Benchmark(messageMarshal))
@@ -149,9 +152,7 @@ func BenchRedditAccount() []benchutil.Bench {
 	redditAccount = make([][]byte, shared.Len)
 	redditAccounts = PrepareRedditAccountData(shared.RedditAccountData)
 
-	bench := benchutil.NewBench(shared.FFJSONBuffer.String())
-	bench.Iterations = shared.Len
-	bench.Group = shared.RedditAccount.String()
+	bench := newBench(shared.RedditAccount.String())
 	bench.Desc = shared.Marshal.String()
 	redditAccount = make([][]byte, shared.Len)
 	bench.Result = benchutil.ResultFromBenchmarkResult(testing.Benchmark(redditAccountMarshal))

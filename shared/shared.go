@@ -42,8 +42,6 @@ const (
 	GenCode
 	Gob
 	JSON
-	FFJSON
-	FFJSONBuffer
 	ProtobufV3
 	CapnProto2
 )
@@ -100,7 +98,7 @@ func init() {
 
 func GenData() {
 	var rnd pcg.Rand
-	rnd.Seed(benchutil.SeedVal())
+	rnd.Seed(benchutil.Seed())
 	GenBasicMemInfoData(Len, rnd)
 	GenMemInfoData(Len, rnd)
 	GenRedditAccountData(Len, rnd)
@@ -183,7 +181,7 @@ func GenMessageData(n, l int, rand pcg.Rand) {
 	MessageData = make([]ShMessage, l)
 	for i := 0; i < l; i++ {
 		id := benchutil.RandBytes(8)
-		data := benchutil.RandBytes(n)
+		data := benchutil.RandBytes(uint32(n))
 		MessageData[i] = ShMessage{
 			ID:     id,
 			DestID: rand.Next(),
@@ -199,7 +197,7 @@ func GenRedditAccountData(l int, rand pcg.Rand) {
 	for i := 0; i < l; i++ {
 		RedditAccountData[i] = ShRedditAccount{
 			ID:   benchutil.RandString(20),
-			Name: benchutil.RandString(int(rand.Bound(30))),
+			Name: benchutil.RandString(uint32(rand.Bound(30))),
 			Kind: benchutil.RandString(5),
 			Data: AccountData{
 				CommentKarma: rand.Int63(),
@@ -211,7 +209,7 @@ func GenRedditAccountData(l int, rand pcg.Rand) {
 				IsGold:       benchutil.RandBool(),
 				LinkKarma:    rand.Int63(),
 				ModHash:      benchutil.RandString(88),
-				Name:         benchutil.RandString(int(rand.Bound(30))),
+				Name:         benchutil.RandString(uint32(rand.Bound(30))),
 				Over18:       benchutil.RandBool(),
 			},
 		}

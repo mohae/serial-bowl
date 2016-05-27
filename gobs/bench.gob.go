@@ -21,14 +21,20 @@ var (
 	dec  = gob.NewDecoder(&buff)
 )
 
+func newBench(s string) benchutil.Bench {
+	bench := benchutil.NewBench("encoding/gob")
+	bench.Iterations = shared.Len
+	bench.Group = s
+	bench.SubGroup = shared.Gob.String()
+	return bench
+}
+
 // BenchBasicMemInfo runs the BasicMemInfo benches for Marshal/Unmarshal.
 func BenchBasicMemInfo() []benchutil.Bench {
 	var results []benchutil.Bench
 	basicMemInfo = make([][]byte, shared.Len)
 
-	bench := benchutil.NewBench(shared.Gob.String())
-	bench.Iterations = shared.Len
-	bench.Group = shared.BasicMemInfo.String()
+	bench := newBench(shared.BasicMemInfo.String())
 	bench.Desc = shared.Marshal.String()
 	bench.Result = benchutil.ResultFromBenchmarkResult(testing.Benchmark(basicMemInfoMarshal))
 	results = append(results, bench)
@@ -66,9 +72,7 @@ func BenchMemInfo() []benchutil.Bench {
 	var results []benchutil.Bench
 	memInfo = make([][]byte, shared.Len)
 
-	bench := benchutil.NewBench(shared.Gob.String())
-	bench.Iterations = shared.Len
-	bench.Group = shared.MemInfo.String()
+	bench := newBench(shared.MemInfo.String())
 	bench.Desc = shared.Marshal.String()
 	bench.Result = benchutil.ResultFromBenchmarkResult(testing.Benchmark(memInfoMarshal))
 	results = append(results, bench)
@@ -105,9 +109,7 @@ func BenchMessage(l int) []benchutil.Bench {
 	var results []benchutil.Bench
 	message = make([][]byte, shared.Len)
 
-	bench := benchutil.NewBench(shared.Gob.String())
-	bench.Iterations = shared.Len
-	bench.Group = fmt.Sprintf("%s: %d", shared.Message.String(), l)
+	bench := newBench(fmt.Sprintf("%s: %d", shared.Message.String(), l))
 	bench.Desc = shared.Marshal.String()
 	bench.Result = benchutil.ResultFromBenchmarkResult(testing.Benchmark(messageMarshal))
 	results = append(results, bench)
@@ -145,9 +147,7 @@ func BenchRedditAccount() []benchutil.Bench {
 	var results []benchutil.Bench
 	redditAccount = make([][]byte, shared.Len)
 
-	bench := benchutil.NewBench(shared.Gob.String())
-	bench.Iterations = shared.Len
-	bench.Group = shared.RedditAccount.String()
+	bench := newBench(shared.RedditAccount.String())
 	bench.Desc = shared.Marshal.String()
 	bench.Result = benchutil.ResultFromBenchmarkResult(testing.Benchmark(redditAccountMarshal))
 	results = append(results, bench)

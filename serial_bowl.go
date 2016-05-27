@@ -84,6 +84,11 @@ func main() {
 	bench.SectionHeaders(sectionHeaders)
 	bench.IncludeSystemInfo(systemInfo)
 
+	// set the header info
+	bench.SetGroupColumnHeader("Data Type")
+	bench.SetSubGroupColumnHeader("Format")
+	bench.SetNameColumnHeader("Package")
+	bench.SetDescColumnHeader("Operation")
 	// Run the benchmarks
 	benchBasicMemInfo(bench)
 	benchMemInfo(bench)
@@ -159,7 +164,7 @@ func benchMessage(bench benchutil.Benchmarker) {
 	dataLen := []int{16, 64, 256, 1024, 2048, 4096}
 	for _, v := range dataLen {
 		var rnd pcg.Rand
-		rnd.Seed(benchutil.SeedVal())
+		rnd.Seed(benchutil.Seed())
 		shared.GenMessageData(v, shared.Len, rnd)
 		// CapnProto2
 		// TODO: 4096 Bytes of data causes the following error:
