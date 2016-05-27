@@ -17,6 +17,7 @@ import (
 	"github.com/mohae/serial-bowl/jsn"
 	"github.com/mohae/serial-bowl/pb"
 	"github.com/mohae/serial-bowl/shared"
+	"github.com/mohae/serial-bowl/vmsgpack"
 )
 
 // flags
@@ -125,6 +126,9 @@ func benchBasicMemInfo(bench benchutil.Benchmarker) {
 	// FFJSON Buf
 	b = ffjsonbuf.BenchBasicMemInfo()
 	bench.Append(b...)
+	// vmhailenco/msgPack
+	b = vmsgpack.BenchBasicMemInfo()
+	bench.Append(b...)
 	// PBv3
 	b = pb.BenchBasicMemInfo()
 	bench.Append(b...)
@@ -151,6 +155,9 @@ func benchMemInfo(bench benchutil.Benchmarker) {
 	bench.Append(b...)
 	// FFJSON Buf
 	b = ffjsonbuf.BenchMemInfo()
+	bench.Append(b...)
+	// vmhailenco/msgPack
+	b = vmsgpack.BenchMemInfo()
 	bench.Append(b...)
 	// PBv3
 	b = pb.BenchMemInfo()
@@ -194,6 +201,9 @@ func benchMessage(bench benchutil.Benchmarker) {
 		// FFJSONBuf
 		b = ffjsonbuf.BenchMessage(v)
 		bench.Append(b...)
+		// vmhailenco/msgPack
+		b = vmsgpack.BenchMessage(v)
+		bench.Append(b...)
 		// PBv3
 		b = pb.BenchMessage(v)
 		bench.Append(b...)
@@ -221,6 +231,9 @@ func benchRedditAccount(bench benchutil.Benchmarker) {
 	bench.Append(b...)
 	// FFJSONBuf
 	b = ffjsonbuf.BenchRedditAccount()
+	bench.Append(b...)
+	// vmhailenco/msgPack
+	b = vmsgpack.BenchRedditAccount()
 	bench.Append(b...)
 	// PB v3
 	b = pb.BenchRedditAccount()

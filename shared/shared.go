@@ -44,6 +44,7 @@ const (
 	JSON
 	ProtobufV3
 	CapnProto2
+	MessagePack
 )
 
 // Protos holds a slice of Protocol types.
