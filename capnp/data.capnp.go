@@ -3,6 +3,7 @@ package capnp
 // AUTO GENERATED - DO NOT EDIT
 
 import (
+	math "math"
 	capnp "zombiezen.com/go/capnproto2"
 )
 
@@ -1017,4 +1018,633 @@ type AccountData_Promise struct{ *capnp.Pipeline }
 func (p AccountData_Promise) Struct() (AccountData, error) {
 	s, err := p.Pipeline.Struct()
 	return AccountData{s}, err
+}
+
+type CPUInfo struct{ capnp.Struct }
+
+func NewCPUInfo(s *capnp.Segment) (CPUInfo, error) {
+	st, err := capnp.NewStruct(s, capnp.ObjectSize{DataSize: 0, PointerCount: 1})
+	if err != nil {
+		return CPUInfo{}, err
+	}
+	return CPUInfo{st}, nil
+}
+
+func NewRootCPUInfo(s *capnp.Segment) (CPUInfo, error) {
+	st, err := capnp.NewRootStruct(s, capnp.ObjectSize{DataSize: 0, PointerCount: 1})
+	if err != nil {
+		return CPUInfo{}, err
+	}
+	return CPUInfo{st}, nil
+}
+
+func ReadRootCPUInfo(msg *capnp.Message) (CPUInfo, error) {
+	root, err := msg.Root()
+	if err != nil {
+		return CPUInfo{}, err
+	}
+	st := capnp.ToStruct(root)
+	return CPUInfo{st}, nil
+}
+
+func (s CPUInfo) Cpus() (CPU_List, error) {
+	p, err := s.Struct.Pointer(0)
+	if err != nil {
+		return CPU_List{}, err
+	}
+
+	l := capnp.ToList(p)
+
+	return CPU_List{List: l}, nil
+}
+
+func (s CPUInfo) SetCpus(v CPU_List) error {
+
+	return s.Struct.SetPointer(0, v.List)
+}
+
+// CPUInfo_List is a list of CPUInfo.
+type CPUInfo_List struct{ capnp.List }
+
+// NewCPUInfo creates a new list of CPUInfo.
+func NewCPUInfo_List(s *capnp.Segment, sz int32) (CPUInfo_List, error) {
+	l, err := capnp.NewCompositeList(s, capnp.ObjectSize{DataSize: 0, PointerCount: 1}, sz)
+	if err != nil {
+		return CPUInfo_List{}, err
+	}
+	return CPUInfo_List{l}, nil
+}
+
+func (s CPUInfo_List) At(i int) CPUInfo           { return CPUInfo{s.List.Struct(i)} }
+func (s CPUInfo_List) Set(i int, v CPUInfo) error { return s.List.SetStruct(i, v.Struct) }
+
+// CPUInfo_Promise is a wrapper for a CPUInfo promised by a client call.
+type CPUInfo_Promise struct{ *capnp.Pipeline }
+
+func (p CPUInfo_Promise) Struct() (CPUInfo, error) {
+	s, err := p.Pipeline.Struct()
+	return CPUInfo{s}, err
+}
+
+type CPU struct{ capnp.Struct }
+
+func NewCPU(s *capnp.Segment) (CPU, error) {
+	st, err := capnp.NewStruct(s, capnp.ObjectSize{DataSize: 24, PointerCount: 16})
+	if err != nil {
+		return CPU{}, err
+	}
+	return CPU{st}, nil
+}
+
+func NewRootCPU(s *capnp.Segment) (CPU, error) {
+	st, err := capnp.NewRootStruct(s, capnp.ObjectSize{DataSize: 24, PointerCount: 16})
+	if err != nil {
+		return CPU{}, err
+	}
+	return CPU{st}, nil
+}
+
+func ReadRootCPU(msg *capnp.Message) (CPU, error) {
+	root, err := msg.Root()
+	if err != nil {
+		return CPU{}, err
+	}
+	st := capnp.ToStruct(root)
+	return CPU{st}, nil
+}
+
+func (s CPU) Processor() int16 {
+	return int16(s.Struct.Uint16(0))
+}
+
+func (s CPU) SetProcessor(v int16) {
+
+	s.Struct.SetUint16(0, uint16(v))
+}
+
+func (s CPU) VendorID() (string, error) {
+	p, err := s.Struct.Pointer(0)
+	if err != nil {
+		return "", err
+	}
+
+	return capnp.ToText(p), nil
+
+}
+
+func (s CPU) VendorIDBytes() ([]byte, error) {
+	p, err := s.Struct.Pointer(0)
+	if err != nil {
+		return nil, err
+	}
+	return capnp.ToData(p), nil
+}
+
+func (s CPU) SetVendorID(v string) error {
+
+	t, err := capnp.NewText(s.Struct.Segment(), v)
+	if err != nil {
+		return err
+	}
+	return s.Struct.SetPointer(0, t)
+}
+
+func (s CPU) CPUFamily() (string, error) {
+	p, err := s.Struct.Pointer(1)
+	if err != nil {
+		return "", err
+	}
+
+	return capnp.ToText(p), nil
+
+}
+
+func (s CPU) CPUFamilyBytes() ([]byte, error) {
+	p, err := s.Struct.Pointer(1)
+	if err != nil {
+		return nil, err
+	}
+	return capnp.ToData(p), nil
+}
+
+func (s CPU) SetCPUFamily(v string) error {
+
+	t, err := capnp.NewText(s.Struct.Segment(), v)
+	if err != nil {
+		return err
+	}
+	return s.Struct.SetPointer(1, t)
+}
+
+func (s CPU) Model() (string, error) {
+	p, err := s.Struct.Pointer(2)
+	if err != nil {
+		return "", err
+	}
+
+	return capnp.ToText(p), nil
+
+}
+
+func (s CPU) ModelBytes() ([]byte, error) {
+	p, err := s.Struct.Pointer(2)
+	if err != nil {
+		return nil, err
+	}
+	return capnp.ToData(p), nil
+}
+
+func (s CPU) SetModel(v string) error {
+
+	t, err := capnp.NewText(s.Struct.Segment(), v)
+	if err != nil {
+		return err
+	}
+	return s.Struct.SetPointer(2, t)
+}
+
+func (s CPU) ModelName() (string, error) {
+	p, err := s.Struct.Pointer(3)
+	if err != nil {
+		return "", err
+	}
+
+	return capnp.ToText(p), nil
+
+}
+
+func (s CPU) ModelNameBytes() ([]byte, error) {
+	p, err := s.Struct.Pointer(3)
+	if err != nil {
+		return nil, err
+	}
+	return capnp.ToData(p), nil
+}
+
+func (s CPU) SetModelName(v string) error {
+
+	t, err := capnp.NewText(s.Struct.Segment(), v)
+	if err != nil {
+		return err
+	}
+	return s.Struct.SetPointer(3, t)
+}
+
+func (s CPU) Stepping() (string, error) {
+	p, err := s.Struct.Pointer(4)
+	if err != nil {
+		return "", err
+	}
+
+	return capnp.ToText(p), nil
+
+}
+
+func (s CPU) SteppingBytes() ([]byte, error) {
+	p, err := s.Struct.Pointer(4)
+	if err != nil {
+		return nil, err
+	}
+	return capnp.ToData(p), nil
+}
+
+func (s CPU) SetStepping(v string) error {
+
+	t, err := capnp.NewText(s.Struct.Segment(), v)
+	if err != nil {
+		return err
+	}
+	return s.Struct.SetPointer(4, t)
+}
+
+func (s CPU) Microcode() (string, error) {
+	p, err := s.Struct.Pointer(5)
+	if err != nil {
+		return "", err
+	}
+
+	return capnp.ToText(p), nil
+
+}
+
+func (s CPU) MicrocodeBytes() ([]byte, error) {
+	p, err := s.Struct.Pointer(5)
+	if err != nil {
+		return nil, err
+	}
+	return capnp.ToData(p), nil
+}
+
+func (s CPU) SetMicrocode(v string) error {
+
+	t, err := capnp.NewText(s.Struct.Segment(), v)
+	if err != nil {
+		return err
+	}
+	return s.Struct.SetPointer(5, t)
+}
+
+func (s CPU) CPUMHz() float32 {
+	return math.Float32frombits(s.Struct.Uint32(4))
+}
+
+func (s CPU) SetCPUMHz(v float32) {
+
+	s.Struct.SetUint32(4, math.Float32bits(v))
+}
+
+func (s CPU) CacheSize() (string, error) {
+	p, err := s.Struct.Pointer(6)
+	if err != nil {
+		return "", err
+	}
+
+	return capnp.ToText(p), nil
+
+}
+
+func (s CPU) CacheSizeBytes() ([]byte, error) {
+	p, err := s.Struct.Pointer(6)
+	if err != nil {
+		return nil, err
+	}
+	return capnp.ToData(p), nil
+}
+
+func (s CPU) SetCacheSize(v string) error {
+
+	t, err := capnp.NewText(s.Struct.Segment(), v)
+	if err != nil {
+		return err
+	}
+	return s.Struct.SetPointer(6, t)
+}
+
+func (s CPU) PhysicalID() int16 {
+	return int16(s.Struct.Uint16(2))
+}
+
+func (s CPU) SetPhysicalID(v int16) {
+
+	s.Struct.SetUint16(2, uint16(v))
+}
+
+func (s CPU) Siblings() int16 {
+	return int16(s.Struct.Uint16(8))
+}
+
+func (s CPU) SetSiblings(v int16) {
+
+	s.Struct.SetUint16(8, uint16(v))
+}
+
+func (s CPU) CoreID() int16 {
+	return int16(s.Struct.Uint16(10))
+}
+
+func (s CPU) SetCoreID(v int16) {
+
+	s.Struct.SetUint16(10, uint16(v))
+}
+
+func (s CPU) CPUCores() int16 {
+	return int16(s.Struct.Uint16(12))
+}
+
+func (s CPU) SetCPUCores(v int16) {
+
+	s.Struct.SetUint16(12, uint16(v))
+}
+
+func (s CPU) ApicID() int16 {
+	return int16(s.Struct.Uint16(14))
+}
+
+func (s CPU) SetApicID(v int16) {
+
+	s.Struct.SetUint16(14, uint16(v))
+}
+
+func (s CPU) InitialApicID() int16 {
+	return int16(s.Struct.Uint16(16))
+}
+
+func (s CPU) SetInitialApicID(v int16) {
+
+	s.Struct.SetUint16(16, uint16(v))
+}
+
+func (s CPU) FPU() (string, error) {
+	p, err := s.Struct.Pointer(7)
+	if err != nil {
+		return "", err
+	}
+
+	return capnp.ToText(p), nil
+
+}
+
+func (s CPU) FPUBytes() ([]byte, error) {
+	p, err := s.Struct.Pointer(7)
+	if err != nil {
+		return nil, err
+	}
+	return capnp.ToData(p), nil
+}
+
+func (s CPU) SetFPU(v string) error {
+
+	t, err := capnp.NewText(s.Struct.Segment(), v)
+	if err != nil {
+		return err
+	}
+	return s.Struct.SetPointer(7, t)
+}
+
+func (s CPU) FPUException() (string, error) {
+	p, err := s.Struct.Pointer(8)
+	if err != nil {
+		return "", err
+	}
+
+	return capnp.ToText(p), nil
+
+}
+
+func (s CPU) FPUExceptionBytes() ([]byte, error) {
+	p, err := s.Struct.Pointer(8)
+	if err != nil {
+		return nil, err
+	}
+	return capnp.ToData(p), nil
+}
+
+func (s CPU) SetFPUException(v string) error {
+
+	t, err := capnp.NewText(s.Struct.Segment(), v)
+	if err != nil {
+		return err
+	}
+	return s.Struct.SetPointer(8, t)
+}
+
+func (s CPU) CPUIDLevel() (string, error) {
+	p, err := s.Struct.Pointer(9)
+	if err != nil {
+		return "", err
+	}
+
+	return capnp.ToText(p), nil
+
+}
+
+func (s CPU) CPUIDLevelBytes() ([]byte, error) {
+	p, err := s.Struct.Pointer(9)
+	if err != nil {
+		return nil, err
+	}
+	return capnp.ToData(p), nil
+}
+
+func (s CPU) SetCPUIDLevel(v string) error {
+
+	t, err := capnp.NewText(s.Struct.Segment(), v)
+	if err != nil {
+		return err
+	}
+	return s.Struct.SetPointer(9, t)
+}
+
+func (s CPU) WP() (string, error) {
+	p, err := s.Struct.Pointer(10)
+	if err != nil {
+		return "", err
+	}
+
+	return capnp.ToText(p), nil
+
+}
+
+func (s CPU) WPBytes() ([]byte, error) {
+	p, err := s.Struct.Pointer(10)
+	if err != nil {
+		return nil, err
+	}
+	return capnp.ToData(p), nil
+}
+
+func (s CPU) SetWP(v string) error {
+
+	t, err := capnp.NewText(s.Struct.Segment(), v)
+	if err != nil {
+		return err
+	}
+	return s.Struct.SetPointer(10, t)
+}
+
+func (s CPU) Flags() (string, error) {
+	p, err := s.Struct.Pointer(11)
+	if err != nil {
+		return "", err
+	}
+
+	return capnp.ToText(p), nil
+
+}
+
+func (s CPU) FlagsBytes() ([]byte, error) {
+	p, err := s.Struct.Pointer(11)
+	if err != nil {
+		return nil, err
+	}
+	return capnp.ToData(p), nil
+}
+
+func (s CPU) SetFlags(v string) error {
+
+	t, err := capnp.NewText(s.Struct.Segment(), v)
+	if err != nil {
+		return err
+	}
+	return s.Struct.SetPointer(11, t)
+}
+
+func (s CPU) BogoMIPS() float32 {
+	return math.Float32frombits(s.Struct.Uint32(20))
+}
+
+func (s CPU) SetBogoMIPS(v float32) {
+
+	s.Struct.SetUint32(20, math.Float32bits(v))
+}
+
+func (s CPU) CLFlushSize() (string, error) {
+	p, err := s.Struct.Pointer(12)
+	if err != nil {
+		return "", err
+	}
+
+	return capnp.ToText(p), nil
+
+}
+
+func (s CPU) CLFlushSizeBytes() ([]byte, error) {
+	p, err := s.Struct.Pointer(12)
+	if err != nil {
+		return nil, err
+	}
+	return capnp.ToData(p), nil
+}
+
+func (s CPU) SetCLFlushSize(v string) error {
+
+	t, err := capnp.NewText(s.Struct.Segment(), v)
+	if err != nil {
+		return err
+	}
+	return s.Struct.SetPointer(12, t)
+}
+
+func (s CPU) CacheAlignment() (string, error) {
+	p, err := s.Struct.Pointer(13)
+	if err != nil {
+		return "", err
+	}
+
+	return capnp.ToText(p), nil
+
+}
+
+func (s CPU) CacheAlignmentBytes() ([]byte, error) {
+	p, err := s.Struct.Pointer(13)
+	if err != nil {
+		return nil, err
+	}
+	return capnp.ToData(p), nil
+}
+
+func (s CPU) SetCacheAlignment(v string) error {
+
+	t, err := capnp.NewText(s.Struct.Segment(), v)
+	if err != nil {
+		return err
+	}
+	return s.Struct.SetPointer(13, t)
+}
+
+func (s CPU) AddressSizes() (string, error) {
+	p, err := s.Struct.Pointer(14)
+	if err != nil {
+		return "", err
+	}
+
+	return capnp.ToText(p), nil
+
+}
+
+func (s CPU) AddressSizesBytes() ([]byte, error) {
+	p, err := s.Struct.Pointer(14)
+	if err != nil {
+		return nil, err
+	}
+	return capnp.ToData(p), nil
+}
+
+func (s CPU) SetAddressSizes(v string) error {
+
+	t, err := capnp.NewText(s.Struct.Segment(), v)
+	if err != nil {
+		return err
+	}
+	return s.Struct.SetPointer(14, t)
+}
+
+func (s CPU) PowerManagement() (string, error) {
+	p, err := s.Struct.Pointer(15)
+	if err != nil {
+		return "", err
+	}
+
+	return capnp.ToText(p), nil
+
+}
+
+func (s CPU) PowerManagementBytes() ([]byte, error) {
+	p, err := s.Struct.Pointer(15)
+	if err != nil {
+		return nil, err
+	}
+	return capnp.ToData(p), nil
+}
+
+func (s CPU) SetPowerManagement(v string) error {
+
+	t, err := capnp.NewText(s.Struct.Segment(), v)
+	if err != nil {
+		return err
+	}
+	return s.Struct.SetPointer(15, t)
+}
+
+// CPU_List is a list of CPU.
+type CPU_List struct{ capnp.List }
+
+// NewCPU creates a new list of CPU.
+func NewCPU_List(s *capnp.Segment, sz int32) (CPU_List, error) {
+	l, err := capnp.NewCompositeList(s, capnp.ObjectSize{DataSize: 24, PointerCount: 16}, sz)
+	if err != nil {
+		return CPU_List{}, err
+	}
+	return CPU_List{l}, nil
+}
+
+func (s CPU_List) At(i int) CPU           { return CPU{s.List.Struct(i)} }
+func (s CPU_List) Set(i int, v CPU) error { return s.List.SetStruct(i, v.Struct) }
+
+// CPU_Promise is a wrapper for a CPU promised by a client call.
+type CPU_Promise struct{ *capnp.Pipeline }
+
+func (p CPU_Promise) Struct() (CPU, error) {
+	s, err := p.Pipeline.Struct()
+	return CPU{s}, err
 }

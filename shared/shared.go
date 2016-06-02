@@ -3,6 +3,8 @@
 package shared
 
 import (
+	"math/rand"
+
 	pcg "github.com/dgryski/go-pcgr"
 	"github.com/mohae/benchutil"
 )
@@ -18,6 +20,7 @@ var BasicMemInfoData []ShBasicMemInfo
 var MemInfoData []ShMemInfo
 var MessageData []ShMessage
 var RedditAccountData []ShRedditAccount
+var CPUInfoData []ShCPUInfo
 
 //go:generate stringer -type=Op
 type Op int
@@ -59,6 +62,7 @@ const (
 	MemInfo
 	Message
 	RedditAccount
+	CPUInfo
 )
 
 // StructTypes holds a slice of StructTypes.
@@ -81,14 +85,14 @@ func init() {
 		}
 	}
 	maxOpLen += PadLen
-	Protos = []Proto{Flatbuffers, JSON, ProtobufV3, CapnProto2}
+	Protos = []Proto{Flatbuffers, GenCode, Gob, JSON, ProtobufV3, CapnProto2, MessagePack}
 	for _, v := range Protos {
 		if len(v.String()) > maxProtoLen {
 			maxProtoLen = len(v.String())
 		}
 	}
 	maxProtoLen += PadLen
-	StructTypes = []StructType{BasicMemInfo, MemInfo, Message, RedditAccount}
+	StructTypes = []StructType{BasicMemInfo, MemInfo, Message, RedditAccount, CPUInfo}
 	for _, v := range StructTypes {
 		if len(v.String()) > maxStructTypeLen {
 			maxStructTypeLen = len(v.String())
@@ -98,107 +102,118 @@ func init() {
 }
 
 func GenData() {
-	var rnd pcg.Rand
-	rnd.Seed(benchutil.Seed())
-	GenBasicMemInfoData(Len, rnd)
-	GenMemInfoData(Len, rnd)
-	GenRedditAccountData(Len, rnd)
+	GenBasicMemInfoData(Len)
+	GenMemInfoData(Len)
+	GenRedditAccountData(Len)
 	// Message data is generated at start of each message data length test
 	// As each block of message data tests use a different message.Data length.
+
+	// CPUInfo data is generated at start of each test as each block of tests
+	// use a different number of CPUs.
 }
 
 // GenBasicMemInfoData generates the random data for the BasicMemInfo struct.
 // The resulting slice of structs will have l elements.
-func GenBasicMemInfoData(l int, rand pcg.Rand) {
+func GenBasicMemInfoData(l int) {
+	var rnd pcg.Rand
+	rnd.Seed(benchutil.Seed())
 	BasicMemInfoData = make([]ShBasicMemInfo, l)
 	for i := 0; i < l; i++ {
 		BasicMemInfoData[i] = ShBasicMemInfo{
-			MemTotal:     rand.Int63(),
-			MemFree:      rand.Int63(),
-			MemAvailable: rand.Int63(),
-			Buffers:      rand.Int63(),
-			Cached:       rand.Int63(),
-			SwapCached:   rand.Int63(),
-			SwapTotal:    rand.Int63(),
-			SwapFree:     rand.Int63(),
+			MemTotal:     rnd.Int63(),
+			MemFree:      rnd.Int63(),
+			MemAvailable: rnd.Int63(),
+			Buffers:      rnd.Int63(),
+			Cached:       rnd.Int63(),
+			SwapCached:   rnd.Int63(),
+			SwapTotal:    rnd.Int63(),
+			SwapFree:     rnd.Int63(),
 		}
 	}
 }
 
 // GenMemInfoData generates the random data for the BasicMemInfo struct.  The
 // resulting slice of structs will have l elements.
-func GenMemInfoData(l int, rand pcg.Rand) {
-	MemInfoData = make([]ShMemInfo, l)
+func GenMemInfoData(l int) {
+	var rnd pcg.Rand
+	rnd.Seed(benchutil.Seed())
+	MemInfoData = make([]ShMemInfo, 0, l)
 	for i := 0; i < l; i++ {
-		MemInfoData[i] = ShMemInfo{
-			MemTotal:          rand.Int63(),
-			MemFree:           rand.Int63(),
-			MemAvailable:      rand.Int63(),
-			Buffers:           rand.Int63(),
-			Cached:            rand.Int63(),
-			SwapCached:        rand.Int63(),
-			Active:            rand.Int63(),
-			Inactive:          rand.Int63(),
-			ActiveAnon:        rand.Int63(),
-			InactiveAnon:      rand.Int63(),
-			ActiveFile:        rand.Int63(),
-			InactiveFile:      rand.Int63(),
-			Unevictable:       rand.Int63(),
-			Mlocked:           rand.Int63(),
-			SwapTotal:         rand.Int63(),
-			SwapFree:          rand.Int63(),
-			Dirty:             rand.Int63(),
-			Writeback:         rand.Int63(),
-			AnonPages:         rand.Int63(),
-			Mapped:            rand.Int63(),
-			Shmem:             rand.Int63(),
-			Slab:              rand.Int63(),
-			SReclaimable:      rand.Int63(),
-			SUnreclaim:        rand.Int63(),
-			KernelStack:       rand.Int63(),
-			NFSUnstable:       rand.Int63(),
-			Bounce:            rand.Int63(),
-			WritebackTmp:      rand.Int63(),
-			CommitLimit:       rand.Int63(),
-			VmallocTotal:      rand.Int63(),
-			VmallocUsed:       rand.Int63(),
-			VmallocChunk:      rand.Int63(),
-			HardwareCorrupted: rand.Int63(),
-			AnonHugePages:     rand.Int63(),
-			HugePagesTotal:    rand.Int63(),
-			HugePagesFree:     rand.Int63(),
-			HugePagesRsvd:     rand.Int63(),
-			Hugepagesize:      rand.Int63(),
-			DirectMap4k:       rand.Int63(),
-			DirectMap2M:       rand.Int63(),
+		tmp := ShMemInfo{
+			MemTotal:          rnd.Int63(),
+			MemFree:           rnd.Int63(),
+			MemAvailable:      rnd.Int63(),
+			Buffers:           rnd.Int63(),
+			Cached:            rnd.Int63(),
+			SwapCached:        rnd.Int63(),
+			Active:            rnd.Int63(),
+			Inactive:          rnd.Int63(),
+			ActiveAnon:        rnd.Int63(),
+			InactiveAnon:      rnd.Int63(),
+			ActiveFile:        rnd.Int63(),
+			InactiveFile:      rnd.Int63(),
+			Unevictable:       rnd.Int63(),
+			Mlocked:           rnd.Int63(),
+			SwapTotal:         rnd.Int63(),
+			SwapFree:          rnd.Int63(),
+			Dirty:             rnd.Int63(),
+			Writeback:         rnd.Int63(),
+			AnonPages:         rnd.Int63(),
+			Mapped:            rnd.Int63(),
+			Shmem:             rnd.Int63(),
+			Slab:              rnd.Int63(),
+			SReclaimable:      rnd.Int63(),
+			SUnreclaim:        rnd.Int63(),
+			KernelStack:       rnd.Int63(),
+			NFSUnstable:       rnd.Int63(),
+			Bounce:            rnd.Int63(),
+			WritebackTmp:      rnd.Int63(),
+			CommitLimit:       rnd.Int63(),
+			VmallocTotal:      rnd.Int63(),
+			VmallocUsed:       rnd.Int63(),
+			VmallocChunk:      rnd.Int63(),
+			HardwareCorrupted: rnd.Int63(),
+			AnonHugePages:     rnd.Int63(),
+			HugePagesTotal:    rnd.Int63(),
+			HugePagesFree:     rnd.Int63(),
+			HugePagesRsvd:     rnd.Int63(),
+			Hugepagesize:      rnd.Int63(),
+			DirectMap4k:       rnd.Int63(),
+			DirectMap2M:       rnd.Int63(),
 		}
+		MemInfoData = append(MemInfoData, tmp)
 	}
 }
 
 // GenMessageData generates the random data for the Message struct whose data
 // element being n bytes in length.  The resulting slice of structs will have
 // l elements.
-func GenMessageData(n, l int, rand pcg.Rand) {
-	MessageData = make([]ShMessage, l)
+func GenMessageData(n, l int) {
+	var rnd pcg.Rand
+	rnd.Seed(benchutil.Seed())
+	MessageData = make([]ShMessage, 0, l)
 	for i := 0; i < l; i++ {
 		id := benchutil.RandBytes(8)
 		data := benchutil.RandBytes(uint32(n))
-		MessageData[i] = ShMessage{
+		tmp := ShMessage{
 			ID:     id,
-			DestID: rand.Next(),
-			Type:   int8(rand.Bound(1<<7 - 1)),
-			Kind:   int16(rand.Bound(1<<15 - 1)),
+			DestID: rnd.Next(),
+			Type:   int8(rnd.Bound(1<<7 - 1)),
+			Kind:   int16(rnd.Bound(1<<15 - 1)),
 			Data:   data,
 		}
+		MessageData = append(MessageData, tmp)
 	}
 }
 
-func GenRedditAccountData(l int, rand pcg.Rand) {
-	RedditAccountData = make([]ShRedditAccount, l)
+func GenRedditAccountData(l int) {
+	var rnd pcg.Rand
+	rnd.Seed(benchutil.Seed())
+	RedditAccountData = make([]ShRedditAccount, 0, l)
 	for i := 0; i < l; i++ {
-		RedditAccountData[i] = ShRedditAccount{
+		tmp := ShRedditAccount{
 			ID:   benchutil.RandString(20),
-			Name: benchutil.RandString(uint32(rand.Bound(30))),
+			Name: benchutil.RandString(uint32(rnd.Bound(30))),
 			Kind: benchutil.RandString(5),
 			Data: AccountData{
 				CommentKarma: rand.Int63(),
@@ -210,9 +225,49 @@ func GenRedditAccountData(l int, rand pcg.Rand) {
 				IsGold:       benchutil.RandBool(),
 				LinkKarma:    rand.Int63(),
 				ModHash:      benchutil.RandString(88),
-				Name:         benchutil.RandString(uint32(rand.Bound(30))),
+				Name:         benchutil.RandString(uint32(rnd.Bound(30))),
 				Over18:       benchutil.RandBool(),
 			},
 		}
+		RedditAccountData = append(RedditAccountData, tmp)
 	}
+}
+
+// n = number of cpus the data structure should have
+func GenCPUInfoData(n, l int) []ShCPUInfo {
+	CPUInfoData = make([]ShCPUInfo, 0, l)
+	for i := 0; i < l; i++ {
+		tmp := ShCPUInfo{CPUs: make([]ShCPU, 0, n)}
+		for j := 0; j < n; j++ {
+			cpu := ShCPU{
+				Processor:       int16(j),
+				VendorID:        "GenuineIntel",
+				Model:           "6",
+				ModelName:       "CPUInfoData",
+				Stepping:        "9",
+				Microcode:       "0x19",
+				CPUMHz:          3400.480,
+				CacheSize:       "6144KB",
+				PhysicalID:      int16(j),
+				Siblings:        int16(n),
+				CoreID:          int16(j),
+				CPUCores:        int16(n),
+				ApicID:          int16(j),
+				InitialApicID:   int16(j),
+				FPU:             "yes",
+				FPUException:    "yes",
+				CPUIDLevel:      "13",
+				WP:              "yes",
+				Flags:           "pu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 syscall nx rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc pni pclmulqdq monitor ssse3 cx16 sse4_1 sse4_2 popcnt aes xsave avx rdrand hypervisor lahf_lm",
+				BogoMIPS:        6800.96,
+				CLFlushSize:     "64",
+				CacheAlignment:  "64",
+				AddressSizes:    "36 bits physical, 48 bits virtual",
+				PowerManagement: "",
+			}
+			tmp.CPUs = append(tmp.CPUs, cpu)
+		}
+		CPUInfoData = append(CPUInfoData, tmp)
+	}
+	return CPUInfoData
 }

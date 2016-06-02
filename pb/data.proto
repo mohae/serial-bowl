@@ -84,3 +84,35 @@ message AccountData {
     string Name = 10;
     bool Over18 = 11;
 }
+
+message CPUInfo {
+    repeated CPU CPUs = 1;
+}
+
+message CPU {
+    int32 Processor = 1;
+    string VendorID = 2;
+    string CPUFamily = 3;
+    string Model = 4;
+    string ModelName = 5;
+    string Stepping = 6;
+    string Microcode = 7;
+    float CPUMHz = 8;
+    string CacheSize = 9;
+    int32 PhysicalID = 10;
+    int32 Siblings = 11;
+    int32 CoreID = 12;
+    int32 CPUCores = 13;
+    int32 ApicID = 14;
+    int32 InitialApicID = 15;
+    string FPU = 16;
+    string FPUException = 17;
+    string CPUIDLevel = 18;
+    string WP = 19;
+    string Flags = 21;
+    float BogoMIPS = 22;
+    string CLFlushSize = 23;
+    string CacheAlignment = 24;
+    string AddressSizes = 25;
+    string PowerManagement = 26;
+}

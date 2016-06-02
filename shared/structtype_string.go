@@ -4,9 +4,9 @@ package shared
 
 import "fmt"
 
-const _StructType_name = "UnknownStructBasicMemInfoMemInfoMessageRedditAccount"
+const _StructType_name = "UnknownStructBasicMemInfoMemInfoMessageRedditAccountCPUInfo"
 
-var _StructType_index = [...]uint8{0, 13, 25, 32, 39, 52}
+var _StructType_index = [...]uint8{0, 13, 25, 32, 39, 52, 59}
 
 func (i StructType) String() string {
 	if i < 0 || i >= StructType(len(_StructType_index)-1) {

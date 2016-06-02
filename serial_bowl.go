@@ -6,7 +6,6 @@ import (
 	"io"
 	"os"
 
-	pcg "github.com/dgryski/go-pcgr"
 	"github.com/mohae/benchutil"
 	"github.com/mohae/serial-bowl/capnp"
 	"github.com/mohae/serial-bowl/fb"
@@ -93,6 +92,7 @@ func main() {
 	bench.SetDescColumnHeader("Operation")
 	// Run the benchmarks
 	benchBasicMemInfo(bench)
+	benchCPUInfo(bench)
 	benchMemInfo(bench)
 	benchMessage(bench)
 	benchRedditAccount(bench)
@@ -177,9 +177,7 @@ func benchMessage(bench benchutil.Benchmarker) {
 	// Message Data
 	dataLen := []int{16, 64, 256, 1024, 2048, 4096}
 	for _, v := range dataLen {
-		var rnd pcg.Rand
-		rnd.Seed(benchutil.Seed())
-		shared.GenMessageData(v, shared.Len, rnd)
+		shared.GenMessageData(v, shared.Len)
 		// CapnProto2
 		// TODO: 4096 Bytes of data causes the following error:
 		// capnp: NewMessage called on arena with data
@@ -251,4 +249,41 @@ func benchRedditAccount(bench benchutil.Benchmarker) {
 	// PB v3
 	b = pb.BenchRedditAccount()
 	bench.Append(b...)
+}
+
+func benchCPUInfo(bench benchutil.Benchmarker) {
+	// num cpus: it's n + 1
+	cpus := []int{1, 4, 8, 16}
+	for _, n := range cpus {
+		// CapnProto2
+		b := capnp.BenchCPUInfo(n)
+		bench.Append(b...)
+		// Flatbuffers
+		b = fb.BenchCPUInfo(n)
+		bench.Append(b...)
+		// Gencode
+		b = gencode.BenchCPUInfo(n)
+		bench.Append(b...)
+		// Gob
+		b = gobs.BenchCPUInfo(n)
+		bench.Append(b...)
+		// JSON
+		b = jsn.BenchCPUInfo(n)
+		bench.Append(b...)
+		// FFJSON
+		b = ffjson.BenchCPUInfo(n)
+		bench.Append(b...)
+		// FFJSONBuf
+		b = ffjsonbuf.BenchCPUInfo(n)
+		bench.Append(b...)
+		// vmhailenco/msgPack
+		b = vmsgpack.BenchCPUInfo(n)
+		bench.Append(b...)
+		// tinylib/msgp
+		b = tmsgp.BenchCPUInfo(n)
+		bench.Append(b...)
+		// PB v3
+		b = pb.BenchCPUInfo(n)
+		bench.Append(b...)
+	}
 }

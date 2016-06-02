@@ -14,6 +14,7 @@ var (
 	memInfo       [][]byte
 	message       [][]byte
 	redditAccount [][]byte
+	cpuInfo       [][]byte
 
 	bldr = flatbuffers.NewBuilder(0)
 )
@@ -266,6 +267,120 @@ func serializeRedditAccount(sh shared.ShRedditAccount) []byte {
 	RedditAccountAddKind(bldr, kind)
 	RedditAccountAddData(bldr, acc)
 	bldr.Finish(RedditAccountEnd(bldr))
+	return bldr.Bytes[bldr.Head():]
+}
+
+// BenchCPUInfo runs the CPUInfo benches for Serialize/Deserialize.
+func BenchCPUInfo(l int) []benchutil.Bench {
+	var results []benchutil.Bench
+	cpuInfo = make([][]byte, 0, shared.Len)
+
+	bench := newBench(fmt.Sprintf("%s: %d", shared.CPUInfo, l))
+	bench.Desc = shared.Marshal.String()
+	bench.Result = benchutil.ResultFromBenchmarkResult(testing.Benchmark(cpuInfoSerialize))
+	results = append(results, bench)
+	bench.Desc = shared.Unmarshal.String()
+	bench.Result = benchutil.ResultFromBenchmarkResult(testing.Benchmark(cpuInfoDeserialize))
+	results = append(results, bench)
+	message = nil
+	return results
+}
+
+func cpuInfoSerialize(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		for j := 0; j < shared.Len; j++ {
+			cpuInfo = append(cpuInfo, serializeCPUInfo(shared.CPUInfoData[j]))
+		}
+	}
+}
+
+func cpuInfoDeserialize(b *testing.B) {
+	var tmp *CPUInfo
+	for i := 0; i < b.N; i++ {
+		for j := 0; j < shared.Len; j++ {
+			tmp = GetRootAsCPUInfo(cpuInfo[j], 0)
+		}
+	}
+	_ = tmp
+}
+
+func serializeCPUInfo(sh shared.ShCPUInfo) []byte {
+	bldr.Reset()
+	cpus := make([]flatbuffers.UOffsetT, len(sh.CPUs))
+	vendorIDs := make([]flatbuffers.UOffsetT, len(sh.CPUs))
+	cpuFamilies := make([]flatbuffers.UOffsetT, len(sh.CPUs))
+	models := make([]flatbuffers.UOffsetT, len(sh.CPUs))
+	modelNames := make([]flatbuffers.UOffsetT, len(sh.CPUs))
+	steppings := make([]flatbuffers.UOffsetT, len(sh.CPUs))
+	microcodes := make([]flatbuffers.UOffsetT, len(sh.CPUs))
+	cacheSizes := make([]flatbuffers.UOffsetT, len(sh.CPUs))
+	fpus := make([]flatbuffers.UOffsetT, len(sh.CPUs))
+	fpuExceptions := make([]flatbuffers.UOffsetT, len(sh.CPUs))
+	cpuIDLevels := make([]flatbuffers.UOffsetT, len(sh.CPUs))
+	wps := make([]flatbuffers.UOffsetT, len(sh.CPUs))
+	flags := make([]flatbuffers.UOffsetT, len(sh.CPUs))
+	clFlushSizes := make([]flatbuffers.UOffsetT, len(sh.CPUs))
+	cacheAlignments := make([]flatbuffers.UOffsetT, len(sh.CPUs))
+	addressSizes := make([]flatbuffers.UOffsetT, len(sh.CPUs))
+	powerManagements := make([]flatbuffers.UOffsetT, len(sh.CPUs))
+	// create the strings
+	for i := 0; i < len(sh.CPUs); i++ {
+		vendorIDs[i] = bldr.CreateString(sh.CPUs[i].VendorID)
+		cpuFamilies[i] = bldr.CreateString(sh.CPUs[i].CPUFamily)
+		models[i] = bldr.CreateString(sh.CPUs[i].Model)
+		modelNames[i] = bldr.CreateString(sh.CPUs[i].ModelName)
+		steppings[i] = bldr.CreateString(sh.CPUs[i].Stepping)
+		microcodes[i] = bldr.CreateString(sh.CPUs[i].Microcode)
+		cacheSizes[i] = bldr.CreateString(sh.CPUs[i].CacheSize)
+		fpus[i] = bldr.CreateString(sh.CPUs[i].FPU)
+		fpuExceptions[i] = bldr.CreateString(sh.CPUs[i].FPUException)
+		cpuIDLevels[i] = bldr.CreateString(sh.CPUs[i].CPUIDLevel)
+		wps[i] = bldr.CreateString(sh.CPUs[i].WP)
+		flags[i] = bldr.CreateString(sh.CPUs[i].Flags)
+		clFlushSizes[i] = bldr.CreateString(sh.CPUs[i].CLFlushSize)
+		cacheAlignments[i] = bldr.CreateString(sh.CPUs[i].CacheAlignment)
+		addressSizes[i] = bldr.CreateString(sh.CPUs[i].AddressSizes)
+		powerManagements[i] = bldr.CreateString(sh.CPUs[i].PowerManagement)
+	}
+	// create the CPUs
+	for i := 0; i < len(sh.CPUs); i++ {
+		CPUStart(bldr)
+		CPUAddProcessor(bldr, sh.CPUs[i].Processor)
+		CPUAddVendorID(bldr, vendorIDs[i])
+		CPUAddCPUFamily(bldr, cpuFamilies[i])
+		CPUAddModel(bldr, models[i])
+		CPUAddModelName(bldr, modelNames[i])
+		CPUAddStepping(bldr, steppings[i])
+		CPUAddMicrocode(bldr, microcodes[i])
+		CPUAddCPUMHz(bldr, sh.CPUs[i].CPUMHz)
+		CPUAddCacheSize(bldr, cacheSizes[i])
+		CPUAddPhysicalID(bldr, sh.CPUs[i].PhysicalID)
+		CPUAddSiblings(bldr, sh.CPUs[i].Siblings)
+		CPUAddCoreID(bldr, sh.CPUs[i].CoreID)
+		CPUAddCPUCores(bldr, sh.CPUs[i].CPUCores)
+		CPUAddApicID(bldr, sh.CPUs[i].ApicID)
+		CPUAddInitialApicID(bldr, sh.CPUs[i].InitialApicID)
+		CPUAddFPU(bldr, fpus[i])
+		CPUAddFPUException(bldr, fpuExceptions[i])
+		CPUAddCPUIDLevel(bldr, cpuIDLevels[i])
+		CPUAddWP(bldr, wps[i])
+		CPUAddFlags(bldr, flags[i])
+		CPUAddBogoMIPS(bldr, sh.CPUs[i].BogoMIPS)
+		CPUAddCLFlushSize(bldr, clFlushSizes[i])
+		CPUAddCacheAlignment(bldr, cacheAlignments[i])
+		CPUAddAddressSizes(bldr, addressSizes[i])
+		CPUAddPowerManagement(bldr, powerManagements[i])
+		cpus[i] = CPUEnd(bldr)
+	}
+	// Process the flat.CPUs vector
+	CPUInfoStartCPUsVector(bldr, len(cpus))
+	for i := len(cpus) - 1; i >= 0; i-- {
+		bldr.PrependUOffsetT(cpus[i])
+	}
+	cpusV := bldr.EndVector(len(cpus))
+	CPUInfoStart(bldr)
+	CPUInfoAddCPUs(bldr, cpusV)
+	bldr.Finish(CPUInfoEnd(bldr))
 	return bldr.Bytes[bldr.Head():]
 }
 

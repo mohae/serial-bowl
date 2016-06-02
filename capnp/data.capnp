@@ -89,3 +89,35 @@ struct AccountData {
     name @9 :Text;
     over18 @10 :Bool;
 }
+
+struct CPUInfo {
+	cpus @0 :List(CPU);
+}
+
+struct CPU {
+	processor @0 :Int16;
+	vendorID @1 :Text;
+	cPUFamily @2 :Text;
+	model @3 :Text;
+	modelName @4 :Text;
+	stepping @5 :Text;
+	microcode @6 :Text;
+	cPUMHz @7 :Float32;
+	cacheSize @8 :Text;
+	physicalID @9 :Int16;
+	siblings @10 :Int16;
+	coreID @11 :Int16;
+	cPUCores @12 :Int16;
+	apicID @13 :Int16;
+	initialApicID @14 :Int16;
+	fPU @15 :Text;
+	fPUException @16 :Text;
+	cPUIDLevel @17 :Text;
+	wP @18 :Text;
+	flags @19 :Text;
+	bogoMIPS @20 :Float32;
+	cLFlushSize @21 :Text;
+	cacheAlignment @22 :Text;
+	addressSizes @23 :Text;
+	powerManagement @24 :Text;
+}

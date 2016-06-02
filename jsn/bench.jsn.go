@@ -14,6 +14,7 @@ var (
 	memInfo       [][]byte
 	message       [][]byte
 	redditAccount [][]byte
+	cpuInfo       [][]byte
 )
 
 func newBench(s string) benchutil.Bench {
@@ -92,7 +93,7 @@ func memInfoUnmarshal(b *testing.B) {
 	_ = tmp
 }
 
-// BenchMessage runs the MemInfo benches for Marshal/Unmarshal.
+// BenchMessage runs the Message benches for Marshal/Unmarshal.
 func BenchMessage(l int) []benchutil.Bench {
 	var results []benchutil.Bench
 	message = make([][]byte, shared.Len)
@@ -126,7 +127,7 @@ func messageUnmarshal(b *testing.B) {
 	_ = tmp
 }
 
-// BenchRedditAccount runs the MemInfo benches for Marshal/Unmarshal.
+// BenchRedditAccount runs the RedditAccount benches for Marshal/Unmarshal.
 func BenchRedditAccount() []benchutil.Bench {
 	var results []benchutil.Bench
 	redditAccount = make([][]byte, shared.Len)
@@ -155,6 +156,40 @@ func redditAccountUnmarshal(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		for j := 0; j < shared.Len; j++ {
 			json.Unmarshal(redditAccount[j], &tmp)
+		}
+	}
+	_ = tmp
+}
+
+// BenchCPUInfo runs the CPUInfo benches for Marshal/Unmarshal.
+func BenchCPUInfo(n int) []benchutil.Bench {
+	var results []benchutil.Bench
+	cpuInfo = make([][]byte, shared.Len)
+
+	bench := newBench(fmt.Sprintf("%s: %d", shared.CPUInfo.String(), n))
+	bench.Desc = shared.Marshal.String()
+	bench.Result = benchutil.ResultFromBenchmarkResult(testing.Benchmark(cpuInfoMarshal))
+	results = append(results, bench)
+	bench.Desc = shared.Unmarshal.String()
+	bench.Result = benchutil.ResultFromBenchmarkResult(testing.Benchmark(cpuInfoUnmarshal))
+	results = append(results, bench)
+	redditAccount = nil
+	return results
+}
+
+func cpuInfoMarshal(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		for j := 0; j < shared.Len; j++ {
+			cpuInfo[j], _ = json.Marshal(shared.CPUInfoData[j])
+		}
+	}
+}
+
+func cpuInfoUnmarshal(b *testing.B) {
+	var tmp shared.ShCPUInfo
+	for i := 0; i < b.N; i++ {
+		for j := 0; j < shared.Len; j++ {
+			json.Unmarshal(cpuInfo[j], &tmp)
 		}
 	}
 	_ = tmp

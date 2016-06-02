@@ -15,6 +15,7 @@ var (
 	memInfo       [][]byte
 	message       [][]byte
 	redditAccount [][]byte
+	cpuInfo       [][]byte
 )
 
 func newBench(s string) benchutil.Bench {
@@ -71,7 +72,7 @@ func basicMemInfoUnmarshal(b *testing.B) {
 	_ = tmp
 }
 
-// BenchMemInfo runs the BasicMemInfo benches for Marshal/Unmarshal.
+// BenchMemInfo runs the MemInfo benches for Marshal/Unmarshal.
 func BenchMemInfo() []benchutil.Bench {
 	var results []benchutil.Bench
 	memInfo = make([][]byte, shared.Len)
@@ -242,6 +243,74 @@ func redditAccountUnmarshal(b *testing.B) {
 		for j := 0; j < shared.Len; j++ {
 			msg, _ := capnp.Unmarshal(redditAccount[j])
 			tmp, _ = ReadRootRedditAccount(msg)
+		}
+	}
+	_ = tmp
+}
+
+// BenchCPUInfo runs the CPUInfo benches for Marshal/Unmarshal.
+func BenchCPUInfo(n int) []benchutil.Bench {
+	var results []benchutil.Bench
+	cpuInfo = make([][]byte, shared.Len)
+	shared.GenCPUInfoData(n, shared.Len)
+
+	bench := newBench(fmt.Sprintf("%s: %d", shared.CPUInfo, n))
+	bench.Desc = shared.Marshal.String()
+	bench.Result = benchutil.ResultFromBenchmarkResult(testing.Benchmark(cpuInfoMarshal))
+	results = append(results, bench)
+	bench.Desc = shared.Unmarshal.String()
+	bench.Result = benchutil.ResultFromBenchmarkResult(testing.Benchmark(cpuInfoUnmarshal))
+	results = append(results, bench)
+	message = nil
+	return results
+}
+
+func cpuInfoMarshal(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		for j := 0; j < shared.Len; j++ {
+			msg, seg, _ := capnp.NewMessage(capnp.SingleSegment(nil))
+			info, _ := NewRootCPUInfo(seg)
+			cpus, _ := NewCPU_List(seg, int32(len(shared.CPUInfoData[j].CPUs)))
+			for k := 0; k < len(shared.CPUInfoData[j].CPUs); k++ {
+				cpu, _ := NewCPU(seg)
+				cpu.SetProcessor(shared.CPUInfoData[j].CPUs[k].Processor)
+				cpu.SetVendorID(shared.CPUInfoData[j].CPUs[k].VendorID)
+				cpu.SetCPUFamily(shared.CPUInfoData[j].CPUs[k].CPUFamily)
+				cpu.SetModel(shared.CPUInfoData[j].CPUs[k].Model)
+				cpu.SetStepping(shared.CPUInfoData[j].CPUs[k].Stepping)
+				cpu.SetMicrocode(shared.CPUInfoData[j].CPUs[k].Microcode)
+				cpu.SetCPUMHz(shared.CPUInfoData[j].CPUs[k].CPUMHz)
+				cpu.SetCacheSize(shared.CPUInfoData[j].CPUs[k].CacheSize)
+				cpu.SetPhysicalID(shared.CPUInfoData[j].CPUs[k].PhysicalID)
+				cpu.SetSiblings(shared.CPUInfoData[j].CPUs[k].Siblings)
+				cpu.SetCoreID(shared.CPUInfoData[j].CPUs[k].CoreID)
+				cpu.SetCPUCores(shared.CPUInfoData[j].CPUs[k].CPUCores)
+				cpu.SetApicID(shared.CPUInfoData[j].CPUs[k].ApicID)
+				cpu.SetInitialApicID(shared.CPUInfoData[j].CPUs[k].InitialApicID)
+				cpu.SetFPU(shared.CPUInfoData[j].CPUs[k].FPU)
+				cpu.SetFPUException(shared.CPUInfoData[j].CPUs[k].FPUException)
+				cpu.SetCPUIDLevel(shared.CPUInfoData[j].CPUs[k].CPUIDLevel)
+				cpu.SetWP(shared.CPUInfoData[j].CPUs[k].WP)
+				cpu.SetFlags(shared.CPUInfoData[j].CPUs[k].Flags)
+				cpu.SetBogoMIPS(shared.CPUInfoData[j].CPUs[k].BogoMIPS)
+				cpu.SetCLFlushSize(shared.CPUInfoData[j].CPUs[k].CLFlushSize)
+				cpu.SetCacheAlignment(shared.CPUInfoData[j].CPUs[k].CacheAlignment)
+				cpu.SetAddressSizes(shared.CPUInfoData[j].CPUs[k].AddressSizes)
+				cpu.SetPowerManagement(shared.CPUInfoData[j].CPUs[k].PowerManagement)
+				_ = cpus.Set(k, cpu)
+			}
+			_ = info.SetCpus(cpus)
+			cpuInfo[j], _ = msg.Marshal()
+		}
+	}
+}
+
+func cpuInfoUnmarshal(b *testing.B) {
+	var tmp CPUInfo
+	for i := 0; i < b.N; i++ {
+		for j := 0; j < shared.Len; j++ {
+			inf, _ := capnp.Unmarshal(cpuInfo[j])
+			tmp, _ = ReadRootCPUInfo(inf)
 		}
 	}
 	_ = tmp

@@ -1,0 +1,31 @@
+struct CPUInfo {
+	CPUs []CPU
+}
+
+struct CPU {
+	Processor       int16
+	VendorID        string
+	CPUFamily       string
+	Model           string
+	ModelName       string
+	Stepping        string
+	Microcode       string
+	CPUMHz          float32
+	CacheSize       string
+	PhysicalID      int16
+	Siblings        int16
+	CoreID          int16
+	CPUCores        int16
+	ApicID          int16
+	InitialApicID   int16
+	FPU             string
+	FPUException    string
+	CPUIDLevel      string
+	WP              string
+	Flags           string
+	BogoMIPS        float32
+	CLFlushSize     string
+	CacheAlignment  string
+	AddressSizes    string
+	PowerManagement string
+}

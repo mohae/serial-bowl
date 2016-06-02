@@ -13,11 +13,13 @@ var (
 	memInfo       [][]byte
 	message       [][]byte
 	redditAccount [][]byte
+	cpuInfo       [][]byte
 
 	basicMemInfos  []BasicMemInfo
 	memInfos       []MemInfo
 	messages       []Message
 	redditAccounts []RedditAccount
+	cpuInfos       []CPUInfo
 )
 
 func newBench(s string) benchutil.Bench {
@@ -172,7 +174,43 @@ func redditAccountUnmarshal(b *testing.B) {
 	_ = tmp
 }
 
-// PrepareBasicMemInfoData generates the protobuf version of the data.
+// BenchCPUInfo runs the CPUInfo benches for Marshal/Unmarshal.
+func BenchCPUInfo(n int) []benchutil.Bench {
+	var results []benchutil.Bench
+	cpuInfo = make([][]byte, shared.Len)
+	cpuInfos = PrepareCPUInfoData(shared.CPUInfoData)
+
+	bench := newBench(fmt.Sprintf("%s: %d", shared.CPUInfo.String(), n))
+	bench.Desc = shared.Marshal.String()
+	cpuInfo = make([][]byte, shared.Len)
+	bench.Result = benchutil.ResultFromBenchmarkResult(testing.Benchmark(redditCPUInfoMarshal))
+	results = append(results, bench)
+	bench.Desc = shared.Unmarshal.String()
+	bench.Result = benchutil.ResultFromBenchmarkResult(testing.Benchmark(redditCPUInfoUnmarshal))
+	results = append(results, bench)
+	cpuInfo = nil
+	return results
+}
+
+func redditCPUInfoMarshal(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		for j := 0; j < shared.Len; j++ {
+			cpuInfo[j], _ = cpuInfos[j].Marshal(cpuInfo[j])
+		}
+	}
+}
+
+func redditCPUInfoUnmarshal(b *testing.B) {
+	var tmp CPUInfo
+	for i := 0; i < b.N; i++ {
+		for j := 0; j < shared.Len; j++ {
+			tmp.Unmarshal(cpuInfo[j])
+		}
+	}
+	_ = tmp
+}
+
+// PrepareBasicMemInfoData generates the gencode version of the data.
 func PrepareBasicMemInfoData(data []shared.ShBasicMemInfo) []BasicMemInfo {
 	tmp := make([]BasicMemInfo, len(data))
 	for i := 0; i < len(data); i++ {
@@ -190,7 +228,7 @@ func PrepareBasicMemInfoData(data []shared.ShBasicMemInfo) []BasicMemInfo {
 	return tmp
 }
 
-// PrepareMemInfoData generates the protobuf version of the data.
+// PrepareMemInfoData generates the gencode version of the data.
 func PrepareMemInfoData(data []shared.ShMemInfo) []MemInfo {
 	tmp := make([]MemInfo, len(data))
 	for i := 0; i < len(data); i++ {
@@ -240,7 +278,7 @@ func PrepareMemInfoData(data []shared.ShMemInfo) []MemInfo {
 	return tmp
 }
 
-// PrepareMessageData generates the protobuf version of the data.
+// PrepareMessageData generates the gencode version of the data.
 func PrepareMessageData(data []shared.ShMessage) []Message {
 	tmp := make([]Message, len(data))
 	for i := 0; i < len(data); i++ {
@@ -255,7 +293,7 @@ func PrepareMessageData(data []shared.ShMessage) []Message {
 	return tmp
 }
 
-// PrepareRedditAccountData generates the protobuf version of the data.
+// PrepareRedditAccountData generates the gencode version of the data.
 func PrepareRedditAccountData(data []shared.ShRedditAccount) []RedditAccount {
 	tmp := make([]RedditAccount, len(data))
 	for i := 0; i < len(data); i++ {
@@ -277,6 +315,45 @@ func PrepareRedditAccountData(data []shared.ShRedditAccount) []RedditAccount {
 				Over18:       data[i].Data.Over18,
 			},
 		}
+	}
+	return tmp
+}
+
+// PrepareCPUInfoData generates the gencode version of the data.
+func PrepareCPUInfoData(data []shared.ShCPUInfo) []CPUInfo {
+	tmp := make([]CPUInfo, 0, len(data))
+	for i := 0; i < len(data); i++ {
+		var inf CPUInfo
+		for j := 0; j < len(data[i].CPUs); j++ {
+			inf.CPUs = append(inf.CPUs, CPU{
+				Processor:       data[i].CPUs[j].Processor,
+				VendorID:        data[i].CPUs[j].VendorID,
+				CPUFamily:       data[i].CPUs[j].CPUFamily,
+				Model:           data[i].CPUs[j].Model,
+				ModelName:       data[i].CPUs[j].ModelName,
+				Stepping:        data[i].CPUs[j].Stepping,
+				Microcode:       data[i].CPUs[j].Microcode,
+				CPUMHz:          data[i].CPUs[j].CPUMHz,
+				CacheSize:       data[i].CPUs[j].CacheSize,
+				PhysicalID:      data[i].CPUs[j].PhysicalID,
+				Siblings:        data[i].CPUs[j].Siblings,
+				CoreID:          data[i].CPUs[j].CoreID,
+				CPUCores:        data[i].CPUs[j].CPUCores,
+				ApicID:          data[i].CPUs[j].ApicID,
+				InitialApicID:   data[i].CPUs[j].InitialApicID,
+				FPU:             data[i].CPUs[j].FPU,
+				FPUException:    data[i].CPUs[j].FPUException,
+				CPUIDLevel:      data[i].CPUs[j].CPUIDLevel,
+				WP:              data[i].CPUs[j].WP,
+				Flags:           data[i].CPUs[j].Flags,
+				BogoMIPS:        data[i].CPUs[j].BogoMIPS,
+				CLFlushSize:     data[i].CPUs[j].CLFlushSize,
+				CacheAlignment:  data[i].CPUs[j].CacheAlignment,
+				AddressSizes:    data[i].CPUs[j].AddressSizes,
+				PowerManagement: data[i].CPUs[j].PowerManagement,
+			})
+		}
+		tmp = append(tmp, inf)
 	}
 	return tmp
 }

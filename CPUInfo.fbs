@@ -1,0 +1,37 @@
+// CPUInfo.fbs
+namespace fb;
+
+// /proc/cpuinfo
+table CPUInfo {
+    CPUs:[CPU];
+}
+
+table CPU {
+    Processor:short;
+    VendorID:string;
+    CPUFamily:string;
+    Model:string;
+    ModelName:string;
+    Stepping:string;
+    Microcode:string;
+    CPUMHz:float;
+    CacheSize:string;
+    PhysicalID:short;
+    Siblings:short;
+    CoreID:short;
+    CPUCores:short;
+    ApicID:short;
+    InitialApicID:short;
+    FPU:string;
+    FPUException:string;
+    CPUIDLevel:string;
+    WP:string;
+    Flags:string;
+    BogoMIPS:float;
+    CLFlushSize:string;
+    CacheAlignment:string;
+    AddressSizes:string;
+    PowerManagement:string;
+}
+
+root_type CPUInfo;

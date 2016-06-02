@@ -13,11 +13,13 @@ var (
 	memInfo       [][]byte
 	message       [][]byte
 	redditAccount [][]byte
+	cpuInfo       [][]byte
 
 	basicMemInfos  []BasicMemInfo
 	memInfos       []MemInfo
 	messages       []Message
 	redditAccounts []RedditAccount
+	cpuInfos       []CPUInfo
 )
 
 func newBench(s string) benchutil.Bench {
@@ -129,6 +131,42 @@ func messageUnmarshal(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		for j := 0; j < shared.Len; j++ {
 			_ = tmp.UnmarshalJSON(message[j])
+		}
+	}
+	_ = tmp
+}
+
+// BenchCPUInfo runs the CPUInfo benches for Marshal/Unmarshal.
+func BenchCPUInfo(n int) []benchutil.Bench {
+	var results []benchutil.Bench
+	cpuInfo = make([][]byte, shared.Len)
+	cpuInfos = PrepareCPUInfoData(shared.CPUInfoData)
+
+	bench := newBench(fmt.Sprintf("%s: %d", shared.CPUInfo.String(), n))
+	bench.Desc = shared.Marshal.String()
+	cpuInfo = make([][]byte, shared.Len)
+	bench.Result = benchutil.ResultFromBenchmarkResult(testing.Benchmark(cpuInfoMarshal))
+	results = append(results, bench)
+	bench.Desc = shared.Unmarshal.String()
+	bench.Result = benchutil.ResultFromBenchmarkResult(testing.Benchmark(cpuInfoUnmarshal))
+	results = append(results, bench)
+	message = nil
+	return results
+}
+
+func cpuInfoMarshal(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		for j := 0; j < shared.Len; j++ {
+			cpuInfo[j], _ = cpuInfos[j].MarshalJSON()
+		}
+	}
+}
+
+func cpuInfoUnmarshal(b *testing.B) {
+	var tmp CPUInfo
+	for i := 0; i < b.N; i++ {
+		for j := 0; j < shared.Len; j++ {
+			_ = tmp.UnmarshalJSON(cpuInfo[j])
 		}
 	}
 	_ = tmp
@@ -275,6 +313,46 @@ func PrepareRedditAccountData(data []shared.ShRedditAccount) []RedditAccount {
 				Over18:       data[i].Data.Over18,
 			},
 		}
+	}
+	return tmp
+}
+
+// PrepareCPUInfoData generates the ffjson version of the data.
+func PrepareCPUInfoData(data []shared.ShCPUInfo) []CPUInfo {
+	tmp := make([]CPUInfo, 0, len(data))
+	for i := 0; i < len(data); i++ {
+		inf := CPUInfo{CPUs: make([]CPU, 0, len(data[i].CPUs))}
+		for j := 0; j < len(data[i].CPUs); j++ {
+			cpu := CPU{
+				Processor:       data[i].CPUs[j].Processor,
+				VendorID:        data[i].CPUs[j].VendorID,
+				CPUFamily:       data[i].CPUs[j].CPUFamily,
+				Model:           data[i].CPUs[j].Model,
+				ModelName:       data[i].CPUs[j].ModelName,
+				Stepping:        data[i].CPUs[j].Stepping,
+				Microcode:       data[i].CPUs[j].Microcode,
+				CPUMHz:          data[i].CPUs[j].CPUMHz,
+				CacheSize:       data[i].CPUs[j].CacheSize,
+				PhysicalID:      data[i].CPUs[j].PhysicalID,
+				Siblings:        data[i].CPUs[j].Siblings,
+				CoreID:          data[i].CPUs[j].CoreID,
+				CPUCores:        data[i].CPUs[j].CPUCores,
+				ApicID:          data[i].CPUs[j].ApicID,
+				InitialApicID:   data[i].CPUs[j].InitialApicID,
+				FPU:             data[i].CPUs[j].FPU,
+				FPUException:    data[i].CPUs[j].FPUException,
+				CPUIDLevel:      data[i].CPUs[j].CPUIDLevel,
+				WP:              data[i].CPUs[j].WP,
+				Flags:           data[i].CPUs[j].Flags,
+				BogoMIPS:        data[i].CPUs[j].BogoMIPS,
+				CLFlushSize:     data[i].CPUs[j].CLFlushSize,
+				CacheAlignment:  data[i].CPUs[j].CacheAlignment,
+				AddressSizes:    data[i].CPUs[j].AddressSizes,
+				PowerManagement: data[i].CPUs[j].PowerManagement,
+			}
+			inf.CPUs = append(inf.CPUs, cpu)
+		}
+		tmp = append(tmp, inf)
 	}
 	return tmp
 }
