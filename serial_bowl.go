@@ -255,6 +255,7 @@ func benchCPUInfo(bench benchutil.Benchmarker) {
 	// num cpus: it's n + 1
 	cpus := []int{1, 4, 8, 16}
 	for _, n := range cpus {
+		shared.GenCPUInfoData(n, shared.Len)
 		// CapnProto2
 		b := capnp.BenchCPUInfo(n)
 		bench.Append(b...)

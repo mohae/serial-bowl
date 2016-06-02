@@ -117,9 +117,9 @@ func GenData() {
 func GenBasicMemInfoData(l int) {
 	var rnd pcg.Rand
 	rnd.Seed(benchutil.Seed())
-	BasicMemInfoData = make([]ShBasicMemInfo, l)
+	BasicMemInfoData = make([]ShBasicMemInfo, 0, l)
 	for i := 0; i < l; i++ {
-		BasicMemInfoData[i] = ShBasicMemInfo{
+		BasicMemInfoData = append(BasicMemInfoData, ShBasicMemInfo{
 			MemTotal:     rnd.Int63(),
 			MemFree:      rnd.Int63(),
 			MemAvailable: rnd.Int63(),
@@ -128,7 +128,7 @@ func GenBasicMemInfoData(l int) {
 			SwapCached:   rnd.Int63(),
 			SwapTotal:    rnd.Int63(),
 			SwapFree:     rnd.Int63(),
-		}
+		})
 	}
 }
 
