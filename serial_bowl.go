@@ -28,6 +28,7 @@ var (
 	sectionHeaders bool
 	nameSections   bool
 	systemInfo     bool
+	datasetSize    int // number of elements in test slice
 )
 
 func init() {
@@ -43,6 +44,8 @@ func init() {
 	flag.BoolVar(&sectionHeaders, "h", false, "if there are sections, add a section header row")
 	flag.BoolVar(&systemInfo, "sysinfo", false, "add the system information to the output")
 	flag.BoolVar(&systemInfo, "i", false, "add the system information to the output")
+	flag.IntVar(&datasetSize, "datasetsize", 1000, "the size of the test dataset for each benchmark")
+	flag.IntVar(&datasetSize, "d", 1000, "the size of the test dataset for each benchmark")
 }
 
 func main() {
@@ -50,7 +53,7 @@ func main() {
 	done := make(chan struct{})
 	// start the visual ticker
 	go benchutil.Dot(done)
-
+	shared.Len = datasetSize
 	// set the output
 	var w io.Writer
 	var err error

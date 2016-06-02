@@ -12,7 +12,7 @@ import (
 const alphanum = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 
 // The length of the slice holding the data structures.
-var Len = 1000
+var Len int
 
 // Data for the benchmarks.  All benchmarks operate off of the same set of
 // randomly generated data.
