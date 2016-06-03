@@ -36,11 +36,11 @@ const (
 // output from Bench.Results.
 var Ops []Op
 
-//go:generate stringer -type=Proto
-type Proto int
+//go:generate stringer -type=Format
+type Format int
 
 const (
-	UnknownProt Proto = iota
+	UnknownFormat Format = iota
 	Flatbuffers
 	GenCode
 	Gob
@@ -50,8 +50,8 @@ const (
 	MessagePack
 )
 
-// Protos holds a slice of Protocol types.
-var Protos []Proto
+// Format holds a slice of serialization formats.
+var Formats []Format
 
 //go:generate stringer -type=StructType
 type StructType int
@@ -72,7 +72,7 @@ var StructTypes []StructType
 // and other formatting info
 var (
 	maxOpLen         int
-	maxProtoLen      int
+	maxFormatLen     int
 	maxStructTypeLen int
 	PadLen           int = 2
 )
@@ -85,13 +85,13 @@ func init() {
 		}
 	}
 	maxOpLen += PadLen
-	Protos = []Proto{Flatbuffers, GenCode, Gob, JSON, ProtobufV3, CapnProto2, MessagePack}
-	for _, v := range Protos {
-		if len(v.String()) > maxProtoLen {
-			maxProtoLen = len(v.String())
+	Formats = []Format{Flatbuffers, GenCode, Gob, JSON, ProtobufV3, CapnProto2, MessagePack}
+	for _, v := range Formats {
+		if len(v.String()) > maxFormatLen {
+			maxFormatLen = len(v.String())
 		}
 	}
-	maxProtoLen += PadLen
+	maxFormatLen += PadLen
 	StructTypes = []StructType{BasicMemInfo, MemInfo, Message, RedditAccount, CPUInfo}
 	for _, v := range StructTypes {
 		if len(v.String()) > maxStructTypeLen {
