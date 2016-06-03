@@ -24,12 +24,33 @@ import (
 var (
 	output         string
 	format         string
+	benchFormats   stringArray
 	section        bool
 	sectionHeaders bool
 	nameSections   bool
 	systemInfo     bool
 	datasetSize    int // number of elements in test slice
 )
+
+type stringArray []string
+
+func (f *stringArray) String() string {
+	var s string
+	for i, v := range *f {
+		if i == 0 {
+			s = v
+			continue
+		}
+		s += ", " + v
+
+	}
+	return s
+}
+
+func (f *stringArray) Set(v string) error {
+	*f = append(*f, v)
+	return nil
+}
 
 func init() {
 	flag.StringVar(&output, "output", "stdout", "output destination")
@@ -46,17 +67,23 @@ func init() {
 	flag.BoolVar(&systemInfo, "i", false, "add the system information to the output")
 	flag.IntVar(&datasetSize, "datasetsize", 1000, "the size of the test dataset for each benchmark")
 	flag.IntVar(&datasetSize, "d", 1000, "the size of the test dataset for each benchmark")
+	flag.Var(&benchFormats, "benchformat", "format(s) to benchmark")
+	flag.Var(&benchFormats, "b", "format(s) to benchmark")
 }
 
 func main() {
 	flag.Parse()
+	runFormats, err := processBenchFormats()
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 	done := make(chan struct{})
 	// start the visual ticker
 	go benchutil.Dot(done)
 	shared.Len = datasetSize
 	// set the output
 	var w io.Writer
-	var err error
 	switch output {
 	case "stdout":
 		w = os.Stdout
@@ -93,12 +120,12 @@ func main() {
 	bench.SetSubGroupColumnHeader("Format")
 	bench.SetNameColumnHeader("Package")
 	bench.SetDescColumnHeader("Operation")
-	// Run the benchmarks
-	benchBasicMemInfo(bench)
-	benchCPUInfo(bench)
-	benchMemInfo(bench)
-	benchMessage(bench)
-	benchRedditAccount(bench)
+
+	benchBasicMemInfo(runFormats, bench)
+	benchCPUInfo(runFormats, bench)
+	benchMemInfo(runFormats, bench)
+	benchMessage(runFormats, bench)
+	benchRedditAccount(runFormats, bench)
 
 	close(done)
 	fmt.Println("\ngenerating output...\n")
@@ -108,186 +135,254 @@ func main() {
 	}
 }
 
-func benchBasicMemInfo(bench benchutil.Benchmarker) {
-	// CapnProto2
-	b := capnp.BenchBasicMemInfo()
-	bench.Append(b...)
-	// Flatbuffers
-	b = fb.BenchBasicMemInfo()
-	bench.Append(b...)
-	// Gencode
-	b = gencode.BenchBasicMemInfo()
-	bench.Append(b...)
-	// Gob
-	b = gobs.BenchBasicMemInfo()
-	bench.Append(b...)
-	// JSON
-	b = jsn.BenchBasicMemInfo()
-	bench.Append(b...)
-	// FFJSON
-	b = ffjson.BenchBasicMemInfo()
-	bench.Append(b...)
-	// FFJSON Buf
-	b = ffjsonbuf.BenchBasicMemInfo()
-	bench.Append(b...)
-	// vmhailenco/msgPack
-	b = vmsgpack.BenchBasicMemInfo()
-	bench.Append(b...)
-	// tinylib/msgp
-	b = tmsgp.BenchBasicMemInfo()
-	bench.Append(b...)
-	// PBv3
-	b = pb.BenchBasicMemInfo()
-	bench.Append(b...)
+func benchBasicMemInfo(formats []shared.Format, bench benchutil.Benchmarker) {
+	// Only run the benchmarks for the requested formats.
+	var b []benchutil.Bench
+	for _, v := range formats {
+		switch v {
+		case shared.CapnProto2: // Captain Proto 2
+			b = capnp.BenchBasicMemInfo()
+			bench.Append(b...)
+		case shared.Flatbuffers: // Flatbuffers
+			b = fb.BenchBasicMemInfo()
+			bench.Append(b...)
+		case shared.GenCode: // Gencode
+			b = gencode.BenchBasicMemInfo()
+			bench.Append(b...)
+		case shared.Gob: // Gob
+			b = gobs.BenchBasicMemInfo()
+			bench.Append(b...)
+		case shared.JSON: // JSON
+			b = jsn.BenchBasicMemInfo()
+			bench.Append(b...)
+			// FFJSON
+			b = ffjson.BenchBasicMemInfo()
+			bench.Append(b...)
+			// FFJSON Buf
+			b = ffjsonbuf.BenchBasicMemInfo()
+			bench.Append(b...)
+		case shared.MessagePack: // Message Pack
+			// vmhailenco/msgPack
+			b = vmsgpack.BenchBasicMemInfo()
+			bench.Append(b...)
+			// tinylib/msgp
+			b = tmsgp.BenchBasicMemInfo()
+			bench.Append(b...)
+		case shared.ProtobufV3: // Protocol Buffers V3
+			// PBv3
+			b = pb.BenchBasicMemInfo()
+			bench.Append(b...)
+		}
+	}
 }
 
-func benchMemInfo(bench benchutil.Benchmarker) {
-	// CapnProto2
-	b := capnp.BenchMemInfo()
-	bench.Append(b...)
-	// Flatbuffers
-	b = fb.BenchMemInfo()
-	bench.Append(b...)
-	// Gencode
-	b = gencode.BenchMemInfo()
-	bench.Append(b...)
-	// Gob
-	b = gobs.BenchMemInfo()
-	bench.Append(b...)
-	// JSON
-	b = jsn.BenchMemInfo()
-	bench.Append(b...)
-	// FFJSON
-	b = ffjson.BenchMemInfo()
-	bench.Append(b...)
-	// FFJSON Buf
-	b = ffjsonbuf.BenchMemInfo()
-	bench.Append(b...)
-	// vmhailenco/msgPack
-	b = vmsgpack.BenchMemInfo()
-	bench.Append(b...)
-	// tinylib/msgp
-	b = tmsgp.BenchMemInfo()
-	bench.Append(b...)
-	// PBv3
-	b = pb.BenchMemInfo()
-	bench.Append(b...)
+func benchMemInfo(formats []shared.Format, bench benchutil.Benchmarker) {
+	var b []benchutil.Bench
+	// Only run the benchmarks for the requested formats.
+	for _, v := range formats {
+		switch v {
+		case shared.CapnProto2: // Captain Proto 2
+			b = capnp.BenchMemInfo()
+			bench.Append(b...)
+		case shared.Flatbuffers: // Flatbuffers
+			b = fb.BenchMemInfo()
+			bench.Append(b...)
+		case shared.GenCode: // Gencode
+			b = gencode.BenchMemInfo()
+			bench.Append(b...)
+		case shared.Gob: // Gob
+			b = gobs.BenchMemInfo()
+			bench.Append(b...)
+		case shared.JSON: // JSON
+			b = jsn.BenchMemInfo()
+			bench.Append(b...)
+			// FFJSON
+			b = ffjson.BenchMemInfo()
+			bench.Append(b...)
+			// FFJSON Buf
+			b = ffjsonbuf.BenchMemInfo()
+			bench.Append(b...)
+		case shared.MessagePack: // Message Pack
+			// vmhailenco/msgPack
+			b = vmsgpack.BenchMemInfo()
+			bench.Append(b...)
+			// tinylib/msgp
+			b = tmsgp.BenchMemInfo()
+			bench.Append(b...)
+		case shared.ProtobufV3: // Protocol Buffers V3
+			// PBv3
+			b = pb.BenchMemInfo()
+			bench.Append(b...)
+		}
+	}
 }
 
-func benchMessage(bench benchutil.Benchmarker) {
+func benchMessage(formats []shared.Format, bench benchutil.Benchmarker) {
 	var b []benchutil.Bench
 
 	// Message Data
 	dataLen := []int{16, 64, 256, 1024, 2048, 4096}
 	for _, v := range dataLen {
 		shared.GenMessageData(v, shared.Len)
-		// CapnProto2
-		// TODO: 4096 Bytes of data causes the following error:
-		// capnp: NewMessage called on arena with data
-		// figure out how to resolve.
-		if v > 2048 {
-			goto skipCap
+		// Only run the benchmarks for the requested formats.
+		for _, f := range formats {
+			switch f {
+			case shared.CapnProto2: // Captain Proto 2
+				// TODO: 4096 Bytes of data causes the following error:
+				// capnp: NewMessage called on arena with data
+				// figure out how to resolve.
+				if v > 2048 {
+					continue
+				}
+				b = capnp.BenchMessage(v)
+				bench.Append(b...)
+			case shared.Flatbuffers: // Flatbuffers
+				b = fb.BenchMessage(v)
+				bench.Append(b...)
+			case shared.GenCode: // Gencode
+				b = gencode.BenchMessage(v)
+				bench.Append(b...)
+			case shared.Gob: // Gob
+				// Gob
+				b = gobs.BenchMessage(v)
+				bench.Append(b...)
+			case shared.JSON: // JSON
+				// JSON
+				b = jsn.BenchMessage(v)
+				bench.Append(b...)
+				// FFJSON
+				b = ffjson.BenchMessage(v)
+				bench.Append(b...)
+				// FFJSONBuf
+				b = ffjsonbuf.BenchMessage(v)
+				bench.Append(b...)
+			case shared.MessagePack: // Message Pack
+				// vmhailenco/msgPack
+				b = vmsgpack.BenchMessage(v)
+				bench.Append(b...)
+				// tinylib/msgp
+				b = tmsgp.BenchMessage(v)
+				bench.Append(b...)
+			case shared.ProtobufV3: // Protocol Buffer V3
+				// PBv3
+				b = pb.BenchMessage(v)
+				bench.Append(b...)
+			}
 		}
-		b = capnp.BenchMessage(v)
-		bench.Append(b...)
-	skipCap:
-		// Flatbuffers
-		b = fb.BenchMessage(v)
-		bench.Append(b...)
-		// Gencode
-		b = gencode.BenchMessage(v)
-		bench.Append(b...)
-		// Gob
-		b = gobs.BenchMessage(v)
-		bench.Append(b...)
-		// JSON
-		b = jsn.BenchMessage(v)
-		bench.Append(b...)
-		// FFJSON
-		b = ffjson.BenchMessage(v)
-		bench.Append(b...)
-		// FFJSONBuf
-		b = ffjsonbuf.BenchMessage(v)
-		bench.Append(b...)
-		// vmhailenco/msgPack
-		b = vmsgpack.BenchMessage(v)
-		bench.Append(b...)
-		// tinylib/msgp
-		b = tmsgp.BenchMessage(v)
-		bench.Append(b...)
-		// PBv3
-		b = pb.BenchMessage(v)
-		bench.Append(b...)
 	}
 }
 
-func benchRedditAccount(bench benchutil.Benchmarker) {
-	// CapnProto2
-	b := capnp.BenchRedditAccount()
-	bench.Append(b...)
-	// Flatbuffers
-	b = fb.BenchRedditAccount()
-	bench.Append(b...)
-	// Gencode
-	b = gencode.BenchRedditAccount()
-	bench.Append(b...)
-	// Gob
-	b = gobs.BenchRedditAccount()
-	bench.Append(b...)
-	// JSON
-	b = jsn.BenchRedditAccount()
-	bench.Append(b...)
-	// FFJSON
-	b = ffjson.BenchRedditAccount()
-	bench.Append(b...)
-	// FFJSONBuf
-	b = ffjsonbuf.BenchRedditAccount()
-	bench.Append(b...)
-	// vmhailenco/msgPack
-	b = vmsgpack.BenchRedditAccount()
-	bench.Append(b...)
-	// tinylib/msgp
-	b = tmsgp.BenchRedditAccount()
-	bench.Append(b...)
-	// PB v3
-	b = pb.BenchRedditAccount()
-	bench.Append(b...)
+func benchRedditAccount(formats []shared.Format, bench benchutil.Benchmarker) {
+	var b []benchutil.Bench
+	// Only run the benchmarks for the requested formats.
+	for _, v := range formats {
+		switch v {
+		case shared.CapnProto2: // Captain Proto 2
+			b = capnp.BenchRedditAccount()
+			bench.Append(b...)
+		case shared.Flatbuffers: // Flatbuffers
+			b = fb.BenchRedditAccount()
+			bench.Append(b...)
+		case shared.GenCode: // Gencode
+			b = gencode.BenchRedditAccount()
+			bench.Append(b...)
+		case shared.Gob: // Gob
+			b = gobs.BenchRedditAccount()
+			bench.Append(b...)
+		case shared.JSON: // JSON
+			// JSON
+			b = jsn.BenchRedditAccount()
+			bench.Append(b...)
+			// FFJSON
+			b = ffjson.BenchRedditAccount()
+			bench.Append(b...)
+			// FFJSONBuf
+			b = ffjsonbuf.BenchRedditAccount()
+			bench.Append(b...)
+		case shared.MessagePack: // Message Pack
+			// vmhailenco/msgPack
+			b = vmsgpack.BenchRedditAccount()
+			bench.Append(b...)
+			// tinylib/msgp
+			b = tmsgp.BenchRedditAccount()
+			bench.Append(b...)
+		case shared.ProtobufV3: // Protocol Buffer V3
+			// PB v3
+			b = pb.BenchRedditAccount()
+			bench.Append(b...)
+		}
+	}
 }
 
-func benchCPUInfo(bench benchutil.Benchmarker) {
+func benchCPUInfo(formats []shared.Format, bench benchutil.Benchmarker) {
+	var b []benchutil.Bench
 	// num cpus: it's n + 1
 	cpus := []int{1, 4, 8, 16}
 	for _, n := range cpus {
 		shared.GenCPUInfoData(n, shared.Len)
-		// CapnProto2
-		b := capnp.BenchCPUInfo(n)
-		bench.Append(b...)
-		// Flatbuffers
-		b = fb.BenchCPUInfo(n)
-		bench.Append(b...)
-		// Gencode
-		b = gencode.BenchCPUInfo(n)
-		bench.Append(b...)
-		// Gob
-		b = gobs.BenchCPUInfo(n)
-		bench.Append(b...)
-		// JSON
-		b = jsn.BenchCPUInfo(n)
-		bench.Append(b...)
-		// FFJSON
-		b = ffjson.BenchCPUInfo(n)
-		bench.Append(b...)
-		// FFJSONBuf
-		b = ffjsonbuf.BenchCPUInfo(n)
-		bench.Append(b...)
-		// vmhailenco/msgPack
-		b = vmsgpack.BenchCPUInfo(n)
-		bench.Append(b...)
-		// tinylib/msgp
-		b = tmsgp.BenchCPUInfo(n)
-		bench.Append(b...)
-		// PB v3
-		b = pb.BenchCPUInfo(n)
-		bench.Append(b...)
+		// Only run the benchmarks for the requested formats.
+		for _, v := range formats {
+			switch v {
+			case shared.CapnProto2: // Captain Proto 2
+				b = capnp.BenchCPUInfo(n)
+				bench.Append(b...)
+			case shared.Flatbuffers: // Flatbuffers
+				b = fb.BenchCPUInfo(n)
+				bench.Append(b...)
+			case shared.GenCode: // Gencode
+				b = gencode.BenchCPUInfo(n)
+				bench.Append(b...)
+			case shared.Gob: // Gob
+				b = gobs.BenchCPUInfo(n)
+				bench.Append(b...)
+			case shared.JSON: // JSON
+				b = jsn.BenchCPUInfo(n)
+				bench.Append(b...)
+				// FFJSON
+				b = ffjson.BenchCPUInfo(n)
+				bench.Append(b...)
+				// FFJSONBuf
+				b = ffjsonbuf.BenchCPUInfo(n)
+				bench.Append(b...)
+			case shared.MessagePack: // Message Pack
+				// vmhailenco/msgPack
+				b = vmsgpack.BenchCPUInfo(n)
+				bench.Append(b...)
+				// tinylib/msgp
+				b = tmsgp.BenchCPUInfo(n)
+				bench.Append(b...)
+			case shared.ProtobufV3: // Protocol Buffers V3
+				// PB v3
+				b = pb.BenchCPUInfo(n)
+				bench.Append(b...)
+			}
+		}
 	}
+}
+
+func processBenchFormats() ([]shared.Format, error) {
+	var formats []shared.Format
+	// If nothing was specified, everything should be run.
+	if len(benchFormats) == 0 {
+		return shared.Formats, nil
+	}
+	// otherwsie go through the input and try to match.  Error on anything we can't
+	// figure out.
+	for _, v := range benchFormats {
+		switch v {
+		case "fb", "flat", "flatbuffer", "flatbuffers":
+			formats = append(formats, shared.Flatbuffers)
+		case "gencode":
+			formats = append(formats, shared.GenCode)
+		case "gob":
+			formats = append(formats, shared.Gob)
+		case "json", "jsn":
+			formats = append(formats, shared.JSON)
+		case "capn", "capnp", "cpn", "capnproto", "captainproto", "capnproto2":
+			formats = append(formats, shared.CapnProto2)
+		default:
+			return nil, fmt.Errorf("%s: unknown serialization format", v)
+		}
+	}
+	return formats, nil
 }
