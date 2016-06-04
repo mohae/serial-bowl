@@ -1,0 +1,118 @@
+syntax = "proto3";
+package protobuf;
+option go_package = "gogofast";
+
+message GoGoFastBasicMemInfo {
+    int64 MemTotal = 1;
+    int64 MemFree = 2;
+    int64 MemAvailable = 3;
+    int64 Buffers = 4;
+    int64 Cached = 5;
+    int64 SwapCached = 6;
+    int64 SwapTotal = 7;
+    int64 SwapFree = 8;
+}
+
+message GoGoFastMemInfo {
+    int64 MemTotal = 1;
+    int64 MemFree = 2;
+    int64 MemAvailable = 3;
+    int64 Buffers = 4;
+    int64 Cached = 5;
+    int64 SwapCached = 6;
+    int64 Active = 7;
+    int64 Inactive = 8;
+    int64 ActiveAnon = 9;
+    int64 InactiveAnon = 10;
+    int64 ActiveFile = 11;
+    int64 InactiveFile = 12;
+    int64 Unevictable = 13;
+    int64 Mlocked = 14;
+    int64 SwapTotal = 15;
+    int64 SwapFree = 16;
+    int64 Dirty = 17;
+    int64 Writeback = 18;
+    int64 AnonPages = 19;
+    int64 Mapped = 20;
+    int64 Shmem = 21;
+    int64 Slab = 22;
+    int64 SReclaimable = 23;
+    int64 SUnreclaim = 24;
+    int64 KernelStack = 25;
+    int64 NFSUnstable = 26;
+    int64 Bounce = 27;
+    int64 WritebackTmp = 28;
+    int64 CommitLimit = 29;
+    int64 VmallocTotal = 30;
+    int64 VmallocUsed = 31;
+    int64 VmallocChunk = 32;
+    int64 HardwareCorrupted = 33;
+    int64 AnonHugePages = 34;
+    int64 HugePagesTotal = 35;
+    int64 HugePagesFree = 36;
+    int64 HugePagesRsvd = 37;
+    int64 Hugepagesize = 38;
+    int64 DirectMap4k = 39;
+    int64 DirectMap2M = 40;
+}
+
+message GoGoFastMessage {
+    bytes ID = 1;
+    uint32 DestID = 2;
+    int32 Type = 3;  // int8 in other formats
+    int32 Kind = 4;  // int16 in other formats
+    bytes Data = 5;
+}
+
+message GoGoFastRedditAccount {
+    string ID = 1;
+    string Name = 2;
+    string Kind = 3;
+    GoGoFastAccountData Data = 4;
+}
+
+message GoGoFastAccountData {
+    int64 CommentKarma = 1;
+    bool HasMail = 2;
+    bool HasModMail = 3;
+    string ID = 4;
+    int64 InboxCount = 5;
+    bool IsFriend = 6;
+    bool IsGold = 7;
+    int64 LinkKarma = 8;
+    string ModHash = 9;
+    string Name = 10;
+    bool Over18 = 11;
+}
+
+message GoGoFastCPUInfo {
+    repeated GoGoFastCPU CPUs = 1;
+}
+
+message GoGoFastCPU {
+    int32 Processor = 1;
+    string VendorID = 2;
+    string CPUFamily = 3;
+    string Model = 4;
+    string ModelName = 5;
+    string Stepping = 6;
+    string Microcode = 7;
+    float CPUMHz = 8;
+    string CacheSize = 9;
+    int32 PhysicalID = 10;
+    int32 Siblings = 11;
+    int32 CoreID = 12;
+    int32 CPUCores = 13;
+    int32 ApicID = 14;
+    int32 InitialApicID = 15;
+    string FPU = 16;
+    string FPUException = 17;
+    string CPUIDLevel = 18;
+    string WP = 19;
+    string Flags = 21;
+    float BogoMIPS = 22;
+    string CLFlushSize = 23;
+    string CacheAlignment = 24;
+    string AddressSizes = 25;
+    string PowerManagement = 26;
+}

@@ -13,6 +13,10 @@ import (
 	"github.com/mohae/serial-bowl/ffjsonbuf"
 	"github.com/mohae/serial-bowl/gencode"
 	"github.com/mohae/serial-bowl/gobs"
+	"github.com/mohae/serial-bowl/gogo/gofast"
+	"github.com/mohae/serial-bowl/gogo/gogofast"
+	"github.com/mohae/serial-bowl/gogo/gogofaster"
+	"github.com/mohae/serial-bowl/gogo/gogoslick"
 	"github.com/mohae/serial-bowl/jsn"
 	"github.com/mohae/serial-bowl/pb"
 	"github.com/mohae/serial-bowl/shared"
@@ -172,6 +176,18 @@ func benchBasicMemInfo(formats []shared.Format, bench benchutil.Benchmarker) {
 			// PBv3
 			b = pb.BenchBasicMemInfo()
 			bench.Append(b...)
+			// gofast
+			b = gofast.BenchBasicMemInfo()
+			bench.Append(b...)
+			// gogofast
+			b = gogofast.BenchBasicMemInfo()
+			bench.Append(b...)
+			// gogofaster
+			b = gogofaster.BenchBasicMemInfo()
+			bench.Append(b...)
+			// gogoslick
+			b = gogoslick.BenchBasicMemInfo()
+			bench.Append(b...)
 		}
 	}
 }
@@ -212,6 +228,18 @@ func benchMemInfo(formats []shared.Format, bench benchutil.Benchmarker) {
 		case shared.ProtobufV3: // Protocol Buffers V3
 			// PBv3
 			b = pb.BenchMemInfo()
+			bench.Append(b...)
+			// gofast
+			b = gofast.BenchMemInfo()
+			bench.Append(b...)
+			// gogofast
+			b = gogofast.BenchMemInfo()
+			bench.Append(b...)
+			// gogofaster
+			b = gogofaster.BenchMemInfo()
+			bench.Append(b...)
+			// gogoslick
+			b = gogoslick.BenchMemInfo()
 			bench.Append(b...)
 		}
 	}
@@ -267,6 +295,18 @@ func benchMessage(formats []shared.Format, bench benchutil.Benchmarker) {
 				// PBv3
 				b = pb.BenchMessage(v)
 				bench.Append(b...)
+				// gofast
+				b = gofast.BenchMessage(v)
+				bench.Append(b...)
+				// gogofast
+				b = gogofast.BenchMessage(v)
+				bench.Append(b...)
+				// gogofaster
+				b = gogofaster.BenchMessage(v)
+				bench.Append(b...)
+				// gogoslick
+				b = gogoslick.BenchMessage(v)
+				bench.Append(b...)
 			}
 		}
 	}
@@ -309,6 +349,18 @@ func benchRedditAccount(formats []shared.Format, bench benchutil.Benchmarker) {
 		case shared.ProtobufV3: // Protocol Buffer V3
 			// PB v3
 			b = pb.BenchRedditAccount()
+			bench.Append(b...)
+			// gofast
+			b = gofast.BenchRedditAccount()
+			bench.Append(b...)
+			// gogofast
+			b = gogofast.BenchRedditAccount()
+			bench.Append(b...)
+			// gogofaster
+			b = gogofaster.BenchRedditAccount()
+			bench.Append(b...)
+			// gogoslick
+			b = gogoslick.BenchRedditAccount()
 			bench.Append(b...)
 		}
 	}
@@ -355,6 +407,18 @@ func benchCPUInfo(formats []shared.Format, bench benchutil.Benchmarker) {
 				// PB v3
 				b = pb.BenchCPUInfo(n)
 				bench.Append(b...)
+				// gofast
+				b = gofast.BenchCPUInfo(n)
+				bench.Append(b...)
+				// gogofast
+				b = gogofast.BenchCPUInfo(n)
+				bench.Append(b...)
+				// gogofaster
+				b = gogofaster.BenchCPUInfo(n)
+				bench.Append(b...)
+				// gogoslick
+				b = gogoslick.BenchCPUInfo(n)
+				bench.Append(b...)
 			}
 		}
 	}
@@ -380,6 +444,8 @@ func processBenchFormats() ([]shared.Format, error) {
 			formats = append(formats, shared.JSON)
 		case "capn", "capnp", "cpn", "capnproto", "captainproto", "capnproto2":
 			formats = append(formats, shared.CapnProto2)
+		case "protobuf", "pb", "protobufv3":
+			formats = append(formats, shared.ProtobufV3)
 		default:
 			return nil, fmt.Errorf("%s: unknown serialization format", v)
 		}
