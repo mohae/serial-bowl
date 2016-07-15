@@ -116,7 +116,7 @@ func GenData() {
 // The resulting slice of structs will have l elements.
 func GenBasicMemInfoData(l int) {
 	var rnd pcg.Rand
-	rnd.Seed(benchutil.Seed())
+	rnd.Seed(benchutil.NewSeed())
 	BasicMemInfoData = make([]ShBasicMemInfo, 0, l)
 	for i := 0; i < l; i++ {
 		BasicMemInfoData = append(BasicMemInfoData, ShBasicMemInfo{
@@ -136,7 +136,7 @@ func GenBasicMemInfoData(l int) {
 // resulting slice of structs will have l elements.
 func GenMemInfoData(l int) {
 	var rnd pcg.Rand
-	rnd.Seed(benchutil.Seed())
+	rnd.Seed(benchutil.NewSeed())
 	MemInfoData = make([]ShMemInfo, 0, l)
 	for i := 0; i < l; i++ {
 		tmp := ShMemInfo{
@@ -190,7 +190,7 @@ func GenMemInfoData(l int) {
 // l elements.
 func GenMessageData(n, l int) {
 	var rnd pcg.Rand
-	rnd.Seed(benchutil.Seed())
+	rnd.Seed(benchutil.NewSeed())
 	MessageData = make([]ShMessage, 0, l)
 	for i := 0; i < l; i++ {
 		id := benchutil.RandBytes(8)
@@ -208,7 +208,7 @@ func GenMessageData(n, l int) {
 
 func GenRedditAccountData(l int) {
 	var rnd pcg.Rand
-	rnd.Seed(benchutil.Seed())
+	rnd.Seed(benchutil.NewSeed())
 	RedditAccountData = make([]ShRedditAccount, 0, l)
 	for i := 0; i < l; i++ {
 		tmp := ShRedditAccount{
