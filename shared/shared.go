@@ -41,13 +41,13 @@ type Format int
 
 const (
 	UnknownFormat Format = iota
+	CapnProto2
 	Flatbuffers
 	GenCode
 	Gob
 	JSON
-	ProtobufV3
-	CapnProto2
 	MessagePack
+	ProtobufV3
 )
 
 // Format holds a slice of serialization formats.
@@ -85,14 +85,14 @@ func init() {
 		}
 	}
 	maxOpLen += PadLen
-	Formats = []Format{Flatbuffers, GenCode, Gob, JSON, ProtobufV3, CapnProto2, MessagePack}
+	Formats = []Format{CapnProto2, Flatbuffers, GenCode, Gob, JSON, MessagePack, ProtobufV3}
 	for _, v := range Formats {
 		if len(v.String()) > maxFormatLen {
 			maxFormatLen = len(v.String())
 		}
 	}
 	maxFormatLen += PadLen
-	StructTypes = []StructType{BasicMemInfo, MemInfo, Message, RedditAccount, CPUInfo}
+	StructTypes = []StructType{BasicMemInfo, MemInfo, CPUInfo, Message, RedditAccount}
 	for _, v := range StructTypes {
 		if len(v.String()) > maxStructTypeLen {
 			maxStructTypeLen = len(v.String())
