@@ -124,7 +124,7 @@ ProtobufV3|gogo/protobuf/protoc-gen-gogoslick|Marshal|2000000|978|448|1
 ProtobufV3|gogo/protobuf/protoc-gen-gogoslick|Unmarshal|1000000|1274|0|0  
 
 ### CPU
-CPUInfo is a datastructure that represents the output of `/proc/cpuinfo` and consists mostly of strings and ints, with a couple of float32 fields.  Instead of querying the running system's `cpuinfo`, the benchmark uses a mixture of predefined values and random ints.  There are multiple versions of this benchmark to test the impact of varying slice (array) sizes on performance.  
+CPUInfo is a datastructure that represents the output of `/proc/cpuinfo` and consists mostly of strings and ints, with a couple of float32 fields.  The benchmark uses a mixture of predefined values and random ints.  There are multiple versions of this benchmark to test the impact of varying slice (array) sizes on performance.  
 
 ####CPUInfo: 1  
 Format|Package|Operation|Ops|ns/Op|B/Op|Allocs/Op  
