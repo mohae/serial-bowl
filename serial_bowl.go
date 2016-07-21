@@ -111,13 +111,13 @@ func main() {
 		bench = benchutil.NewCSVBench(w)
 	case "md":
 		bench = benchutil.NewMDBench(w)
-		bench.(*benchutil.MDBench).GroupAsSectionName = nameSections
 	default:
 		bench = benchutil.NewStringBench(w)
 	}
 	bench.SectionPerGroup(section)
 	bench.SectionHeaders(sectionHeaders)
 	bench.IncludeSystemInfo(systemInfo)
+	bench.NameSections(nameSections)
 
 	// set the header info
 	bench.SetGroupColumnHeader("Data Type")
